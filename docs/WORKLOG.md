@@ -26,6 +26,10 @@ Timestamps: local `YYYY-MM-DD HH:mm`.
   - Updated CLAUDE.md to clarify that scope is descriptive in commits
   - Prompt: "Better to do it on-demand with /save-worklog" (initially explored automated hook approach, iterated to skill-based on-demand solution for better control and pre-commit review capability)
 
+- **2026-05-26 14:40** — Created initial game plan v1 (Escape from Detention Block AA-23: 4 rooms, 4 puzzles, Three.js + Vite stack). Saved as docs/plan-v1.md — snapshot of the starting design before iterating on it through challenges.
+  - Prompt used:
+    'You have the initial requirements in the project, make a plan and then I'll challenge you until we land on something I like.'
+
 - **2026-05-26 12:21** — Initialized project scaffolding: CLAUDE.md, challenge spec, README, and project settings.
   - Established development philosophy: follow `irega` skill for commits and code
   - Commit format: `type(scope): description` with no ticket on main branch
