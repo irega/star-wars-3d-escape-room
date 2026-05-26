@@ -8,6 +8,14 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 15:39** — Defined DX tooling strategy: Vercel for deployment (free tier, GitHub CI/CD integration, preview deploys on PRs), npm scripts for dev/build/test/lint/format workflows, husky+lint-staged pre-commit hooks (ESLint/Prettier/vitest on staged files only), pre-push full suite validation (test:ci/lint/format:check), ESLint+Prettier configs for TS/React. Not yet merged into plan-v2.
+  - Prompt used:
+    'Need free hosting (Vercel/Netlify) with GitHub CI/CD; define npm scripts (tests/coverage), husky hooks (precommit/prepush), prettier, and eslint.'
+
+- **2026-05-26 15:34** — Designed testing strategy for 3D scenes: vitest for pure logic (zustand stores, puzzle rules), RTL for HTML overlays (HUD, dialogue), Playwright for happy-path E2E. Rationale: WebGL canvas incompatible with RTL; testing layer depends on 3D/HTML boundary.
+  - Prompt used:
+    'Testing strategy: separate core/pure logic from UI, unit test with vitest/jest, integration test components with RTL/MSW, add basic component unit tests, and e2e for happy path — does this make sense for 3D escape rooms?'
+
 - **2026-05-26 15:28** — Chose react-i18next for internationalization (EN/ES) with browser locale auto-detection and English fallback. Rationale: Crossmint has offices in both regions; minimal text in game (hints, dialogue, HUD) makes scaffolding trivial.
   - Prompt used:
     "Let's add i18n with English and Spanish support (Crossmint offices); use react-i18n or similar — scaffolding and usage should be straightforward."

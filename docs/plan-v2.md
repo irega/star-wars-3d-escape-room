@@ -16,8 +16,12 @@ Crossmint engineering challenge: build a browser-based 3D escape room with 4 puz
 - **React Three Fiber (R3F)** — declarative Three.js for React, no performance loss, largest React+3D ecosystem
 - **@react-three/drei** — R3F helpers (controls, loaders, abstractions) — avoids reinventing common 3D patterns
 - **Zustand** — state management (same team as R3F — pmndrs). Selector-based subscriptions: each component reads only the slice it needs, so puzzle state changes don't re-render the entire 3D scene
+- **react-i18next** — i18n for EN/ES with browser locale auto-detection
 - **Vite** — build tooling (fast dev server, trivial to deploy)
-- **Deployment** — Vercel or Netlify (zero-config for Vite static sites)
+- **ESLint + Prettier** — unified linting (TS + React config) and formatting
+- **Vitest + RTL + Playwright** — unit/integration/e2e testing
+- **Husky + lint-staged** — git hooks for fast feedback
+- **Deployment** — Vercel (free tier, auto-deploy on push to main, preview deploys on PRs)
 
 **Alternatives considered:**
 - *3D:* react-babylonjs (smaller community, worse docs), A-Frame+React (unmaintained bindings, WebXR-focused). R3F is the clear winner for this scope.
@@ -155,11 +159,53 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 - **Scope:** hints, dialogue text, HUD labels, victory screen — minimal text surface, trivial to maintain
 - **Structure:** `i18n.ts` config + JSON translation files per locale (`locales/en.json`, `locales/es.json`), `useTranslation()` in components
 
+### Testing Strategy
+
+Separate pure logic from UI — the 3D/HTML boundary defines which layer applies.
+
+**Unit tests (vitest)** — carry the weight:
+- Zustand stores: game state machine transitions, inventory add/remove/has, hint progression
+- Extracted puzzle logic: sequence validation (puzzle 2), combination check (puzzle 4), power cell orientation (puzzle 3)
+- Pure functions, zero 3D dependency
+
+**Integration tests (RTL)** — HTML overlays only:
+- HUD, Dialogue, Victory screen — standard React components, RTL handles them fine
+- No RTL for 3D scenes — WebGL doesn't render in jsdom
+- No `@react-three/test-renderer` — too immature to justify the cost
+
+**E2E (Playwright)** — happy path:
+- One test: "the game is winnable from start to finish" — click through all 4 rooms
+- Playwright clicks on canvas coordinates for 3D interactions
+- A few edge cases: wrong clicks, invalid inputs
+- Fragile and slow by nature — keep the set minimal
+
+### DX Tooling
+
+**npm scripts:**
+```
+dev             — vite dev server
+build           — tsc && vite build
+preview         — vite preview
+test            — vitest
+test:watch      — vitest --watch
+test:ci         — vitest run --reporter=verbose
+test:coverage   — vitest run --coverage
+test:e2e        — playwright test
+lint            — eslint src/
+lint:fix        — eslint src/ --fix
+format          — prettier --write src/
+format:check    — prettier --check src/
+```
+
+**Git hooks (husky + lint-staged):**
+- **pre-commit:** `lint-staged` (eslint + prettier on staged files) + `vitest related` (only tests for modified files — fast feedback)
+- **pre-push:** full suite (`test:ci` + `lint` + `format:check` — don't break upstream)
+
 ---
 
 ## Implementation Order
 
-1. **Scaffolding** — Vite + React + TS + R3F setup, Canvas, camera + controls, empty room
+1. **Scaffolding** — Vite + React + TS + R3F setup, ESLint + Prettier + Husky, Canvas, camera + controls, empty room
 2. **Core systems** — Scene manager, interaction (raycasting + click), inventory, HUD
 3. **Room 1 + Puzzle 1** — Detention cell geometry, loose panel puzzle, cell door transition
 4. **Room 2 + Puzzle 2** — Control room, terminal UI, sequence puzzle logic
@@ -167,7 +213,7 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 6. **Room 4 + Puzzle 4** — Hangar bay, combination console, victory sequence
 7. **Hints system** — Timed hints for all 4 puzzles
 8. **Polish** — Lighting, ambient audio, Star Wars atmosphere (glow effects, particles)
-9. **Deploy** — Vercel/Netlify, live link in README
+9. **Deploy** — Vercel, connect GitHub repo, live link in README
 10. **README** — Run instructions, design decisions summary, AI usage summary (both derived from `docs/WORKLOG.md` — README is the digest, worklog is the raw trail)
 
 ---
