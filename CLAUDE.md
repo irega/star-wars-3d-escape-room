@@ -27,7 +27,7 @@ All skills are bundled in `.claude/skills/` — no external dependencies require
 
 Star Wars-themed 3D escape room running in the browser (fan project, not affiliated with Lucasfilm). No source code exists yet — project is in initialization stage.
 
-**Challenge spec + guardrails:** `docs/challenge.md` — read before any design decision.
+**Challenge spec + guardrails:** `docs/challenge-spec.md` — read before any design decision.
 
 ## Architecture (planned)
 
