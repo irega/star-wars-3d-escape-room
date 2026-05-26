@@ -1,0 +1,16 @@
+{
+  "name": "star-wars-3d-escape-room",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Star Wars-themed 3D escape room (browser)",
+  "type": "module",
+  "scripts": {
+    "lint": "node scripts/ci-stub.mjs lint",
+    "format:check": "node scripts/ci-stub.mjs format:check",
+    "test:ci": "node scripts/ci-stub.mjs test:ci",
+    "build": "node scripts/ci-stub.mjs build"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

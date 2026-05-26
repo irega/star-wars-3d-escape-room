@@ -9,7 +9,7 @@
 - **Trade-offs are explicit and honest throughout.** Zustand vs useReducer+Context is argued on re-render cost, not preference. Accessibility acknowledges what's realistic for WebGL vs what's aspirational. Testing strategy correctly identifies the 3D/HTML boundary as the dividing line for tooling.
 - **Scope is well-controlled.** No backend, no persistence, no multiplayer — each exclusion is justified with rationale.
 - **CI/CD as Phase 1 guardrails** is the right call. The project has parallel agents and trunk-based flow, so guardrails from day 1 prevent drift.
-- **QA agent workflow with human gate** (`qa-bug` → `approved` → agent pickup) is a pragmatic token-budget control. The separation between deterministic CI tests and exploratory QA is clean.
+- **QA agent workflow with human gate** (`bug` → `approved` → agent pickup) is a pragmatic token-budget control. The separation between deterministic CI tests and exploratory QA is clean.
 - **Trunk-based development** is the right model for a solo developer with agents — long-lived branches would create merge hell with no one to resolve conflicts.
 
 ## Growth Areas

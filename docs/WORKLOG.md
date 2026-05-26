@@ -8,6 +8,10 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 21:21** — Set up GitHub automation pipeline: added ci.yml (parallel lint/format/test/build), dev-agent workflows for approved labels and PR feedback, generalized agent triggering via workflow_dispatch for any issue type, created issue templates and AGENTS.md documentation.
+  - Prompt used:
+    'Implement plan-v2 checklist items 7–8 (CI + dev-agent workflows) with stub npm scripts that pass; switch from qa-bug to the default bug label; explain then implement PR fixes via @claude; and extend the dev agent so approved issues can drive plan-v2 feature work (feat/* branches), not only bugs.'
+
 - **2026-05-26 20:25** — Discussed agent/repo wiring without Cursor (GitHub does not launch Claude; cloud vs Actions). User proposed GitHub Actions architecture (protected main, PR-only, auto-reviewer, Claude App + OAuth, approved-issue dev agent, auto-merge, CI/Vercel, QA workflows). Added GitHub automation checklist to docs/plans/plan-v2.md (no Claude Routines); updated Phase 1 feat/ci-cd and QA/dev flows.
   - Prompt used:
     'Figure out GitHub setup so agents can pick up work without launching from my PC: branch protection and PR-only flow, auto-reviewer, Claude GitHub integration with my Pro subscription, trigger dev work when issues are labeled approved (human approves PRs, auto-merge when green), CI/CD on Actions plus Vercel, and how to run the QA agent from GitHub — then add that checklist to plan-v2 using GitHub only, not Claude Routines.'

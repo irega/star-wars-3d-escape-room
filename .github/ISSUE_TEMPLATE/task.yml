@@ -1,0 +1,49 @@
+name: Plan task (dev agent)
+description: Feature or phase work from plan-v2 — not a bug
+title: "feat(scope): "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Agent pickup:** add label `approved` when this is ready (Actions → Dev agent on approved).
+        Manual run: Actions → Dev agent on approved → Run workflow → issue number.
+
+        Use the **Bug report** template and label `bug` only for defects.
+  - type: dropdown
+    id: plan_branch
+    attributes:
+      label: Plan-v2 branch (from Implementation Order)
+      options:
+        - feat/scaffolding
+        - feat/ci-cd
+        - feat/stores
+        - feat/i18n
+        - feat/ui-overlays
+        - feat/interactive-components
+        - feat/scene-detention-cell
+        - feat/scene-control-room
+        - feat/scene-corridor
+        - feat/scene-hangar-bay
+        - feat/game-flow
+        - feat/performance
+        - feat/e2e-tests
+        - feat/readme
+        - other (describe below)
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: What to implement
+      description: Concrete slice for one PR — small enough to review in under an hour
+      placeholder: e.g. Zustand game store with tests for room transitions
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: "- [ ] Unit tests pass\n- [ ] Matches challenge-spec guardrails"
+    validations:
+      required: true
