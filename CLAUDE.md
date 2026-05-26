@@ -9,6 +9,19 @@ Follow the `irega` skill for all commits, code, and design decisions — full sp
 - **Commits:** conventional format `type(scope): description` — no ticket on `main` branch, scope is descriptive (e.g., `fix(save-worklog)`, `feat(worklog)`, `docs(readme)`)
   - **Important:** Only create commits when explicitly requested. Do not commit automatically.
 - **Code:** simple first, no premature abstraction, small functions, TDD
+- **TDD:** Use `/tdd` skill for all implementation tasks (red-green-refactor, vertical slices). See `.claude/skills/tdd/`
+- **Security:** Run `/security-audit` before shipping (Phase 6). See `.claude/skills/security-audit/`
+
+## Skills
+
+All skills are bundled in `.claude/skills/` — no external dependencies required. Source: [github.com/irega/skills](https://github.com/irega/skills).
+
+| Skill | Invoke | When |
+|---|---|---|
+| `irega` | `/irega` | Always active — apply to all commits and code |
+| `tdd` | `/tdd` | Every implementation task |
+| `security-audit` | `/security-audit` | Before shipping (Phase 6) |
+| `save-worklog` | `/save-worklog` | After each meaningful work block |
 
 ## Project
 

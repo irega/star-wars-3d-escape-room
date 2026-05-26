@@ -2,6 +2,19 @@
 
 Browser-based 3D escape room game with a Star Wars aesthetic. A fan project inspired by the Star Wars universe — not affiliated with or endorsed by Lucasfilm Ltd.
 
+## Agent Skills
+
+This project uses Claude Code skills bundled in `.claude/skills/` so any agent working on the repo has direct access without relying on a developer's local setup.
+
+| Skill | Purpose |
+|---|---|
+| `irega` | Coding philosophy, commit conventions, and code style rules — always active |
+| `tdd` | Red-green-refactor loop for all implementation tasks |
+| `security-audit` | OWASP-based security review — run before shipping (Phase 6) |
+| `save-worklog` | On-demand session capture to `docs/WORKLOG.md` |
+
+Skills are sourced from [github.com/irega/skills](https://github.com/irega/skills) and copied (not symlinked) for portability.
+
 ## Worklog
 
 **Development approach:** This is a take-home exercise completed in focused sessions across multiple days. Development time is **not continuous** — work is done in discrete focus time blocks with gaps between them. Commits and worklog reflect this paced approach.

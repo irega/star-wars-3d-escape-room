@@ -232,6 +232,8 @@ format:check    — prettier --check src/
 
 **Trunk-based development.** Short-lived feature branches (hours, not days), frequent merges to main. PRs are small and reviewable. Agents work sequentially (Pro plan limits parallelism). Human confirms before every merge. QA agent validates main continuously.
 
+**TDD by default.** All implementation tasks use the `/tdd` skill (red-green-refactor loop). Vertical slices: one test → one implementation → repeat. Tests verify behavior through public interfaces, not implementation details. See `.claude/skills/tdd/` for full methodology.
+
 **CI/CD split:**
 - **GitHub Actions** — single orchestrator for all checks: lint, format, tests (unit/integration), build, and post-deploy e2e
 - **Vercel** — deployment only (preview deploys on PRs, production on main). No test logic in Vercel
@@ -264,6 +266,7 @@ format:check    — prettier --check src/
 - `feat/e2e-tests` — Playwright happy path + edge cases
 
 ### Phase 6: Ship
+- **Security audit** — run `/security-audit` skill against the full codebase. Focus: CSP headers, dependency CVEs, input sanitization on any user-facing inputs (player name, terminal input), asset loading. See `.claude/skills/security-audit/` for methodology
 - `feat/readme` — README (run instructions, design decisions summary, AI usage summary — both derived from `docs/WORKLOG.md`)
 
 ### Automated Tests vs QA Agent

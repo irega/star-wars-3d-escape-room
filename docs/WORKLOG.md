@@ -8,6 +8,10 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 18:19** — Migrated TDD and security-audit skills to .claude/skills/ (8 files copied), updated plan-v2.md with TDD as default practice in Implementation Order and security audit in Phase 6 (Ship), and updated CLAUDE.md to reference both skills in Development Philosophy.
+  - Prompt used:
+    'To the plan: always use TDD skill for implementation tasks, include security-audit step (even final phase). Skills are at github.com/irega/skills — do agents need local copies or can they access GitHub?'
+
 - **2026-05-26 18:13** — Updated docs/plan-v2.md incorporating all staff-review findings: expanded out-of-scope section (localStorage rationale, mobile/touch per challenge spec), added optional player name input, SFX-only audio section, loading/error states with Suspense, victory screen with hyperspace animation, hint escalation timings, drag-and-drop fallbacks, e2e brittleness notes, and Phase 1 deployment validation.
   - Prompt used:
     'Update plan-v2 from staff-review findings: 10-min gameplay is sufficient; skip localStorage sync logic and mobile support (out of scope per challenge).'
