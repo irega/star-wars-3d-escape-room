@@ -230,6 +230,16 @@ Parallelizable via git worktree + agents. Each branch is small and reviewable. H
 - `feat/performance` — PerformanceMonitor, quality tiers (high/low)
 - `feat/e2e-tests` — Playwright happy path + edge cases
 
+### QA Agent (continuous, from Phase 3 onwards)
+
+Cross-cutting process that runs alongside implementation agents:
+- Uses **Playwright MCP server** to control Chrome and interact with the running app
+- Detects bugs early: broken interactions, visual regressions, unreachable states
+- Reports bugs → implementation agents in parallel worktrees pick them up
+- Fix cycle: **detect → report → agent fixes + extends automated tests → QA verifies fix**
+- **Performance pass:** activates Chrome DevTools CPU throttling (4x–6x via CDP) to simulate low-spec hardware, monitors FPS, and verifies `<PerformanceMonitor>` degrades to Low tier correctly and the game remains playable
+- Most valuable during Phase 4 (scenes) and Phase 5 (integration) where interaction and performance bugs are most likely
+
 ### Phase 6: Ship
 - `feat/deploy` — Vercel setup + README (run instructions, design decisions summary, AI usage summary — both derived from `docs/WORKLOG.md`)
 

@@ -8,6 +8,14 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 15:51** — Extended QA agent with Chrome DevTools Protocol CPU throttling (4x-6x) to simulate low-spec hardware, monitoring FPS and verifying PerformanceMonitor quality degradation behavior. Added README disclaimer clarifying worklog prompts are representative examples.
+  - Prompt used:
+    "QA agent (or another process) could verify we don't have performance loss — unsure if we can emulate old or low-resource hardware."
+
+- **2026-05-26 15:48** — Designed continuous QA agent workflow: Playwright MCP controls Chrome to detect bugs from Phase 3, reports to parallel agents who fix + test, then QA verifies — not yet added to plan-v2.
+  - Prompt used:
+    "I use Playwright's MCP server (Chrome + bridge extension) for early bug detection, then fix bugs and extend unit/integration/E2E tests. In a parallelizable agent plan, one agent could run tests and report bugs while others fix them."
+
 - **2026-05-26 15:45** — Designed 6-phase implementation roadmap with parallelizable git worktree branches: Phase 1 (scaffolding), Phase 2 (3 parallel — stores/i18n/ui-overlays), Phase 3 (interactive), Phase 4 (4 scene branches), Phase 5 (integration), Phase 6 (deploy/README), with human-in-loop merge gates for code review.
   - Prompt used:
     'Implementation Order should be parallelizable via git worktree + agents — small, reviewable changes per branch, human-in-the-loop for final sign-off.'
