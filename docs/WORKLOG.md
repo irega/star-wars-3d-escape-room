@@ -1,18 +1,42 @@
 # WORKLOG
 
-Full work log. Append entries as you go.
+Bootstrap phase work log. Entries reconstructed from git commits.
 
 ---
 
 ## Entries
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
-- **2026-05-26 12:52** — Modified .claude/hooks/worklog.py to include prompt metadata in worklog entries.
-  - Prompt used:
-    'You are writing a single entry for a developer worklog.\nBased on the session summary below, write ONE concise bullet point (max 2 lines) describing what was done. Always write in English regardless of the conversation language. Plain text, past tense, no leading dash or asterisk. Be specific — mention files, decisions, or outcomes. No filler.\n\nSession summary:\nUpdated worklog hook to include the prompt used by Claude when generating entries.'
-- **2026-05-26 12:58** — Tested worklog hook with Spanish user prompts to verify correct translation to English and recording in 'Prompt used' field of worklog entries.
-  - Prompt used:
-    '"Check that the worklog format is the same for Spanish-language sessions"'
-- **2026-05-26 13:11** — Refined project worklog system by replacing automated Stop hook with manual /save-worklog skill; fixed prompt extraction to capture last user prompt instead of first, and moved skill to project repository for visibility.
-  - Prompt used:
-    'The script should capture the last user prompt before invoking /save-worklog, not the first.'
+
+- **2026-05-26 13:33** — Converted /save-worklog skill to agent-based implementation for autonomous session capture, script invocation, and save/edit/cancel workflow.
+  - Changes: Updated SKILL.md with `agent: true` marker to enable agent-based execution
+  - Impact: Worklog feature now fully automated within Claude Code workflow
+  - Commit: `refactor(save-worklog): convert to agent for automatic script invocation`
+
+- **2026-05-26 13:29** — Implemented /save-worklog skill for manual, on-demand worklog entries.
+  - Features:
+    - Session context capture and summary generation (Claude CLI)
+    - User prompt extraction: captures last prompt before /save-worklog
+    - Automatic translation of prompts to English
+    - User review and edit before appending to docs/WORKLOG.md
+  - Key decisions:
+    - Manual (on-demand) instead of automated hooks for explicit user control
+    - Skill in project `.claude/skills/` for visibility and version control
+    - Script extracts last user prompt, not first (session start)
+  - Updated CLAUDE.md to clarify that scope is descriptive in commits
+  - Commit: `feat(save-worklog): add manual worklog command to replace automated hook`
+
+- **2026-05-26 09:40** — Initialized project scaffolding: CLAUDE.md, challenge spec, README, and project settings.
+  - Established development philosophy: follow `irega` skill for commits and code
+  - Commit format: `type(scope): description` with no ticket on main branch
+  - Project scope: Star Wars-themed 3D escape room browser game (placeholder)
+  - Documented planned architecture (Three.js/Babylon.js for 3D)
+  - Commit: `docs: add CLAUDE.md, challenge spec and README baseline`
+
+---
+
+## Phase Notes
+
+**Bootstrap (current):** Initial project setup, development conventions, and worklog infrastructure. No application code yet. Focus on developer experience and automated tooling.
+
+**Next phases:** Technology stack selection, 3D rendering setup, initial prototype.
