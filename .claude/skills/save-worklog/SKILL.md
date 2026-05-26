@@ -1,37 +1,45 @@
 ---
 name: save-worklog
 description: Manually save a session entry to the project worklog. Captures session context, generates a summary, translates the user prompt to English, and saves to docs/WORKLOG.md after your confirmation. Use when you want to record progress at any point during the session.
+agent: true
 ---
 
-# Save Worklog
+# Save Worklog Agent
 
 Manually append a session entry to `docs/WORKLOG.md` with:
 - Timestamp (auto-generated)
 - Summary of what was done (Claude-generated from session context)
 - Your original prompt, translated to English
 
-## Workflow
+## Task
 
-1. **Invoke** — Type `/save-worklog`
-2. **Review** — See the proposed entry (summary + translated prompt)
-3. **Edit** (optional) — Modify the summary or prompt before saving
-4. **Confirm** — Approve and save to worklog, or cancel
+1. Capture the current session context and the user's last prompt (before /save-worklog)
+2. Run `.claude/skills/save-worklog/scripts/save-worklog.py` with the session data
+3. Present the proposed worklog entry to the user
+4. Ask for confirmation (save, edit, or cancel)
+5. If approved, append the entry to `docs/WORKLOG.md` and create a git commit
+6. Provide feedback on success
 
-## Example
+## Script Interface
 
+The `save-worklog.py` script expects JSON on stdin:
+```json
+{
+  "context": "session summary/context text",
+  "messages": [
+    {"role": "user", "content": "..."},
+    {"role": "assistant", "content": "..."}
+  ]
+}
 ```
-/save-worklog
-```
 
-Generates:
+Output format:
+```json
+{
+  "timestamp": "2026-05-26 13:11",
+  "summary": "concise bullet point",
+  "prompt_en": "translated last user prompt",
+  "full_entry": "formatted entry with timestamp and prompt",
+  "status": "pending_confirmation"
+}
 ```
-- **2026-05-26 13:05** — Updated the README with documentation about the worklog hook, explaining its purpose and scope.
-  - Prompt used:
-    "Add a section explaining the worklog hook for reviewers"
-```
-
-## Notes
-
-- **Project-specific**: Only works in projects with `docs/WORKLOG.md`
-- **Manual control**: Unlike automated hooks, you decide when to save
-- **Full transparency**: See exactly what gets saved before it's committed
