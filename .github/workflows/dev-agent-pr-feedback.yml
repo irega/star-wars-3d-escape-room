@@ -1,0 +1,49 @@
+# PR iteration: comment or review with @claude → push fixes to the same PR branch
+# Pairs with dev-agent-on-approved.yml (issue bug + approved → opens PR)
+# Requires: Claude GitHub App + repo secret CLAUDE_CODE_OAUTH_TOKEN
+name: Dev agent PR feedback
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+jobs:
+  pr-feedback:
+    if: |
+      (github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        contains(github.event.comment.body, '@claude') &&
+        github.event.comment.user.type != 'Bot') ||
+      (github.event_name == 'pull_request_review_comment' &&
+        contains(github.event.comment.body, '@claude') &&
+        github.event.comment.user.type != 'Bot') ||
+      (github.event_name == 'pull_request_review' &&
+        contains(github.event.review.body, '@claude') &&
+        github.event.review.user.type != 'Bot')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply PR feedback
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          exclude_comments_by_actor: "claude[bot]"
+          claude_args: |
+            --max-turns 25
+            --system-prompt "You are the dev agent for this repository. The reviewer tagged @claude on this pull request. Read their comment or review and implement the requested changes on the current PR branch. Follow docs/plans/plan-v2.md and docs/challenge-spec.md. Use TDD (.claude/skills/tdd/): red-green-refactor, tests for behavior. Commit and push to this PR branch only. Do not merge. Run npm run test:ci and npm run lint when you change code."
+            --allowedTools Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(gh:*)

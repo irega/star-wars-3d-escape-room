@@ -287,12 +287,21 @@ Two complementary layers:
 - **Setup:** documented in Phase 1 (guardrails), first execution from Phase 3 onwards when there's visual content to validate
 - Most valuable from Phase 3 onwards — trunk-based means main always has fresh code to validate
 
-**QA agent → issue → fix workflow:**
-1. QA agent finds a bug → opens a **GitHub issue** with label `qa-bug` (repro steps, screenshot if applicable)
+**Plan tasks (features) → agent workflow:**
+1. Human opens a **Plan task** issue (template `.github/ISSUE_TEMPLATE/task.yml`) — scope, acceptance criteria, plan-v2 branch hint (e.g. `feat/stores`)
+2. When ready, add label **`approved`** (or run **Dev agent on approved** manually with the issue number)
+3. Dev agent implements the vertical slice on a `feat/*` branch → opens PR (`Closes #N`)
+4. **PR iteration:** `@claude` on the PR → `dev-agent-pr-feedback.yml`
+5. Human PR review → auto-merge when green
+
+**QA agent → bug → fix workflow:**
+1. QA agent finds a bug → opens a **GitHub issue** with label `bug` (repro steps, screenshot if applicable)
 2. **Human reviews** the issue — if valid, adds `approved` label; if not, closes with comment
-3. Dev agent **only picks up issues labeled `approved`** — no label, no work (avoids wasting tokens on false positives). Pickup is automatic via GitHub Actions (`issues: labeled`), not manual chat or Claude Routines
-4. Dev agent fixes the bug + extends automated tests to prevent regression → opens PR (typically `Closes #N`)
-5. Human approves PR review → **auto-merge** when required checks pass (branch protection + enable auto-merge on the PR)
+3. Same dev agent workflow as plan tasks (`dev-agent-on-approved.yml`) — branch prefix `fix/issue-*`, regression tests required
+4. **PR iteration:** `@claude` on the PR
+5. Human approves PR review → **auto-merge** when required checks pass
+
+**Shared gate:** dev agent runs only after **`approved`** (or explicit `workflow_dispatch`). No `approved`, no automatic work. Opt out with label `no-agent`.
 
 **Billing / limits:** Dev and QA jobs use **Claude Pro** via `CLAUDE_CODE_OAUTH_TOKEN` in Actions (`claude setup-token`). Usage counts against the subscription; GitHub Actions also consumes runner minutes. No separate “agent pool” — cap parallelism at ~2 branches per plan.
 
@@ -305,15 +314,17 @@ All orchestration lives in **GitHub** (settings + `.github/`). Agents are **not*
 ### Architecture
 
 ```
-Issue (qa-bug) → human adds approved
+Issue (task template / bug) → human adds approved  (or workflow_dispatch)
        ↓
-GitHub Action (issues: labeled) → claude-code-action → branch + PR
+dev-agent-on-approved → feat/* or fix/* branch + PR
        ↓
 CI on PR (lint, test, build) + Vercel preview + post-deploy e2e
        ↓
+PR comment/review with @claude → dev-agent-pr-feedback → push to same PR
+       ↓
 Human PR review (CODEOWNERS) → auto-merge if approved + green
        ↓
-main updated → optional scheduled QA Action → new qa-bug issues only
+main updated → optional scheduled QA Action → new bug issues only
 ```
 
 ### Checklist (Phase 1 — `feat/ci-cd`)
@@ -325,14 +336,15 @@ main updated → optional scheduled QA Action → new qa-bug issues only
 | 3 | **Enable auto-merge** | Repo Settings → General → Allow auto-merge; per-PR “Enable auto-merge” | Requires 1 approval + green checks per branch protection |
 | 4 | **Install Claude GitHub App** on the repo | [github.com/apps/claude](https://github.com/apps/claude) | Clone/push/webhooks for Claude Code Action; not the same as pasting an API key into the App |
 | 5 | **OAuth token for Pro (Actions)** | One-time locally: `claude setup-token` or `/install-github-app` → store as repo secret `CLAUDE_CODE_OAUTH_TOKEN` | Uses Pro/Max subscription; avoid `ANTHROPIC_API_KEY` unless billing API separately. **Never** commit tokens |
-| 6 | **Labels** | GitHub → Labels | `qa-bug` (QA creates), `approved` (human only — dev agent gate) |
-| 7 | **Dev agent workflow** | `.github/workflows/dev-agent-on-approved.yml` (name TBD) | `on: issues: types: [labeled]` + `if: label == approved` → [claude-code-action](https://github.com/anthropics/claude-code-action) with prompt: read issue, follow `docs/plans/plan-v2.md` + `/tdd`, fix, add tests, open PR closing issue. Restrict `permissions` and use `allowed_bots` per action security docs |
+| 6 | **Labels** | GitHub → Labels | `bug` (defects), `enhancement` (plan tasks, default on task template), `approved` (human — dev agent gate), optional `no-agent` (opt out) |
+| 7 | **Dev agent workflow** | `.github/workflows/dev-agent-on-approved.yml` | `approved` on any issue (not only `bug`) + `workflow_dispatch` with issue # → plan task (`feat/*`) or bug (`fix/*`) per labels. See `AGENTS.md` |
+| 7b | **Dev agent PR feedback** | `.github/workflows/dev-agent-pr-feedback.yml` | `issue_comment` / `pull_request_review_comment` / `pull_request_review` when body contains `@claude` (PR only for issue comments). Interactive mode (no `prompt`); pushes to current PR branch. Same OAuth secret as #7 |
 | 8 | **CI workflow** | `.github/workflows/ci.yml` | On PR: `lint` → `format:check` → `test:ci` → `build` |
 | 9 | **Post-deploy e2e** | `.github/workflows/e2e-preview.yml` | `on: deployment_status` (Vercel success) → Playwright against preview URL |
 | 10 | **Vercel** | vercel.com → import GitHub repo | Preview on PRs, production on `main`; emits `deployment_status` for step 9 |
-| 11 | **QA workflow (optional Phase 3+)** | `.github/workflows/qa-exploratory.yml` | `workflow_dispatch` + `schedule` (e.g. weekly) → claude-code-action prompt: explore preview/prod URL, **only** open issues with `qa-bug` (no fixes). Human still adds `approved` before dev agent runs |
-| 12 | **Agent instructions in repo** | `AGENTS.md` (or extend `CLAUDE.md`) | Dev: only `qa-bug` + `approved`; features: `feat/*` branches per plan; TDD; no merge without human PR approval |
-| 13 | **Issue / PR templates** | `.github/ISSUE_TEMPLATE/qa-bug.yml`, `pull_request_template.md` | Repro steps, link to issue, checklist (tests, plan phase) |
+| 11 | **QA workflow (optional Phase 3+)** | `.github/workflows/qa-exploratory.yml` | `workflow_dispatch` + `schedule` (e.g. weekly) → claude-code-action prompt: explore preview/prod URL, **only** open issues with `bug` (no fixes). Human still adds `approved` before dev agent runs |
+| 12 | **Agent instructions in repo** | `AGENTS.md` | Plan tasks vs bugs, `approved` gate, `@claude` on PRs, branch naming, TDD |
+| 13 | **Issue / PR templates** | `.github/ISSUE_TEMPLATE/task.yml`, `bug.yml`, `pull_request_template.md` | Task: plan branch + acceptance criteria; bug: repro steps |
 
 ### Authentication (clarification)
 
@@ -347,9 +359,9 @@ main updated → optional scheduled QA Action → new qa-bug issues only
 
 | | Dev agent | QA agent |
 |---|-----------|----------|
-| **Trigger** | Issue labeled `approved` | `workflow_dispatch` and/or `schedule` |
-| **Action** | Fix + tests + PR | Explore + open `qa-bug` issues only |
-| **Human gate** | `approved` on issue + PR review | Validates issue before `approved`; PR review before merge |
+| **Trigger** | Issue labeled `approved` or `workflow_dispatch`; PR feedback via `@claude` | `workflow_dispatch` and/or `schedule` |
+| **Action** | Plan tasks (`feat/*`) or bug fixes (`fix/*`) + tests + PR | Explore + open `bug` issues only |
+| **Human gate** | `approved` on issue + PR review | Validates bug before `approved`; PR review before merge |
 | **Deterministic tests** | Extends vitest/Playwright in PR | Separate CI e2e job — not a substitute |
 
 ### What is not in this checklist

@@ -1,0 +1,101 @@
+# Dev agent: approved issue OR manual dispatch → branch + PR (plan-v2)
+# Bugs (label bug) and plan tasks (enhancement / task) share the same gate: human adds `approved`
+# Requires: Claude GitHub App + repo secret CLAUDE_CODE_OAUTH_TOKEN
+name: Dev agent on approved
+
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Issue number to implement (must exist; approved label recommended)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+jobs:
+  dev-agent:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.label.name == 'approved' &&
+        !contains(github.event.issue.labels.*.name, 'no-agent'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve issue context
+        id: issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber =
+              context.eventName === 'workflow_dispatch'
+                ? Number.parseInt('${{ inputs.issue_number }}', 10)
+                : context.payload.issue.number;
+
+            if (!Number.isFinite(issueNumber)) {
+              core.setFailed('Invalid issue number');
+              return;
+            }
+
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+            });
+
+            const labels = issue.labels.map((l) =>
+              typeof l === 'string' ? l : l.name,
+            );
+            const isBug = labels.includes('bug');
+
+            core.setOutput('number', String(issueNumber));
+            core.setOutput('title', issue.title ?? '');
+            core.setOutput('body', issue.body ?? '');
+            core.setOutput('url', issue.html_url ?? '');
+            core.setOutput('labels', labels.join(', '));
+            core.setOutput('is_bug', String(isBug));
+            core.setOutput(
+              'branch_hint',
+              isBug ? `fix/issue-${issueNumber}` : `feat/issue-${issueNumber}`,
+            );
+            core.setOutput('work_type', isBug ? 'bug fix' : 'feature / plan task');
+
+      - name: Run dev agent
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            You are the dev agent for ${{ github.repository }}.
+
+            ## Issue #${{ steps.issue.outputs.number }}
+            - Title: ${{ steps.issue.outputs.title }}
+            - URL: ${{ steps.issue.outputs.url }}
+            - Labels: ${{ steps.issue.outputs.labels }}
+            - Work type: ${{ steps.issue.outputs.work_type }}
+            - Suggested branch: `${{ steps.issue.outputs.branch_hint }}` (or match plan-v2 `feat/*` name from the issue)
+
+            ### Body
+            ${{ steps.issue.outputs.body }}
+
+            ## Requirements
+            1. Read `docs/plans/plan-v2.md` (Implementation Order + current phase) and `docs/challenge-spec.md`.
+            2. Follow TDD (`.claude/skills/tdd/`): red-green-refactor; test behavior via public interfaces.
+            3. **If label `bug`:** fix the defect, add regression tests, branch prefix `fix/issue-${{ steps.issue.outputs.number }}`.
+            4. **Otherwise (plan task / enhancement):** implement the issue scope as a vertical slice; prefer branch names from plan-v2 (e.g. `feat/stores`, `feat/scene-detention-cell`) when the issue says so, else `feat/issue-${{ steps.issue.outputs.number }}-short-slug`.
+            5. Open a pull request targeting `main` with `Closes #${{ steps.issue.outputs.number }}` in the body.
+            6. Do not merge. Human PR review is required.
+
+            Keep changes scoped to this issue only. Run `npm run test:ci` and `npm run lint` when you change code.
+          claude_args: |
+            --max-turns 30
+            --allowedTools Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(gh:*)

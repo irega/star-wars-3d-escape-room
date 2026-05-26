@@ -1,0 +1,33 @@
+name: Bug report (dev agent)
+description: Defect found in the game — QA or manual
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Agent pickup:** after you validate the report, add label `approved`.
+        QA-only findings should stay unapproved until a human confirms.
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Screenshots / environment
+      description: Optional
