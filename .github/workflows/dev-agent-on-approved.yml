@@ -97,5 +97,5 @@ jobs:
 
             Keep changes scoped to this issue only. Run `npm run test:ci` and `npm run lint` when you change code.
           claude_args: |
-            --max-turns 30
+            --max-turns 50
             --allowedTools Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(gh:*)
