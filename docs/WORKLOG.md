@@ -8,6 +8,10 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 20:25** — Discussed agent/repo wiring without Cursor (GitHub does not launch Claude; cloud vs Actions). User proposed GitHub Actions architecture (protected main, PR-only, auto-reviewer, Claude App + OAuth, approved-issue dev agent, auto-merge, CI/Vercel, QA workflows). Added GitHub automation checklist to docs/plans/plan-v2.md (no Claude Routines); updated Phase 1 feat/ci-cd and QA/dev flows.
+  - Prompt used:
+    'Figure out GitHub setup so agents can pick up work without launching from my PC: branch protection and PR-only flow, auto-reviewer, Claude GitHub integration with my Pro subscription, trigger dev work when issues are labeled approved (human approves PRs, auto-merge when green), CI/CD on Actions plus Vercel, and how to run the QA agent from GitHub — then add that checklist to plan-v2 using GitHub only, not Claude Routines.'
+
 - **2026-05-26 18:19** — Migrated TDD and security-audit skills to .claude/skills/ (8 files copied), updated plan-v2.md with TDD as default practice in Implementation Order and security audit in Phase 6 (Ship), and updated CLAUDE.md to reference both skills in Development Philosophy.
   - Prompt used:
     'To the plan: always use TDD skill for implementation tasks, include security-audit step (even final phase). Skills are at github.com/irega/skills — do agents need local copies or can they access GitHub?'
