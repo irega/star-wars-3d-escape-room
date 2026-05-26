@@ -7,11 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Follow the `irega` skill for all commits, code, and design decisions — full spec at [github.com/irega/skills](https://github.com/irega/skills). Load it with `/irega` at session start or invoke via `Skill("irega")`. Key rules:
 
 - **Commits:** conventional format `type(scope): description` — no ticket on `main` branch, scope is descriptive (e.g., `fix(save-worklog)`, `feat(worklog)`, `docs(readme)`)
+  - **Important:** Only create commits when explicitly requested. Do not commit automatically.
 - **Code:** simple first, no premature abstraction, small functions, TDD
 
 ## Project
 
-Star Wars-themed 3D escape room running in the browser. No source code exists yet — project is in initialization stage.
+Star Wars-themed 3D escape room running in the browser (fan project, not affiliated with Lucasfilm). No source code exists yet — project is in initialization stage.
 
 **Challenge spec + guardrails:** `docs/challenge.md` — read before any design decision.
 

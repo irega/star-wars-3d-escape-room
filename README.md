@@ -1,7 +1,10 @@
-# star-wars-3d-escape-room
-Star Wars-themed 3D escape room running in the browser
+# Star Wars-Themed 3D Escape Room
+
+Browser-based 3D escape room game with a Star Wars aesthetic. A fan project inspired by the Star Wars universe — not affiliated with or endorsed by Lucasfilm Ltd.
 
 ## Worklog
+
+**Development approach:** This is a take-home exercise completed in focused sessions across multiple days. Development time is **not continuous** — work is done in discrete focus time blocks with gaps between them. Commits and worklog reflect this paced approach.
 
 **For reviewers:** This project uses a manual `/save-worklog` command (skill-based) to record progress in `docs/WORKLOG.md`. When invoked, it:
 - Generates a concise summary of what was done
