@@ -132,6 +132,29 @@ R3F adds no overhead over raw Three.js — the bottleneck is what we put in the 
 - **Low tier** — no post-processing, no shadows, reduced dpr
 - Threshold: degrades automatically below ~30fps
 
+### Accessibility
+
+WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience is not realistic. Focus on what's practical:
+
+**In scope:**
+- **Keyboard navigation** — Tab to cycle interactive objects (highlight/focus ring), Enter/Space to interact, Escape to cancel. Managed via keyboard listener + focus state on 3D objects
+- **Color-blind safe** — Puzzles never rely on color alone. Redundancy: color + shape + icon/pattern (e.g. correct conduit = green + checkmark, not just green)
+- **WCAG contrast** — HUD, dialogue, and overlay text (HTML outside canvas) meet contrast ratios. Legible fonts, minimum sizes
+- **`aria-live` region** — Hidden div outside canvas narrates key events ("Keycard collected", "Door unlocked") for screen readers
+
+**Out of scope (with rationale):**
+- Full screen reader navigation inside 3D canvas — it's a bitmap, no DOM to parse
+- Complete audio descriptions of each scene
+- Full WCAG AA compliance for the entire 3D experience
+
+### Internationalization
+
+- **react-i18next** — standard React i18n lib
+- **Locales:** `en` (default/fallback) + `es`
+- **Auto-detection** of browser locale, fallback to `en`
+- **Scope:** hints, dialogue text, HUD labels, victory screen — minimal text surface, trivial to maintain
+- **Structure:** `i18n.ts` config + JSON translation files per locale (`locales/en.json`, `locales/es.json`), `useTranslation()` in components
+
 ---
 
 ## Implementation Order

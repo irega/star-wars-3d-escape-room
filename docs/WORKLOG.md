@@ -8,6 +8,14 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 15:28** — Chose react-i18next for internationalization (EN/ES) with browser locale auto-detection and English fallback. Rationale: Crossmint has offices in both regions; minimal text in game (hints, dialogue, HUD) makes scaffolding trivial.
+  - Prompt used:
+    "Let's add i18n with English and Spanish support (Crossmint offices); use react-i18n or similar — scaffolding and usage should be straightforward."
+
+- **2026-05-26 15:26** — Defined accessibility scope for 3D WebGL game: in-scope are keyboard navigation (Tab/Enter), color-blind safe puzzles with redundancy (color + shape + icon), WCAG contrast on HUD text, and aria-live region narration. Established out-of-scope items with documented rationale: full screen reader canvas support, complete audio descriptions, full WCAG AA for 3D experience.
+  - Prompt used:
+    "How do you manage accessibility in this type of product? It should be usable with keyboard and have colorblind-friendly colors, for example — can ARIA and similar approaches work with 3D products?"
+
 - **2026-05-26 15:22** — Designed R3F performance optimization with automatic quality degradation via drei's PerformanceMonitor (High tier: bloom/shadows; Low tier: disabled post-processing/shadows, reduced pixel ratio); migrated useHintStore to zustand and created stores/ directory.
   - Prompt used:
     "What performance do we get with R3F? I'm thinking about older computers. How do you ensure minimum performance?"
