@@ -8,6 +8,18 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 17:56** — Designed QA agent workflow with human-in-the-loop approval gate: QA creates issues labeled `qa-bug`, human reviewer adds `approved` label for valid findings, dev agent picks up only after approval. Configured in Phase 1 plan with execution starting Phase 3; verified Vercel preview deploys per PR.
+  - Prompt used:
+    'At what step is QA agent integration configured, how does it create/pick up issues, and should issue selection require human approval (e.g., via labels) to prevent wasteful issue creation?'
+
+- **2026-05-26 17:49** — Established trunk-based development strategy with Phase 1 guardrails (CI/CD, Vercel setup, husky hooks) to enable continuous QA validation; plan-v2.md changes pending implementation.
+  - Prompt used:
+    'Keep trunk-based development for periodic main commits that QA agent can validate; reconsider implementation order — CI/CD and agent config should be set up from the start as guardrails.'
+
+- **2026-05-26 17:46** — Redesigned implementation workflow: switched from git worktree to PR-based approach with centralized GitHub Actions CI/CD (lint, format, tests pre-deploy; Playwright e2e post-deploy against Vercel preview). Adjusted parallelism to 2 concurrent branches per Claude Pro plan and separated deterministic automated tests from exploratory QA agent.
+  - Prompt used:
+    'Challenged the git worktree approach — since we have a GitHub repo, each agent should push to a branch and open a PR for review instead. Iterated on CI/CD: centralize everything in GitHub Actions (lint, format, tests, build, post-deploy e2e) and leave Vercel as deployment-only. Adjusted parallelism for Claude Pro (max 2 concurrent agents, not 4). Separated automated tests in CI (deterministic, always run) from an exploratory QA agent (on-demand, runs locally or against preview URL, opens GitHub issues for bugs not covered by tests).'
+
 - **2026-05-26 15:51** — Extended QA agent with Chrome DevTools Protocol CPU throttling (4x-6x) to simulate low-spec hardware, monitoring FPS and verifying PerformanceMonitor quality degradation behavior. Added README disclaimer clarifying worklog prompts are representative examples.
   - Prompt used:
     "QA agent (or another process) could verify we don't have performance loss — unsure if we can emulate old or low-resource hardware."

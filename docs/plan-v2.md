@@ -206,12 +206,21 @@ format:check    — prettier --check src/
 
 ## Implementation Order
 
-Parallelizable via git worktree + agents. Each branch is small and reviewable. Human confirms before every merge.
+**Trunk-based development.** Short-lived feature branches (hours, not days), frequent merges to main. PRs are small and reviewable. Agents work sequentially (Pro plan limits parallelism). Human confirms before every merge. QA agent validates main continuously.
 
-### Phase 1: Scaffolding (sequential — everything depends on this)
+**CI/CD split:**
+- **GitHub Actions** — single orchestrator for all checks: lint, format, tests (unit/integration), build, and post-deploy e2e
+- **Vercel** — deployment only (preview deploys on PRs, production on main). No test logic in Vercel
+
+**GitHub Actions pipeline:**
+- **On PR (pre-deploy):** `lint` → `format:check` → `test:ci` → `build`
+- **On deploy (post-deploy):** triggered by Vercel `deployment_status` event → Playwright e2e against preview URL
+
+### Phase 1: Scaffolding + Guardrails (sequential — everything depends on this)
 - `feat/scaffolding` — Vite + React + TS + R3F + ESLint + Prettier + Husky + Canvas base + empty room
+- `feat/ci-cd` — GitHub Actions pipeline (lint, format, test, build, post-deploy e2e) + Vercel project setup (preview deploys + production)
 
-### Phase 2: Core (3 branches in parallel)
+### Phase 2: Core (up to 2 branches at a time)
 - `feat/stores` — zustand stores (game, inventory, hints) + unit tests
 - `feat/i18n` — react-i18next config + EN/ES locale files
 - `feat/ui-overlays` — HUD, Dialogue, Loading, Victory (HTML + CSS Modules)
@@ -219,7 +228,7 @@ Parallelizable via git worktree + agents. Each branch is small and reviewable. H
 ### Phase 3: Components (after stores merge)
 - `feat/interactive-components` — InteractiveObject, DraggableObject, HintTrigger
 
-### Phase 4: Scenes (4 branches in parallel, after components merge)
+### Phase 4: Scenes (up to 2 branches at a time, after components merge)
 - `feat/scene-detention-cell` — room 1 geometry + puzzle 1 (observation)
 - `feat/scene-control-room` — room 2 geometry + puzzle 2 (logic)
 - `feat/scene-corridor` — room 3 geometry + puzzle 3 (interaction)
@@ -230,18 +239,33 @@ Parallelizable via git worktree + agents. Each branch is small and reviewable. H
 - `feat/performance` — PerformanceMonitor, quality tiers (high/low)
 - `feat/e2e-tests` — Playwright happy path + edge cases
 
-### QA Agent (continuous, from Phase 3 onwards)
-
-Cross-cutting process that runs alongside implementation agents:
-- Uses **Playwright MCP server** to control Chrome and interact with the running app
-- Detects bugs early: broken interactions, visual regressions, unreachable states
-- Reports bugs → implementation agents in parallel worktrees pick them up
-- Fix cycle: **detect → report → agent fixes + extends automated tests → QA verifies fix**
-- **Performance pass:** activates Chrome DevTools CPU throttling (4x–6x via CDP) to simulate low-spec hardware, monitors FPS, and verifies `<PerformanceMonitor>` degrades to Low tier correctly and the game remains playable
-- Most valuable during Phase 4 (scenes) and Phase 5 (integration) where interaction and performance bugs are most likely
-
 ### Phase 6: Ship
-- `feat/deploy` — Vercel setup + README (run instructions, design decisions summary, AI usage summary — both derived from `docs/WORKLOG.md`)
+- `feat/readme` — README (run instructions, design decisions summary, AI usage summary — both derived from `docs/WORKLOG.md`)
+
+### Automated Tests vs QA Agent
+
+Two complementary layers:
+
+**1. Automated tests (CI — deterministic, run always):**
+- Lint + format + vitest (unit/integration) on every PR
+- Playwright e2e against Vercel preview URL post-deploy
+- Green/red status on the PR — pass or fail, no ambiguity
+
+**2. QA agent (on-demand — exploratory, non-deterministic):**
+- Launched manually by the developer, runs periodically to catch what automated tests miss
+- Runs locally against `localhost:5173` or against a deployed Vercel preview/production URL
+- Uses **Playwright MCP server** to control Chrome and explore the app like a user
+- Looks for bugs that automated tests don't cover: broken interactions, visual regressions, unreachable states, edge cases
+- **Performance pass:** activates Chrome DevTools CPU throttling (4x–6x via CDP) to simulate low-spec hardware, monitors FPS, and verifies `<PerformanceMonitor>` degrades to Low tier correctly
+- **Setup:** documented in Phase 1 (guardrails), first execution from Phase 3 onwards when there's visual content to validate
+- Most valuable from Phase 3 onwards — trunk-based means main always has fresh code to validate
+
+**QA agent → issue → fix workflow:**
+1. QA agent finds a bug → opens a **GitHub issue** with label `qa-bug` (repro steps, screenshot if applicable)
+2. **Human reviews** the issue — if valid, adds `approved` label; if not, closes with comment
+3. Dev agent **only picks up issues labeled `approved`** — no label, no work (avoids wasting tokens on false positives)
+4. Dev agent fixes the bug + extends automated tests to prevent regression → opens PR
+5. Human reviews PR → merge → QA agent re-verifies on main
 
 ---
 
