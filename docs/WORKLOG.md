@@ -8,6 +8,14 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 18:13** — Updated docs/plan-v2.md incorporating all staff-review findings: expanded out-of-scope section (localStorage rationale, mobile/touch per challenge spec), added optional player name input, SFX-only audio section, loading/error states with Suspense, victory screen with hyperspace animation, hint escalation timings, drag-and-drop fallbacks, e2e brittleness notes, and Phase 1 deployment validation.
+  - Prompt used:
+    'Update plan-v2 from staff-review findings: 10-min gameplay is sufficient; skip localStorage sync logic and mobile support (out of scope per challenge).'
+
+- **2026-05-26 18:06** — Ran staff-review on plan-v2: verdict YES. Identified growth areas (player identity, persistence rationale, responsive/mobile design, loading/error states, audio scope) and risks (brittle e2e on canvas coordinates, Puzzle 3 drag-and-drop complexity, Vercel deployment_status event reliability); saved findings to docs/staff-review.md.
+  - Prompt used:
+    'Run staff-review skill to review plan-v2 and catch any missed product or tech decisions.'
+
 - **2026-05-26 17:56** — Designed QA agent workflow with human-in-the-loop approval gate: QA creates issues labeled `qa-bug`, human reviewer adds `approved` label for valid findings, dev agent picks up only after approval. Configured in Phase 1 plan with execution starting Phase 3; verified Vercel preview deploys per PR.
   - Prompt used:
     'At what step is QA agent integration configured, how does it create/pick up issues, and should issue selection require human approval (e.g., via labels) to prevent wasteful issue creation?'

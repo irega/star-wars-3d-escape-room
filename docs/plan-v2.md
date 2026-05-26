@@ -6,7 +6,12 @@
 
 Crossmint engineering challenge: build a browser-based 3D escape room with 4 puzzles, playable to completion, with in-world hints. Star Wars themed. No code exists yet — greenfield project. Must be deployed with a live link.
 
-**No backend.** Time budget and deployment simplicity dictate a fully client-side app. Out of scope: multiplayer, online play, server-persisted state, leaderboards, user accounts. All game state lives in-memory in the browser for the duration of a session.
+**No backend.** Time budget and deployment simplicity dictate a fully client-side app. All game state lives in-memory in the browser for the duration of a session.
+
+**Out of scope (with rationale):**
+- Multiplayer, online play, server-persisted state, leaderboards, user accounts — no backend
+- localStorage / session persistence — target session is ~10 minutes; restart-on-close is acceptable. localStorage sync-on-startup adds non-trivial complexity (stale state, schema migration, partial saves) that doesn't justify itself for a short game
+- Mobile / touch devices — challenge spec scopes to desktop browser. Touch drag-and-drop in 3D (Puzzle 3) is a fundamentally different interaction model; supporting it would require a parallel input system
 
 ---
 
@@ -32,6 +37,8 @@ Crossmint engineering challenge: build a browser-based 3D escape room with 4 puz
 
 ## Game Concept: "Escape from Detention Block AA-23"
 
+**Player identity:** Optional name input at game start (default: "Rebel"). Used on the victory screen for personalization. Minimal state cost (one string in useGameStore).
+
 The player wakes up in an Imperial detention cell aboard the Death Star. A distant explosion (the Rebels' attack) has caused a partial power failure — systems are glitching, doors are malfunctioning. The player must solve 4 puzzles to escape before the station is destroyed.
 
 **Setting progression:**
@@ -47,19 +54,20 @@ The player wakes up in an Imperial detention cell aboard the Death Star. A dista
 ### Puzzle 1 — "The Loose Panel" (Observation)
 - **Where:** Detention cell
 - **What:** A wall panel is slightly displaced — subtle visual cue (offset, different shade). Clicking it reveals a hidden maintenance keycard.
-- **Hint:** Flickering light near the panel draws attention. After 30s, the light flickers more aggressively. After 60s, a subtle audio cue (beep) plays.
+- **Hint escalation:** Flickering light near the panel draws attention. After 30s, the light flickers more aggressively. After 60s, a subtle audio cue (beep) plays.
 - **Gates:** Keycard opens the cell door → Control Room.
 
 ### Puzzle 2 — "Imperial Override" (Logic)
 - **Where:** Control Room
 - **What:** A terminal displays an Aurebesh sequence puzzle. The player must decode a 4-symbol pattern from clues scattered on screens around the room (each screen shows one relationship). Input the correct sequence to unlock corridor access.
-- **Hint:** One screen highlights the first symbol. After delay, terminal displays "HINT: read screens left to right."
+- **Hint escalation:** One screen highlights the first symbol. After delay, terminal displays "HINT: read screens left to right." After ~90s, terminal reveals 3 of 4 symbols — guarantees the puzzle is completable even if the player doesn't understand Aurebesh.
 - **Gates:** Correct sequence opens blast door → Corridor.
 
 ### Puzzle 3 — "Power the Conduit" (Interaction)
 - **Where:** Corridor
 - **What:** The path is blocked by a deactivated blast door. Three power cells (draggable objects) are scattered in the corridor near a destroyed droid. The player must drag them into three conduit slots in the correct orientation (rotate + place). Conduits glow when a cell is correctly placed.
-- **Hint:** A damaged droid nearby has a holographic schematic showing cell orientations. After delay, cells glow faintly near their correct slot.
+- **Complexity note:** 3D drag-and-drop with orientation is the hardest interaction in the game. Fallback if implementation proves too complex within budget: click-to-select + click-to-place instead of continuous drag.
+- **Hint escalation:** A damaged droid nearby has a holographic schematic showing cell orientations. After delay, cells glow faintly near their correct slot.
 - **Gates:** All three cells placed → blast door opens → Hangar Bay.
 
 ### Puzzle 4 — "Launch Clearance" (Combination)
@@ -69,7 +77,9 @@ The player wakes up in an Imperial detention cell aboard the Death Star. A dista
   - The override code (from Puzzle 2) — enter on a keypad
   - A frequency number (from Puzzle 3) — visible on the droid's schematic, easy to miss
 - **Hint:** Console shows 3 slots, two are obvious callbacks. Third slot says "FREQ: ???" — if stuck, a repeating announcement in the hangar mentions the frequency.
-- **Gates:** All three inputs → force field drops → player clicks shuttle → victory cutscene (jump to hyperspace).
+- **Gates:** All three inputs → force field drops → player clicks shuttle → victory sequence.
+
+**Victory screen:** Hyperspace jump animation (star field stretch + ship departure) → overlay with player name ("{name} escaped Detention Block AA-23"), total time, and replay button. This is the emotional payoff — worth the animation investment.
 
 ---
 
@@ -137,6 +147,20 @@ R3F adds no overhead over raw Three.js — the bottleneck is what we put in the 
 - **Low tier** — no post-processing, no shadows, reduced dpr
 - Threshold: degrades automatically below ~30fps
 
+### Audio
+
+**SFX only** — no ambient music. Keeps scope minimal while adding essential feedback:
+- Interaction sounds: click, door open/close, panel slide, keycard pickup
+- Puzzle feedback: correct placement glow, wrong input buzz, conduit power-up hum
+- Victory: hyperspace jump whoosh
+- Implementation: drei's `useAudioListener` + `PositionalAudio` for 3D-positioned sounds, or plain `HTMLAudioElement` for UI-layer SFX. Prefer the simpler option that works.
+- All audio triggered by game events, not ambient loops — avoids autoplay browser restrictions
+
+### Loading & Error States
+
+- **Loading:** R3F `<Suspense>` wrapping scene content + drei `<Loader>` for a visible progress bar while assets (textures, audio) load. Consistent across all scenes — defined once in App.tsx
+- **Asset failure:** If a texture or audio file fails to fetch, degrade gracefully (fallback color/material, silent SFX) rather than crashing. No retry logic — assets are static and bundled, so failures are rare (CDN issue or corrupted build)
+
 ### Accessibility
 
 WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience is not realistic. Focus on what's practical:
@@ -176,9 +200,9 @@ Separate pure logic from UI — the 3D/HTML boundary defines which layer applies
 
 **E2E (Playwright)** — happy path:
 - One test: "the game is winnable from start to finish" — click through all 4 rooms
-- Playwright clicks on canvas coordinates for 3D interactions
+- Playwright clicks on canvas coordinates for 3D interactions — brittle by nature (geometry changes break coordinates). Mitigate by using named 3D objects via accessibility tree where possible
 - A few edge cases: wrong clicks, invalid inputs
-- Fragile and slow by nature — keep the set minimal
+- Fragile and slow — keep the set minimal, budget time for coordinate updates when scenes change
 
 ### DX Tooling
 
@@ -218,7 +242,7 @@ format:check    — prettier --check src/
 
 ### Phase 1: Scaffolding + Guardrails (sequential — everything depends on this)
 - `feat/scaffolding` — Vite + React + TS + R3F + ESLint + Prettier + Husky + Canvas base + empty room
-- `feat/ci-cd` — GitHub Actions pipeline (lint, format, test, build, post-deploy e2e) + Vercel project setup (preview deploys + production)
+- `feat/ci-cd` — GitHub Actions pipeline (lint, format, test, build, post-deploy e2e) + Vercel project setup (preview deploys + production). **Validate** that `deployment_status` event fires correctly and preview URL is extractable before depending on post-deploy e2e
 
 ### Phase 2: Core (up to 2 branches at a time)
 - `feat/stores` — zustand stores (game, inventory, hints) + unit tests
