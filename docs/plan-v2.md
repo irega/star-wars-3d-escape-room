@@ -16,6 +16,7 @@ Crossmint engineering challenge: build a browser-based 3D escape room with 4 puz
 - **React Three Fiber (R3F)** — declarative Three.js for React, no performance loss, largest React+3D ecosystem
 - **@react-three/drei** — R3F helpers (controls, loaders, abstractions) — avoids reinventing common 3D patterns
 - **Zustand** — state management (same team as R3F — pmndrs). Selector-based subscriptions: each component reads only the slice it needs, so puzzle state changes don't re-render the entire 3D scene
+- **CSS Modules** — scoped styling for HTML overlays (HUD, dialogue, victory, loading screen). Zero config with Vite
 - **react-i18next** — i18n for EN/ES with browser locale auto-detection
 - **Vite** — build tooling (fast dev server, trivial to deploy)
 - **ESLint + Prettier** — unified linting (TS + React config) and formatting
@@ -205,16 +206,32 @@ format:check    — prettier --check src/
 
 ## Implementation Order
 
-1. **Scaffolding** — Vite + React + TS + R3F setup, ESLint + Prettier + Husky, Canvas, camera + controls, empty room
-2. **Core systems** — Scene manager, interaction (raycasting + click), inventory, HUD
-3. **Room 1 + Puzzle 1** — Detention cell geometry, loose panel puzzle, cell door transition
-4. **Room 2 + Puzzle 2** — Control room, terminal UI, sequence puzzle logic
-5. **Room 3 + Puzzle 3** — Corridor, drag-and-drop power cells, conduit mechanic
-6. **Room 4 + Puzzle 4** — Hangar bay, combination console, victory sequence
-7. **Hints system** — Timed hints for all 4 puzzles
-8. **Polish** — Lighting, ambient audio, Star Wars atmosphere (glow effects, particles)
-9. **Deploy** — Vercel, connect GitHub repo, live link in README
-10. **README** — Run instructions, design decisions summary, AI usage summary (both derived from `docs/WORKLOG.md` — README is the digest, worklog is the raw trail)
+Parallelizable via git worktree + agents. Each branch is small and reviewable. Human confirms before every merge.
+
+### Phase 1: Scaffolding (sequential — everything depends on this)
+- `feat/scaffolding` — Vite + React + TS + R3F + ESLint + Prettier + Husky + Canvas base + empty room
+
+### Phase 2: Core (3 branches in parallel)
+- `feat/stores` — zustand stores (game, inventory, hints) + unit tests
+- `feat/i18n` — react-i18next config + EN/ES locale files
+- `feat/ui-overlays` — HUD, Dialogue, Loading, Victory (HTML + CSS Modules)
+
+### Phase 3: Components (after stores merge)
+- `feat/interactive-components` — InteractiveObject, DraggableObject, HintTrigger
+
+### Phase 4: Scenes (4 branches in parallel, after components merge)
+- `feat/scene-detention-cell` — room 1 geometry + puzzle 1 (observation)
+- `feat/scene-control-room` — room 2 geometry + puzzle 2 (logic)
+- `feat/scene-corridor` — room 3 geometry + puzzle 3 (interaction)
+- `feat/scene-hangar-bay` — room 4 geometry + puzzle 4 (combination)
+
+### Phase 5: Integration (after all scenes merged)
+- `feat/game-flow` — scene transitions, end-to-end flow, victory sequence
+- `feat/performance` — PerformanceMonitor, quality tiers (high/low)
+- `feat/e2e-tests` — Playwright happy path + edge cases
+
+### Phase 6: Ship
+- `feat/deploy` — Vercel setup + README (run instructions, design decisions summary, AI usage summary — both derived from `docs/WORKLOG.md`)
 
 ---
 

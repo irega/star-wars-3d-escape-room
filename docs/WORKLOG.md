@@ -8,6 +8,14 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 15:45** — Designed 6-phase implementation roadmap with parallelizable git worktree branches: Phase 1 (scaffolding), Phase 2 (3 parallel — stores/i18n/ui-overlays), Phase 3 (interactive), Phase 4 (4 scene branches), Phase 5 (integration), Phase 6 (deploy/README), with human-in-loop merge gates for code review.
+  - Prompt used:
+    'Implementation Order should be parallelizable via git worktree + agents — small, reviewable changes per branch, human-in-the-loop for final sign-off.'
+
+- **2026-05-26 15:42** — Selected CSS Modules for out-of-canvas UI styling (HUD, dialogue popups, victory and loading screens) due to zero-config Vite integration, scoped styles, and zero additional dependencies; updated plan-v2 tech stack.
+  - Prompt used:
+    'for simplicity, css modules'
+
 - **2026-05-26 15:39** — Defined DX tooling strategy: Vercel for deployment (free tier, GitHub CI/CD integration, preview deploys on PRs), npm scripts for dev/build/test/lint/format workflows, husky+lint-staged pre-commit hooks (ESLint/Prettier/vitest on staged files only), pre-push full suite validation (test:ci/lint/format:check), ESLint+Prettier configs for TS/React. Not yet merged into plan-v2.
   - Prompt used:
     'Need free hosting (Vercel/Netlify) with GitHub CI/CD; define npm scripts (tests/coverage), husky hooks (precommit/prepush), prettier, and eslint.'
