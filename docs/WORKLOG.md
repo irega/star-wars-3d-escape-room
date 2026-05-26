@@ -8,6 +8,18 @@ Full work log. Append entries as you go.
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
+- **2026-05-26 15:22** — Designed R3F performance optimization with automatic quality degradation via drei's PerformanceMonitor (High tier: bloom/shadows; Low tier: disabled post-processing/shadows, reduced pixel ratio); migrated useHintStore to zustand and created stores/ directory.
+  - Prompt used:
+    "What performance do we get with R3F? I'm thinking about older computers. How do you ensure minimum performance?"
+
+- **2026-05-26 15:15** — Designed zustand store boundaries for game state: established two centralized stores (useGameStore for progression state machine and puzzle completion, useInventoryStore for cross-scene items like keycard and override code) with clear rule that data crossing scenes uses zustand while scene-scoped animation/input state remains local.
+  - Prompt used:
+    "Since there's no backend, we don't need react-query. Design zustand for game progression and items; accept props drilling for internal scene state."
+
+- **2026-05-26 15:10** — Updated plan-v2: README strategy refined to digest worklog entries rather than separate sections; backend scoped to fully client-side (no server, multiplayer, persistence, or leaderboards) to meet time budget and deployment constraints.
+  - Prompt used:
+    'No backend due to time constraints and deployment simplicity. Out of scope: multiplayer, online gameplay, persisted backend state, etc. — note this.'
+
 - **2026-05-26 15:02** — Validated zustand with selectors as state management choice for React Three Fiber, prioritizing selector-based subscriptions over context+useReducer to minimize re-renders in performance-critical 3D rendering.
   - Prompt used:
     "How's state managed? Does r3f integrate zustand, and are rerenders optimized with slices? Performance seems critical for this type of product."

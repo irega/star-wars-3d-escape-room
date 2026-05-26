@@ -6,6 +6,8 @@
 
 Crossmint engineering challenge: build a browser-based 3D escape room with 4 puzzles, playable to completion, with in-world hints. Star Wars themed. No code exists yet — greenfield project. Must be deployed with a live link.
 
+**No backend.** Time budget and deployment simplicity dictate a fully client-side app. Out of scope: multiplayer, online play, server-persisted state, leaderboards, user accounts. All game state lives in-memory in the browser for the duration of a session.
+
 ---
 
 ## Tech Stack
@@ -72,6 +74,10 @@ The player wakes up in an Imperial detention cell aboard the Death Star. A dista
 src/
   main.tsx                — entry point, React root
   App.tsx                 — Canvas + scene routing
+  stores/
+    useGameStore.ts       — progression state machine, current room, puzzle completion
+    useInventoryStore.ts  — collected items across scenes
+    useHintStore.ts       — hint state per puzzle (shown, timers)
   scenes/
     DetentionCell.tsx     — room 1 geometry + puzzle 1
     ControlRoom.tsx       — room 2 geometry + puzzle 2
@@ -81,10 +87,6 @@ src/
     InteractiveObject.tsx — clickable/hoverable 3D object wrapper
     DraggableObject.tsx   — drag-and-drop 3D object
     HintTrigger.tsx       — timed hint display component
-  hooks/
-    useGameState.ts       — game progression, current room, puzzle completion
-    useInventory.ts       — collected items
-    useHints.ts           — timed hint system per puzzle
   ui/
     HUD.tsx               — inventory display, hint text overlay (HTML overlay)
     Dialogue.tsx          — in-world text popups
@@ -95,10 +97,40 @@ index.html
 
 **Key patterns:**
 - Each scene is a React component rendered inside R3F `<Canvas>`
-- Game state via React hooks (useGameState drives scene transitions)
-- Puzzle state is local to each scene component
 - Interaction via R3F's built-in event system (onClick, onPointerOver) + drei helpers
-- Hint system: useHints hook with timers per puzzle
+
+### State Management
+
+**Rule:** data that crosses scenes → zustand store. Data that lives and dies within a scene → local state + props drilling.
+
+**Zustand stores (centralized, cross-scene):**
+- **`useGameStore`** — progression state machine: current room, which puzzles are solved, game phase (playing / won)
+- **`useInventoryStore`** — collected items (keycard, override code, frequency). Puzzle 4 needs items from rooms 1–3, so this must be global
+- **`useHintStore`** — hint state per puzzle (which hints already shown, timer progress). In zustand to avoid repeating delays if player revisits a scene. May move to local if we confirm hints don't need persistence — keeping centralized until there's less uncertainty
+
+**Local state (scene-internal):**
+- Animation state (panel opening, conduit powering up)
+- Drag state (power cell position while dragging)
+- Hover/highlight effects
+- Terminal input (what the player has typed)
+
+No server state → no react-query or similar. All game state is in-memory for the session duration.
+
+### Performance
+
+R3F adds no overhead over raw Three.js — the bottleneck is what we put in the scene.
+
+**Baseline rules:**
+- Simple geometry (boxes, cylinders, planes) — no heavy models
+- 1–2 real-time point lights + ambient. Shadow maps limited or off
+- Minimize draw calls; instancing for repeated objects (wall panels, lights)
+- Delta-time animations via `useFrame` — frame-rate independent, plays the same at 30fps and 60fps
+
+**Automatic quality degradation** via drei's `<PerformanceMonitor>`:
+- Detects FPS drops in real-time, no manual settings menu
+- **High tier** — bloom/glow post-processing, shadows, full device pixel ratio
+- **Low tier** — no post-processing, no shadows, reduced dpr
+- Threshold: degrades automatically below ~30fps
 
 ---
 
@@ -113,7 +145,7 @@ index.html
 7. **Hints system** — Timed hints for all 4 puzzles
 8. **Polish** — Lighting, ambient audio, Star Wars atmosphere (glow effects, particles)
 9. **Deploy** — Vercel/Netlify, live link in README
-10. **README** — Run instructions, design decisions, AI usage section
+10. **README** — Run instructions, design decisions summary, AI usage summary (both derived from `docs/WORKLOG.md` — README is the digest, worklog is the raw trail)
 
 ---
 
