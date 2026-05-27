@@ -16,5 +16,17 @@
     "message": "{{name}} escaped Detention Block AA-23",
     "time": "Time: {{time}}",
     "replay": "Play Again"
+  },
+  "puzzle1": {
+    "hint": {
+      "1": "Something in this cell might help you escape. Look carefully at your surroundings.",
+      "2": "The flickering light draws your eye. Is something off about that wall panel?"
+    },
+    "panel": {
+      "found": "A hidden maintenance keycard! This must open the cell door."
+    },
+    "door": {
+      "locked": "The cell door is sealed. You need a keycard to open it."
+    }
   }
 }
