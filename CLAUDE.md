@@ -30,17 +30,36 @@ Star Wars-themed 3D escape room running in the browser (fan project, not affilia
 **Implementation plan:** `docs/plans/plan-v2.md` — source of truth for phases, tech stack, and scope.
 **Audit trail:** GitHub Issues + Pull Requests (see repo history). `docs/WORKLOG.md` covers planning phase only.
 
-## Architecture (planned)
+## Architecture
 
-Browser-based 3D game. Likely candidates: Three.js or Babylon.js for 3D rendering, plain HTML/CSS/JS or a bundler (Vite) for tooling. Confirm tech stack before scaffolding.
+Browser-based 3D escape room. Tech stack (scaffolded):
+
+- **React + TypeScript** — UI and type safety
+- **React Three Fiber (R3F) + @react-three/drei** — declarative Three.js for React
+- **Zustand** — cross-scene state management (game progression, inventory, hints)
+- **react-i18next** — EN/ES i18n with browser locale auto-detection
+- **Vite** — build tooling and dev server
+- **ESLint + Prettier** — linting and formatting
+- **Vitest + React Testing Library** — unit and integration tests
+- **Husky + lint-staged** — pre-commit and pre-push git hooks
+
+See `docs/plans/plan-v2.md` for full architecture details, state management patterns, and implementation phases.
 
 ## Commands
 
-Update this section once tech stack is chosen. Typical pattern for a Vite project:
-
 ```bash
-npm install       # install deps
-npm run dev       # dev server
-npm run build     # production build
-npm run preview   # preview build
+npm install           # install deps
+npm run dev           # vite dev server (localhost:5173)
+npm run build         # tsc + vite build (production)
+npm run preview       # preview production build
+
+npm run test          # vitest (watch mode)
+npm run test:watch    # vitest --watch
+npm run test:ci       # vitest run --reporter=verbose (CI)
+npm run test:coverage # vitest run --coverage
+
+npm run lint          # eslint src/
+npm run lint:fix      # eslint src/ --fix
+npm run format        # prettier --write src/
+npm run format:check  # prettier --check src/ (CI)
 ```
