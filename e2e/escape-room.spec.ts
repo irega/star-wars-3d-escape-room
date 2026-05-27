@@ -1,4 +1,4 @@
-import { type Page, test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
 // Camera: position [0, 1.6, 5], fov=75, lookAt [0,0,0] (R3F default).
@@ -51,14 +51,11 @@ const SCENE3 = {
 
 const CORRECT_SEQUENCE = ['A', 'U', 'R', 'E'];
 
-/** WebGL canvas re-renders every frame — skip Playwright stability checks (flaky in CI). */
-async function clickCanvas(page: Page, position: { x: number; y: number }) {
-  await page.locator('canvas').click({ position, force: true });
-}
-
 test('happy path: escape from detention cell through control room to corridor', async ({
   page,
 }) => {
+  test.setTimeout(60_000);
+
   await page.goto('/');
   await expect(page.getByTestId('app')).toBeVisible();
   await page.locator('canvas').waitFor({ state: 'visible' });
@@ -67,7 +64,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   // ── Scene 1: Detention Cell ───────────────────────────────────────────────
 
   // Find the hidden keycard behind the loose wall panel
-  await clickCanvas(page, SCENE1.panel);
+  await page.locator('canvas').click({ position: SCENE1.panel });
   await expect(
     page.getByText('A hidden maintenance keycard! This must open the cell door.'),
   ).toBeVisible();
@@ -75,18 +72,16 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.getByRole('button', { name: /close/i }).click();
 
   // Exit the detention cell — door now unlocked
-  await clickCanvas(page, SCENE1.door);
+  await page.locator('canvas').click({ position: SCENE1.door });
 
   // ── Scene 2: Control Room ─────────────────────────────────────────────────
 
   // Wait for scene transition: Zustand update → React re-render → R3F mesh mount + raycasting setup
-  await page
-    .locator('[data-testid="app"][data-room="control-room"]')
-    .waitFor({ state: 'attached' });
+  await page.locator('[data-testid="app"][data-room="control-room"]').waitFor({ state: 'attached' });
   await page.waitForTimeout(500);
 
   // Solve the Imperial Override puzzle at the terminal
-  await clickCanvas(page, SCENE2.terminal);
+  await page.locator('canvas').click({ position: SCENE2.terminal });
   await expect(page.getByText('IMPERIAL OVERRIDE SYSTEM v4.2')).toBeVisible();
 
   for (const letter of CORRECT_SEQUENCE) {
@@ -101,7 +96,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.getByRole('button', { name: /close/i }).click();
 
   // Exit through the blast door to the corridor
-  await clickCanvas(page, SCENE2.door);
+  await page.locator('canvas').click({ position: SCENE2.door });
   await page.waitForTimeout(300);
   await expect(
     page.getByText('Blast door sealed. Complete the Imperial Override sequence first.'),
@@ -109,33 +104,31 @@ test('happy path: escape from detention cell through control room to corridor', 
 
   // ── Scene 3: Corridor ─────────────────────────────────────────────────────
 
-  await page
-    .locator('[data-testid="app"][data-room="corridor"]')
-    .waitFor({ state: 'attached' });
+  await page.locator('[data-testid="app"][data-room="corridor"]').waitFor({ state: 'attached' });
   await page.waitForTimeout(500);
 
   // Cell 0 starts at 0° — correct orientation for Slot 0 (no rotation needed)
-  await clickCanvas(page, SCENE3.cell0);
+  await page.locator('canvas').click({ position: SCENE3.cell0 });
   await page.waitForTimeout(200);
-  await clickCanvas(page, SCENE3.slot0);
+  await page.locator('canvas').click({ position: SCENE3.slot0 });
   await page.waitForTimeout(200);
 
   // Cell 1 starts at 0° — needs 90° for Slot 1 (one rotation)
-  await clickCanvas(page, SCENE3.cell1);
+  await page.locator('canvas').click({ position: SCENE3.cell1 });
   await page.waitForTimeout(200);
-  await clickCanvas(page, SCENE3.cell1); // rotate to 90°
+  await page.locator('canvas').click({ position: SCENE3.cell1 }); // rotate to 90°
   await page.waitForTimeout(200);
-  await clickCanvas(page, SCENE3.slot1);
+  await page.locator('canvas').click({ position: SCENE3.slot1 });
   await page.waitForTimeout(200);
 
   // Cell 2 starts at 0° — needs 180° for Slot 2 (two rotations)
-  await clickCanvas(page, SCENE3.cell2);
+  await page.locator('canvas').click({ position: SCENE3.cell2 });
   await page.waitForTimeout(200);
-  await clickCanvas(page, SCENE3.cell2); // rotate to 90°
+  await page.locator('canvas').click({ position: SCENE3.cell2 }); // rotate to 90°
   await page.waitForTimeout(200);
-  await clickCanvas(page, SCENE3.cell2); // rotate to 180°
+  await page.locator('canvas').click({ position: SCENE3.cell2 }); // rotate to 180°
   await page.waitForTimeout(200);
-  await clickCanvas(page, SCENE3.slot2);
+  await page.locator('canvas').click({ position: SCENE3.slot2 });
   await page.waitForTimeout(500);
 
   // All conduits powered — frequency in inventory, dialogue shown
@@ -146,7 +139,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.getByRole('button', { name: /close/i }).click();
 
   // Exit through the corridor blast door to the hangar bay
-  await clickCanvas(page, SCENE3.door);
+  await page.locator('canvas').click({ position: SCENE3.door });
   await page.waitForTimeout(300);
   await page
     .locator('[data-testid="app"][data-room="hangar-bay"]')
