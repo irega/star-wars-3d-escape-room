@@ -238,7 +238,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
 
       {/* Blast door — locked until puzzle solved */}
       <InteractiveObject onClick={handleDoorClick}>
-        <group position={[0, 1.4, 3.92]}>
+        <group position={[0, 1.4, -3.92]}>
           {/* Door frame */}
           {[
             {

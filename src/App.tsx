@@ -28,7 +28,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ width: '100%', height: '100%' }} data-testid="app">
+    <div style={{ width: '100%', height: '100%' }} data-testid="app" data-room={currentRoom}>
       <HUD inventory={[...inventory]} hint={hintText} />
       <Canvas camera={{ position: [0, 1.6, 5], fov: 75 }}>
         <Suspense fallback={null}>
