@@ -23,11 +23,11 @@ jobs:
 
         The reviewer tagged @claude on this pull request.
 
-        Implement only what the review comment requests — do not expand to a full plan-v2 phase.
+        Implement only what the review comment requests — do not expand beyond the linked issue scope.
 
         If the PR links an issue (Closes #N), do not exceed the linked issue scope unless the comment explicitly asks.
 
-        Follow docs/plans/plan-v2.md and docs/challenge-spec.md for conventions.
+        Follow docs/tech-design.md and docs/challenge-spec.md for conventions.
 
         Use TDD (.claude/skills/tdd/).
 

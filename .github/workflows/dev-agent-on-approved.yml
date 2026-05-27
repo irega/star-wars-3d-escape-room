@@ -80,21 +80,21 @@ jobs:
             - URL: ${{ steps.issue.outputs.url }}
             - Labels: ${{ steps.issue.outputs.labels }}
             - Work type: ${{ steps.issue.outputs.work_type }}
-            - Suggested branch: `${{ steps.issue.outputs.branch_hint }}` (use plan-v2 `feat/*` from the issue **for the branch name only** unless the body lists that work explicitly)
+            - Suggested branch: `${{ steps.issue.outputs.branch_hint }}` (use the `feat/*` hint from the issue **for the branch name only** unless the body lists that work explicitly)
 
             ### Body (scope authority — implement ONLY this)
             ${{ steps.issue.outputs.body }}
 
             ## Requirements
-            1. **Scope:** The issue Body above is the contract. Sections like "What to implement", "In scope", "Out of scope", and acceptance criteria define the **only** work for this PR. If the issue scope is narrower than a plan-v2 phase (e.g. only Vite init while the branch is `feat/scaffolding`), implement **only** the narrow slice — do not implement the rest of the plan-v2 phase bullet.
-            2. Read `docs/plans/plan-v2.md` and `docs/challenge-spec.md` for **conventions, guardrails, and stack** — not as permission to expand scope beyond the issue Body.
+            1. **Scope:** The issue Body above is the contract. Sections like "What to implement", "In scope", "Out of scope", and acceptance criteria define the **only** work for this PR. Implement **only** the described slice — do not implement anything beyond what the issue body explicitly lists.
+            2. Read `docs/tech-design.md` and `docs/challenge-spec.md` for **conventions, guardrails, and stack** — not as permission to expand scope beyond the issue Body.
             3. Follow TDD (`.claude/skills/tdd/`): red-green-refactor; test behavior via public interfaces.
             4. **If label `bug`:** fix the defect, add regression tests, branch prefix `fix/issue-${{ steps.issue.outputs.number }}`.
-            5. **Otherwise (plan task / enhancement):** one vertical slice per the issue Body; branch name may match plan-v2 (e.g. `feat/scaffolding`) without implementing the full phase from the plan.
+            5. **Otherwise (plan task / enhancement):** one vertical slice per the issue Body; branch name uses the hint from the issue (e.g. `feat/scaffolding`) without implementing more than the issue body defines.
             6. Open a pull request targeting `main` with `Closes #${{ steps.issue.outputs.number }}` in the body. PR description must follow `.github/pull_request_template.md` (What, How, Testing, Checklist).
             7. Do not merge. Human PR review is required.
 
-            If scope is ambiguous, comment on the issue asking for clarification and stop — do not guess by implementing a full plan-v2 phase. Run `npm run test:ci` and `npm run lint` when you change code.
+            If scope is ambiguous, comment on the issue asking for clarification and stop — do not guess. Run `npm run test:ci` and `npm run lint` when you change code.
           claude_args: |
             --model claude-sonnet-4-6
             --max-turns 50
