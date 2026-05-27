@@ -10,8 +10,6 @@ body:
         Manual run: Actions → Dev agent on approved → Run workflow → issue number.
 
         Use the **Bug report** template and label `bug` only for defects.
-
-        **Branch dropdown** = naming hint only. It does **not** mean "implement the entire plan-v2 phase" — define the real slice under **What to implement** (and Out of scope if needed).
   - type: dropdown
     id: plan_branch
     attributes:
