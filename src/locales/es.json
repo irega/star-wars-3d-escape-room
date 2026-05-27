@@ -16,5 +16,17 @@
     "message": "{{name}} escapó del Bloque de Detención AA-23",
     "time": "Tiempo: {{time}}",
     "replay": "Jugar de nuevo"
+  },
+  "puzzle1": {
+    "hint": {
+      "1": "Algo en esta celda podría ayudarte a escapar. Mira con atención tu entorno.",
+      "2": "La luz parpadeante llama tu atención. ¿Hay algo extraño en ese panel de la pared?"
+    },
+    "panel": {
+      "found": "¡Una tarjeta de acceso de mantenimiento! Esto debe abrir la puerta de la celda."
+    },
+    "door": {
+      "locked": "La puerta de la celda está sellada. Necesitas una tarjeta de acceso para abrirla."
+    }
   }
 }
