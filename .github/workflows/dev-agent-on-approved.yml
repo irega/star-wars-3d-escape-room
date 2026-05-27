@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -71,7 +71,6 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          model: claude-sonnet-4-6
           show_full_output: true
           prompt: |
             You are the dev agent for ${{ github.repository }}.
@@ -97,5 +96,6 @@ jobs:
 
             If scope is ambiguous, comment on the issue asking for clarification and stop — do not guess by implementing a full plan-v2 phase. Run `npm run test:ci` and `npm run lint` when you change code.
           claude_args: |
+            --model claude-sonnet-4-6
             --max-turns 50
             --allowedTools Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(gh:*),Bash(mkdir:*),Bash(touch:*),Bash(chmod:*),Bash(cat:*),Bash(ls:*),Bash(find:*),Bash(echo:*),Bash(rm:*),Bash(mv:*),Bash(cp:*),Bash(sed:*),Bash(grep:*),Bash(which:*),Bash(head:*),Bash(tail:*),Bash(pwd:*)
