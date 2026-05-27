@@ -7,9 +7,10 @@ Automation for this repo is defined in `docs/plans/plan-v2.md`. Agents run via [
 | Secret | Purpose |
 |--------|---------|
 | `CLAUDE_CODE_OAUTH_TOKEN` | Claude Pro/Max billing for the action (`claude setup-token`) |
-| `BOT_PAT` | Fine-grained PAT for agent **git push** and GitHub API — must **not** be the workflow `GITHUB_TOKEN`, or pushes will not trigger CI |
 
-**`BOT_PAT` setup (one-time):** GitHub → Settings → Developer settings → Fine-grained tokens → generate for this repo only. Permissions: **Contents** read/write, **Pull requests** read/write, **Issues** read/write (if the agent comments on issues). Store as repo secret `BOT_PAT`. Commits/comments from the agent appear under the PAT owner’s user, not `claude[bot]` — that is expected and required so `pull_request` CI runs after each push.
+**Git identity:** Agent workflows use the **Claude GitHub App** (default `claude-code-action` auth). PRs and commits appear as **`claude[bot]`**, not your personal account.
+
+**CI:** **Dev agent on approved** opens a PR as `claude[bot]` → normal `pull_request` **opened** runs **CI**. **PR feedback** (`@claude`) may not re-trigger CI on later pushes; that workflow dispatches **CI** via `workflow_dispatch` when the job finishes (see `.github/workflows/dev-agent-pr-feedback.yml` and `workflow_dispatch` on `ci.yml`).
 
 ## Dev agent — start work
 
