@@ -15,7 +15,7 @@ body:
   - type: dropdown
     id: plan_branch
     attributes:
-      label: Branch name hint (plan-v2)
+      label: Branch
       options:
         - feat/scaffolding
         - feat/ci-cd
