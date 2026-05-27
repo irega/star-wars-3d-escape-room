@@ -27,7 +27,7 @@ All skills are bundled in `.claude/skills/` — no external dependencies require
 Star Wars-themed 3D escape room running in the browser (fan project, not affiliated with Lucasfilm). Planning phase complete — implementation starts from Phase 1 Issues/PRs.
 
 **Challenge spec + guardrails:** `docs/challenge-spec.md` — read before any design decision.
-**Implementation plan:** `docs/plans/plan-v2.md` — source of truth for phases, tech stack, and scope.
+**Tech design:** `docs/tech-design.md` — source of truth for architecture, technology choices, and design decisions.
 **Audit trail:** GitHub Issues + Pull Requests (see repo history). `docs/WORKLOG.md` covers planning phase only.
 
 ## Architecture
@@ -44,7 +44,7 @@ Browser-based 3D escape room. Tech stack (scaffolded):
 - **Playwright** — E2E against Vercel preview (CI) or local dev server
 - **Husky + lint-staged** — pre-commit and pre-push git hooks
 
-See `docs/plans/plan-v2.md` for full architecture details, state management patterns, and implementation phases.
+See `docs/tech-design.md` for full architecture details and state management patterns.
 
 ## Commands
 

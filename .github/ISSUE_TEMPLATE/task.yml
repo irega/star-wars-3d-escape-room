@@ -1,5 +1,5 @@
 name: Plan task (dev agent)
-description: Feature or phase work from plan-v2 — not a bug
+description: Feature or task work — not a bug
 title: "feat(scope): "
 labels: ["enhancement"]
 body:
@@ -44,7 +44,7 @@ body:
     id: out_of_scope
     attributes:
       label: Out of scope (optional)
-      description: Explicitly exclude plan-v2 items you are NOT asking for in this issue
+      description: Explicitly exclude items you are NOT asking for in this issue
       placeholder: e.g. R3F, drei, Husky, empty room scene — defer to follow-up issues
   - type: textarea
     id: acceptance
