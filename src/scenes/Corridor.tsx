@@ -91,20 +91,21 @@ export function Corridor({ onDialogue }: CorridorProps) {
   const handleCellClick = useCallback(
     (cellId: number) => {
       if (puzzleSolved) return;
-      setSelectedCellId((prev) => {
-        if (prev === cellId) {
-          // Second click on same cell: rotate orientation
-          setCells((cs) =>
-            cs.map((c, id) =>
-              id === cellId ? { ...c, orientation: cycleOrientation(c.orientation) } : c,
-            ),
-          );
-          return prev; // keep selected
-        }
-        return cellId;
-      });
+      if (selectedCellId === cellId) {
+        // Second click on same cell: rotate orientation
+        // NOTE: setCells called directly (not inside another updater) so Strict Mode
+        // double-invokes the updater with the same prevState → idempotent, rotates once.
+        setCells((cs) =>
+          cs.map((c, id) =>
+            id === cellId ? { ...c, orientation: cycleOrientation(c.orientation) } : c,
+          ),
+        );
+        // selectedCellId stays the same — no setSelectedCellId call needed
+      } else {
+        setSelectedCellId(cellId);
+      }
     },
-    [puzzleSolved],
+    [puzzleSolved, selectedCellId],
   );
 
   const handleSlotClick = useCallback(
