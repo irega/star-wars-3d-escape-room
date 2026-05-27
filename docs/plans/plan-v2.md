@@ -338,7 +338,7 @@ main updated → optional scheduled QA Action → new bug issues only
 | 5 | **OAuth token for Pro (Actions)** | One-time locally: `claude setup-token` or `/install-github-app` → store as repo secret `CLAUDE_CODE_OAUTH_TOKEN` | Uses Pro/Max subscription; avoid `ANTHROPIC_API_KEY` unless billing API separately. **Never** commit tokens |
 | 6 | **Labels** | GitHub → Labels | `bug` (defects), `enhancement` (plan tasks, default on task template), `approved` (human — dev agent gate), optional `no-agent` (opt out) |
 | 7 | **Dev agent workflow** | `.github/workflows/dev-agent-on-approved.yml` | `approved` on any issue (not only `bug`) + `workflow_dispatch` with issue # → plan task (`feat/*`) or bug (`fix/*`) per labels. Opening the PR triggers **CI** (`pull_request` opened). See `AGENTS.md` |
-| 7b | **Dev agent PR feedback** | `.github/workflows/dev-agent-pr-feedback.yml` | `issue_comment` / `pull_request_review_comment` / `pull_request_review` when body contains `@claude` (PR only for issue comments). Interactive mode (no `prompt`); pushes to current PR branch as `claude[bot]`; dispatches **CI** via `workflow_dispatch` when done |
+| 7b | **Dev agent PR feedback** | `.github/workflows/dev-agent-pr-feedback.yml` | `issue_comment` / `pull_request_review_comment` / `pull_request_review` when body contains `@claude` (PR only for issue comments). Interactive mode (no `prompt`); `use_commit_signing: "true"` so pushes as `claude[bot]` trigger **CI** (`pull_request` synchronize) |
 | 8 | **CI workflow** | `.github/workflows/ci.yml` | On PR: `lint` → `format:check` → `test:ci` → `build` |
 | 9 | **Post-deploy e2e** | `.github/workflows/e2e-preview.yml` | `on: deployment_status` (Vercel success) → Playwright against preview URL |
 | 10 | **Vercel** | vercel.com → import GitHub repo | Preview on PRs, production on `main`; emits `deployment_status` for step 9 |
@@ -352,7 +352,7 @@ main updated → optional scheduled QA Action → new bug issues only
 |-------|---------|
 | **Claude GitHub App** | Repo access for the action (clone, push branch, open PR) as `claude[bot]` |
 | **`CLAUDE_CODE_OAUTH_TOKEN`** | Bills against Claude Pro/Max when the action runs Claude |
-| **CI `workflow_dispatch`** | **PR feedback** workflow re-runs **CI** after `@claude` pushes (when `pull_request` synchronize does not fire) |
+| **`use_commit_signing`** | Agent workflows set `use_commit_signing: "true"` so pushes use the Claude App token and trigger **CI** on the PR (not `github-actions[bot]` / `GITHUB_TOKEN`) |
 | **`ANTHROPIC_API_KEY`** | Optional; separate Console billing — not required if using OAuth token |
 | **Claude Routines** | **Out of scope** for this project |
 

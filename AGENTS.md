@@ -10,7 +10,7 @@ Automation for this repo runs via [claude-code-action](https://github.com/anthro
 
 **Git identity:** Agent workflows use the **Claude GitHub App** (default `claude-code-action` auth). PRs and commits appear as **`claude[bot]`**, not your personal account.
 
-**CI:** **Dev agent on approved** opens a PR as `claude[bot]` → normal `pull_request` **opened** runs **CI**. **PR feedback** (`@claude`) may not re-trigger CI on later pushes; that workflow dispatches **CI** via `workflow_dispatch` when the job finishes (see `.github/workflows/dev-agent-pr-feedback.yml` and `workflow_dispatch` on `ci.yml`).
+**CI:** Agent pushes use `use_commit_signing: "true"` so commits go through the **Claude GitHub App** (not `github-actions[bot]`), which triggers normal `pull_request` CI (`opened` / `synchronize`). Do **not** use a personal PAT for pushes — that attributes commits to your user. `ci.yml` `workflow_dispatch` is only for manual re-runs.
 
 ## Dev agent — start work
 
