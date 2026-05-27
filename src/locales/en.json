@@ -17,6 +17,24 @@
     "time": "Time: {{time}}",
     "replay": "Play Again"
   },
+  "puzzle2": {
+    "hint": {
+      "1": "One of the screens seems brighter than the others. That might be important.",
+      "2": "Imperial terminals process sequences left to right. Read the screens in order.",
+      "3": "The code is _URE — only the first symbol eludes you."
+    },
+    "terminal": {
+      "header": "IMPERIAL OVERRIDE SYSTEM v4.2",
+      "prompt": "Enter 4-symbol Aurebesh code:",
+      "correct": "Override accepted. Blast door unlocked. Proceed to the corridor.",
+      "wrong": "ACCESS DENIED. Incorrect sequence. Try again.",
+      "instructions": "[A-Z] Type symbols   [BACKSPACE] Delete   [ENTER] Submit   [ESC] Cancel"
+    },
+    "door": {
+      "locked": "Blast door sealed. Complete the Imperial Override sequence first.",
+      "unlocked": "Blast door open. Proceed to the corridor."
+    }
+  },
   "puzzle1": {
     "hint": {
       "1": "Something in this cell might help you escape. Look carefully at your surroundings.",
