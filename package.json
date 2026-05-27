@@ -11,6 +11,6 @@
     "build": "node scripts/ci-stub.mjs build"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   }
 }
