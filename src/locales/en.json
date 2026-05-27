@@ -1,0 +1,12 @@
+{
+  "app": {
+    "title": "Escape from Detention Block AA-23"
+  },
+  "hud": {
+    "hint": "Hint",
+    "inventory": "Inventory"
+  },
+  "victory": {
+    "message": "{{name}} escaped Detention Block AA-23"
+  }
+}
