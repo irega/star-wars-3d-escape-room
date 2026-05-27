@@ -58,6 +58,6 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           exclude_comments_by_actor: "claude[bot]"
           claude_args: |
-            --max-turns 25
+            --max-turns 50
             --system-prompt "${{ env.DEV_AGENT_PR_SYSTEM_PROMPT }}"
             --allowedTools Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(gh:*)
