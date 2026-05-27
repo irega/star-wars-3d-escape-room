@@ -12,7 +12,6 @@
     "test:watch": "vitest --watch",
     "test:ci": "vitest run --reporter=verbose",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write src/",
