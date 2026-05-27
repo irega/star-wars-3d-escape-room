@@ -35,6 +35,36 @@
       "unlocked": "Blast door open. Proceed to the corridor."
     }
   },
+  "puzzle4": {
+    "hint": {
+      "1": "A launch console near the entrance glows faintly. Three inputs are required.",
+      "2": "The console needs a keycard, an override code, and a launch frequency. Check your inventory.",
+      "3": "The frequency is broadcast on the hangar announcement display above the shuttle bay."
+    },
+    "console": {
+      "header": "IMPERIAL LAUNCH CONTROL v7.1",
+      "prompt": "INSERT LAUNCH CREDENTIALS",
+      "slot1Label": "KEYCARD SLOT",
+      "slot1Filled": "KEYCARD INSERTED",
+      "slot2Label": "IMPERIAL OVERRIDE CODE",
+      "slot2Filled": "AURE — ACCEPTED",
+      "slot3Label": "LAUNCH FREQUENCY",
+      "slot3Filled": "FREQ {{freq}} — LOCKED",
+      "slotEmpty": "— MISSING —",
+      "incomplete": "Sequence incomplete. Collect all credentials before launch.",
+      "launch": "INITIATE LAUNCH"
+    },
+    "announcement": {
+      "header": "— IMPERIAL HANGAR CONTROL —",
+      "freq": "LAUNCH FREQ: {{freq}}"
+    },
+    "launch": {
+      "success": "All credentials verified. Force field offline. Shuttle launching — may the Force be with you."
+    },
+    "shuttle": {
+      "locked": "The force field blocks the shuttle. Disable it at the launch console."
+    }
+  },
   "puzzle1": {
     "hint": {
       "1": "Something in this cell might help you escape. Look carefully at your surroundings.",

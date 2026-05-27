@@ -19,7 +19,7 @@ export default tseslint.config(
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       // Three.js JSX elements use custom properties (position, rotation, args, intensity, etc.)
-      'react/no-unknown-property': ['error', { ignore: ['position', 'rotation', 'args', 'intensity', 'color', 'attach', 'castShadow', 'receiveShadow', 'object', 'dispose', 'fov', 'near', 'far', 'emissive', 'emissiveIntensity', 'roughness', 'metalness', 'side'] }],
+      'react/no-unknown-property': ['error', { ignore: ['position', 'rotation', 'args', 'intensity', 'color', 'attach', 'castShadow', 'receiveShadow', 'object', 'dispose', 'fov', 'near', 'far', 'emissive', 'emissiveIntensity', 'roughness', 'metalness', 'side', 'transparent', 'opacity'] }],
     },
     settings: {
       react: { version: 'detect' },

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
 // Camera: position [0, 1.6, 5], fov=75, lookAt [0,0,0] (R3F default).
@@ -20,6 +20,8 @@ import { test, expect } from '@playwright/test';
 //   Terminal body center world [0, 0.5, -0.5] → depth 5.57 → (640, 310)
 //   Blast door center   world [0, 1.4, -3.92] → depth 8.56 → (640, 221)
 //   (Blast door is on the back wall so it does not occlude the terminal)
+// Scene 4 — Hangar Bay (state seeded via window.__stores in DEV mode)
+//   Launch console body  world [0, 0.5, -0.5]  → depth 5.57 → (640, 307)
 
 const SCENE1 = {
   panel: { x: 813, y: 216 },
@@ -31,7 +33,30 @@ const SCENE2 = {
   door: { x: 640, y: 221 },
 };
 
+const SCENE4 = {
+  console: { x: 640, y: 307 },
+};
+
 const CORRECT_SEQUENCE = ['A', 'U', 'R', 'E'];
+
+// Seed inventory and navigate to hangar bay by mutating Zustand stores via window.__stores.
+// This bypasses the unimplemented Corridor scene (puzzle 3) so the hangar bay can be
+// tested independently without depending on feat/scene-corridor.
+async function seedHangarBayState(page: Page) {
+  await page.evaluate(() => {
+    const stores = (window as Record<string, unknown>).__stores as {
+      game: { getState: () => { addItem?: unknown; moveToRoom: (r: string) => void; solvePuzzle: (id: number) => void } };
+      inventory: { getState: () => { addItem: (item: string) => void } };
+    };
+    stores.inventory.getState().addItem('keycard');
+    stores.inventory.getState().addItem('override-code');
+    stores.inventory.getState().addItem('frequency');
+    stores.game.getState().solvePuzzle(1);
+    stores.game.getState().solvePuzzle(2);
+    stores.game.getState().solvePuzzle(3);
+    stores.game.getState().moveToRoom('hangar-bay');
+  });
+}
 
 test('happy path: escape from detention cell through control room', async ({ page }) => {
   await page.goto('/');
@@ -73,4 +98,72 @@ test('happy path: escape from detention cell through control room', async ({ pag
   await page.locator('canvas').click({ position: SCENE2.door });
   await page.waitForTimeout(300);
   await expect(page.getByText('Blast door sealed. Complete the Imperial Override sequence first.')).not.toBeVisible();
+});
+
+test('hangar bay: launch console rejects incomplete credentials', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('app')).toBeVisible();
+  await page.locator('canvas').waitFor({ state: 'visible' });
+  await page.waitForTimeout(1000);
+
+  // Seed state: go to hangar bay with only the keycard (missing override-code and frequency)
+  await page.evaluate(() => {
+    const stores = (window as Record<string, unknown>).__stores as {
+      game: { getState: () => { moveToRoom: (r: string) => void; solvePuzzle: (id: number) => void } };
+      inventory: { getState: () => { addItem: (item: string) => void } };
+    };
+    stores.inventory.getState().addItem('keycard');
+    stores.game.getState().moveToRoom('hangar-bay');
+  });
+
+  await page.locator('[data-testid="app"][data-room="hangar-bay"]').waitFor({ state: 'attached' });
+  await page.waitForTimeout(500);
+
+  // Open the console
+  await page.locator('canvas').click({ position: SCENE4.console });
+  await expect(page.getByText('IMPERIAL LAUNCH CONTROL v7.1')).toBeVisible();
+
+  // Launch button should be disabled — incomplete credentials message shown
+  await expect(page.getByText(/incomplete/i)).toBeVisible();
+  const launchBtn = page.getByRole('button', { name: /INITIATE LAUNCH/i });
+  await expect(launchBtn).toBeDisabled();
+
+  // Close console
+  await page.getByRole('button', { name: /close/i }).click();
+  await expect(page.getByText('IMPERIAL LAUNCH CONTROL v7.1')).not.toBeVisible();
+});
+
+test('hangar bay: launch succeeds with all credentials and shows victory', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('app')).toBeVisible();
+  await page.locator('canvas').waitFor({ state: 'visible' });
+  await page.waitForTimeout(1000);
+
+  // Seed state: hangar bay with full inventory
+  await seedHangarBayState(page);
+
+  await page.locator('[data-testid="app"][data-room="hangar-bay"]').waitFor({ state: 'attached' });
+  await page.waitForTimeout(500);
+
+  // HUD should show all three inventory items
+  await expect(page.getByRole('listitem').filter({ hasText: 'keycard' })).toBeVisible();
+  await expect(page.getByRole('listitem').filter({ hasText: 'override-code' })).toBeVisible();
+  await expect(page.getByRole('listitem').filter({ hasText: 'frequency' })).toBeVisible();
+
+  // Open the launch console
+  await page.locator('canvas').click({ position: SCENE4.console });
+  await expect(page.getByText('IMPERIAL LAUNCH CONTROL v7.1')).toBeVisible();
+
+  // All slots should be filled
+  await expect(page.getByText('KEYCARD INSERTED')).toBeVisible();
+  await expect(page.getByText('AURE — ACCEPTED')).toBeVisible();
+  await expect(page.getByText(/FREQ 1138/)).toBeVisible();
+
+  // Launch button should be enabled
+  const launchBtn = page.getByRole('button', { name: /INITIATE LAUNCH/i });
+  await expect(launchBtn).toBeEnabled();
+  await launchBtn.click();
+
+  // Victory overlay should appear
+  await expect(page.getByText(/escaped/i)).toBeVisible();
 });
