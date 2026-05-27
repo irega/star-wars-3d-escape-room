@@ -173,11 +173,20 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       {/* Cell door — color indicates locked (red) / unlocked (green) */}
       <InteractiveObject onClick={handleDoorClick}>
         <group position={[0, 1.4, 3.92]}>
-          {/* Door frame */}
-          <mesh>
-            <boxGeometry args={[2.2, 2.8, 0.06]} />
-            <meshStandardMaterial color={doorColor} />
-          </mesh>
+          {/* Door frame — hollow (4 edge beams) so cell interior is visible through the bars */}
+          {(
+            [
+              { pos: [-1.0, 0, 0], args: [0.2, 2.8, 0.06] as [number, number, number] }, // left
+              { pos: [1.0, 0, 0], args: [0.2, 2.8, 0.06] as [number, number, number] }, // right
+              { pos: [0, 1.3, 0], args: [2.2, 0.2, 0.06] as [number, number, number] }, // top
+              { pos: [0, -1.3, 0], args: [2.2, 0.2, 0.06] as [number, number, number] }, // bottom
+            ] as { pos: [number, number, number]; args: [number, number, number] }[]
+          ).map(({ pos, args }, i) => (
+            <mesh key={i} position={pos}>
+              <boxGeometry args={args} />
+              <meshStandardMaterial color={doorColor} />
+            </mesh>
+          ))}
           {/* Vertical bars */}
           {([-0.77, -0.26, 0.26, 0.77] as number[]).map((x) => (
             <mesh key={x} position={[x, 0, 0.02]}>
