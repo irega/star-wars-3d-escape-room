@@ -1,0 +1,48 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 80px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.box {
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 16px 20px;
+  max-width: 560px;
+  width: 90%;
+  pointer-events: all;
+  font-family: 'Courier New', monospace;
+  color: #ffd700;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.closeBtn {
+  align-self: flex-end;
+  background: transparent;
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 4px 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 215, 0, 0.15);
+}

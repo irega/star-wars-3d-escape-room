@@ -6,7 +6,15 @@
     "hint": "Hint",
     "inventory": "Inventory"
   },
+  "dialogue": {
+    "close": "Close"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
   "victory": {
-    "message": "{{name}} escaped Detention Block AA-23"
+    "message": "{{name}} escaped Detention Block AA-23",
+    "time": "Time: {{time}}",
+    "replay": "Play Again"
   }
 }

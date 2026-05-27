@@ -6,7 +6,15 @@
     "hint": "Pista",
     "inventory": "Inventario"
   },
+  "dialogue": {
+    "close": "Cerrar"
+  },
+  "loading": {
+    "message": "Cargando..."
+  },
   "victory": {
-    "message": "{{name}} escapó del Bloque de Detención AA-23"
+    "message": "{{name}} escapó del Bloque de Detención AA-23",
+    "time": "Tiempo: {{time}}",
+    "replay": "Jugar de nuevo"
   }
 }
