@@ -17,6 +17,24 @@
     "time": "Tiempo: {{time}}",
     "replay": "Jugar de nuevo"
   },
+  "puzzle2": {
+    "hint": {
+      "1": "Una de las pantallas parece más brillante que las demás. Eso podría ser importante.",
+      "2": "Los terminales imperiales procesan secuencias de izquierda a derecha. Lee las pantallas en orden.",
+      "3": "El código es _URE — solo el primer símbolo te escapa."
+    },
+    "terminal": {
+      "header": "SISTEMA DE ANULACIÓN IMPERIAL v4.2",
+      "prompt": "Introduce el código Aurebesh de 4 símbolos:",
+      "correct": "Anulación aceptada. Puerta blindada desbloqueada. Avanza hacia el corredor.",
+      "wrong": "ACCESO DENEGADO. Secuencia incorrecta. Inténtalo de nuevo.",
+      "instructions": "[A-Z] Escribe símbolos   [RETROCESO] Borrar   [INTRO] Enviar   [ESC] Cancelar"
+    },
+    "door": {
+      "locked": "Puerta blindada sellada. Completa primero la secuencia de Anulación Imperial.",
+      "unlocked": "Puerta blindada abierta. Avanza hacia el corredor."
+    }
+  },
   "puzzle1": {
     "hint": {
       "1": "Algo en esta celda podría ayudarte a escapar. Mira con atención tu entorno.",
