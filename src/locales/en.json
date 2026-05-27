@@ -35,6 +35,25 @@
       "unlocked": "Blast door open. Proceed to the corridor."
     }
   },
+  "puzzle3": {
+    "hint": {
+      "1": "A damaged droid lies nearby. Its holographic projector might still work — examine it.",
+      "2": "The power cells are restless. Each one pulls toward its correct conduit slot."
+    },
+    "solved": "All conduits powered! Frequency {{freq}} acquired. The blast door is opening.",
+    "door": {
+      "locked": "The conduit network is incomplete. Place all three power cells correctly.",
+      "unlocked": "Blast door open. Proceed to the hangar bay."
+    },
+    "schematic": {
+      "header": "MAINTENANCE DROID R2-X2 — POWER CONFIGURATION",
+      "prompt": "Power cell placement schematic:",
+      "cell0": "Cell I  → Slot 1  (0°  — upright)",
+      "cell1": "Cell II → Slot 2  (90° — tilted right)",
+      "cell2": "Cell III → Slot 3 (180° — inverted)",
+      "instructions": "Select a cell, click it again to rotate, then click the correct slot."
+    }
+  },
   "puzzle1": {
     "hint": {
       "1": "Something in this cell might help you escape. Look carefully at your surroundings.",
