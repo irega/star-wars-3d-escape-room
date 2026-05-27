@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useGameStore } from '../useGameStore';
-import { useInventoryStore } from '../useInventoryStore';
-import { useHintStore } from '../useHintStore';
+import { useGameStore } from './useGameStore';
+import { useInventoryStore } from './useInventoryStore';
+import { useHintStore } from './useHintStore';
 
 beforeEach(() => {
   useGameStore.getState().reset();

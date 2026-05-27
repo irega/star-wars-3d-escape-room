@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useHintStore, MAX_HINT_LEVEL } from '../useHintStore';
+import { useHintStore, MAX_HINT_LEVEL } from './useHintStore';
 
 beforeEach(() => {
   useHintStore.getState().reset();

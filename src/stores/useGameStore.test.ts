@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useGameStore } from '../useGameStore';
+import { useGameStore } from './useGameStore';
 
 beforeEach(() => {
   useGameStore.getState().reset();
