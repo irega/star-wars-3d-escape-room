@@ -21,3 +21,16 @@ Skills are sourced from [github.com/irega/skills](https://github.com/irega/skill
 **For reviewers:**
 - **`docs/WORKLOG.md`** — planning phase only (through `plan-v2.md`). Prompts in entries may be representative, not verbatim.
 - **Phase 1 onward** — history in **GitHub Issues and Pull Requests** (titles, descriptions, review comments). See `AGENTS.md` for how dev/QA agents are triggered.
+
+## E2E tests
+
+First time (or after upgrading `@playwright/test`):
+
+```bash
+npx playwright install chromium
+```
+
+```bash
+npm run test:e2e      # smoke tests in e2e/ (starts dev server)
+npm run test:e2e:ui   # Playwright UI
+```

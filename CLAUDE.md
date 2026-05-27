@@ -41,6 +41,7 @@ Browser-based 3D escape room. Tech stack (scaffolded):
 - **Vite** — build tooling and dev server
 - **ESLint + Prettier** — linting and formatting
 - **Vitest + React Testing Library** — unit and integration tests
+- **Playwright** — E2E against Vercel preview (CI) or local dev server
 - **Husky + lint-staged** — pre-commit and pre-push git hooks
 
 See `docs/plans/plan-v2.md` for full architecture details, state management patterns, and implementation phases.
@@ -62,4 +63,7 @@ npm run lint          # eslint src/
 npm run lint:fix      # eslint src/ --fix
 npm run format        # prettier --write src/
 npm run format:check  # prettier --check src/ (CI)
+
+npm run test:e2e      # playwright (local: starts dev server)
+npm run test:e2e:ui   # playwright interactive UI
 ```

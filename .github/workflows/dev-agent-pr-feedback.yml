@@ -34,6 +34,8 @@ jobs:
         Commit and push to this PR branch only. Do not merge.
 
         Run npm run test:ci and npm run lint when you change code.
+
+        When updating a PR description, follow `.github/pull_request_template.md` (What, How, Testing, Checklist).
     if: |
       (github.event_name == 'issue_comment' &&
         github.event.issue.pull_request &&
