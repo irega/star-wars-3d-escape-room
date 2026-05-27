@@ -1,0 +1,12 @@
+{
+  "app": {
+    "title": "Escapar del Bloque de Detención AA-23"
+  },
+  "hud": {
+    "hint": "Pista",
+    "inventory": "Inventario"
+  },
+  "victory": {
+    "message": "{{name}} escapó del Bloque de Detención AA-23"
+  }
+}
