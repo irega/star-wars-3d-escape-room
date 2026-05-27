@@ -13,7 +13,6 @@ permissions:
   pull-requests: write
   issues: write
   id-token: write
-  actions: write
 
 jobs:
   pr-feedback:
@@ -49,29 +48,6 @@ jobs:
         github.event.review.user.type != 'Bot')
     runs-on: ubuntu-latest
     steps:
-      - name: Resolve PR context
-        id: pr
-        uses: actions/github-script@v9
-        with:
-          script: |
-            let prNumber;
-            if (context.eventName === 'issue_comment') {
-              prNumber = context.payload.issue.number;
-            } else if (context.eventName === 'pull_request_review_comment') {
-              prNumber = context.payload.pull_request.number;
-            } else {
-              prNumber = context.payload.pull_request.number;
-            }
-
-            const { data: pr } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-            });
-
-            core.setOutput('number', String(prNumber));
-            core.setOutput('ref', pr.head.ref);
-
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
@@ -82,19 +58,10 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          use_commit_signing: "true"
           exclude_comments_by_actor: "claude[bot]"
           claude_args: |
             --model claude-haiku-4-5-20251001
             --max-turns 50
             --system-prompt "${{ env.DEV_AGENT_PR_SYSTEM_PROMPT }}"
-            --allowedTools Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(gh:*)
-
-      - name: Trigger CI for PR branch
-        if: success()
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh workflow run ci.yml \
-            --ref "${{ steps.pr.outputs.ref }}" \
-            -f "ref=${{ steps.pr.outputs.ref }}" \
-            -f "pr_number=${{ steps.pr.outputs.number }}"
+            --allowedTools Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(gh:*)
