@@ -1,6 +1,3 @@
-# Dev agent: approved issue OR manual dispatch → branch + PR (plan-v2)
-# Bugs (label bug) and plan tasks (enhancement / task) share the same gate: human adds `approved`
-# Requires: Claude GitHub App + repo secret CLAUDE_CODE_OAUTH_TOKEN
 name: Dev agent on approved
 
 on:
@@ -74,6 +71,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          model: claude-sonnet-4-6
           show_full_output: true
           prompt: |
             You are the dev agent for ${{ github.repository }}.
@@ -83,20 +81,21 @@ jobs:
             - URL: ${{ steps.issue.outputs.url }}
             - Labels: ${{ steps.issue.outputs.labels }}
             - Work type: ${{ steps.issue.outputs.work_type }}
-            - Suggested branch: `${{ steps.issue.outputs.branch_hint }}` (or match plan-v2 `feat/*` name from the issue)
+            - Suggested branch: `${{ steps.issue.outputs.branch_hint }}` (use plan-v2 `feat/*` from the issue **for the branch name only** unless the body lists that work explicitly)
 
-            ### Body
+            ### Body (scope authority — implement ONLY this)
             ${{ steps.issue.outputs.body }}
 
             ## Requirements
-            1. Read `docs/plans/plan-v2.md` (Implementation Order + current phase) and `docs/challenge-spec.md`.
-            2. Follow TDD (`.claude/skills/tdd/`): red-green-refactor; test behavior via public interfaces.
-            3. **If label `bug`:** fix the defect, add regression tests, branch prefix `fix/issue-${{ steps.issue.outputs.number }}`.
-            4. **Otherwise (plan task / enhancement):** implement the issue scope as a vertical slice; prefer branch names from plan-v2 (e.g. `feat/stores`, `feat/scene-detention-cell`) when the issue says so, else `feat/issue-${{ steps.issue.outputs.number }}-short-slug`.
-            5. Open a pull request targeting `main` with `Closes #${{ steps.issue.outputs.number }}` in the body.
-            6. Do not merge. Human PR review is required.
+            1. **Scope:** The issue Body above is the contract. Sections like "What to implement", "In scope", "Out of scope", and acceptance criteria define the **only** work for this PR. If the issue scope is narrower than a plan-v2 phase (e.g. only Vite init while the branch is `feat/scaffolding`), implement **only** the narrow slice — do not implement the rest of the plan-v2 phase bullet.
+            2. Read `docs/plans/plan-v2.md` and `docs/challenge-spec.md` for **conventions, guardrails, and stack** — not as permission to expand scope beyond the issue Body.
+            3. Follow TDD (`.claude/skills/tdd/`): red-green-refactor; test behavior via public interfaces.
+            4. **If label `bug`:** fix the defect, add regression tests, branch prefix `fix/issue-${{ steps.issue.outputs.number }}`.
+            5. **Otherwise (plan task / enhancement):** one vertical slice per the issue Body; branch name may match plan-v2 (e.g. `feat/scaffolding`) without implementing the full phase from the plan.
+            6. Open a pull request targeting `main` with `Closes #${{ steps.issue.outputs.number }}` in the body.
+            7. Do not merge. Human PR review is required.
 
-            Keep changes scoped to this issue only. Run `npm run test:ci` and `npm run lint` when you change code.
+            If scope is ambiguous, comment on the issue asking for clarification and stop — do not guess by implementing a full plan-v2 phase. Run `npm run test:ci` and `npm run lint` when you change code.
           claude_args: |
             --max-turns 50
             --allowedTools Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(gh:*),Bash(mkdir:*),Bash(touch:*),Bash(chmod:*),Bash(cat:*),Bash(ls:*),Bash(find:*),Bash(echo:*),Bash(rm:*),Bash(mv:*),Bash(cp:*),Bash(sed:*),Bash(grep:*),Bash(which:*),Bash(head:*),Bash(tail:*),Bash(pwd:*)

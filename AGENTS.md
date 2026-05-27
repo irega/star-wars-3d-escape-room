@@ -12,7 +12,7 @@ Automation for this repo is defined in `docs/plans/plan-v2.md`. Agents run via [
 
 Opt out of automatic pickup: label `no-agent`.
 
-**Do not** add `approved` until the issue description is complete (scope, acceptance criteria, plan branch if applicable).
+**Do not** add `approved` until the issue description is complete (scope, acceptance criteria, plan branch if applicable). The issue **Body** defines scope — the branch dropdown is only a branch name hint, not the full phase (see task template).
 
 ## Dev agent — iterate on a PR
 

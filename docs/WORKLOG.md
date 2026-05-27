@@ -1,10 +1,12 @@
 # WORKLOG
 
-Full work log. Append entries as you go.
+> **Note:** This log covers the **planning phase** (2026-05-26) — from project initialization through producing the final implementation plan (`docs/plans/plan-v2.md`). No source code existed yet during this period.
+>
+> From Phase 1 onward, the audit trail lives in **GitHub Issues and Pull Requests**. Browse the repo's issue history and PR descriptions instead of appending here.
 
 ---
 
-## Entries
+## Planning Phase (pre-implementation)
 
 Timestamps: local `YYYY-MM-DD HH:mm`.
 
