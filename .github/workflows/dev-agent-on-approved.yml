@@ -91,7 +91,7 @@ jobs:
             3. Follow TDD (`.claude/skills/tdd/`): red-green-refactor; test behavior via public interfaces.
             4. **If label `bug`:** fix the defect, add regression tests, branch prefix `fix/issue-${{ steps.issue.outputs.number }}`.
             5. **Otherwise (plan task / enhancement):** one vertical slice per the issue Body; branch name may match plan-v2 (e.g. `feat/scaffolding`) without implementing the full phase from the plan.
-            6. Open a pull request targeting `main` with `Closes #${{ steps.issue.outputs.number }}` in the body.
+            6. Open a pull request targeting `main` with `Closes #${{ steps.issue.outputs.number }}` in the body. PR description must follow `.github/pull_request_template.md` (What, How, Testing, Checklist).
             7. Do not merge. Human PR review is required.
 
             If scope is ambiguous, comment on the issue asking for clarification and stop — do not guess by implementing a full plan-v2 phase. Run `npm run test:ci` and `npm run lint` when you change code.
