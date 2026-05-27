@@ -337,8 +337,8 @@ main updated → optional scheduled QA Action → new bug issues only
 | 4 | **Install Claude GitHub App** on the repo | [github.com/apps/claude](https://github.com/apps/claude) | Clone/push/webhooks for Claude Code Action; not the same as pasting an API key into the App |
 | 5 | **OAuth token for Pro (Actions)** | One-time locally: `claude setup-token` or `/install-github-app` → store as repo secret `CLAUDE_CODE_OAUTH_TOKEN` | Uses Pro/Max subscription; avoid `ANTHROPIC_API_KEY` unless billing API separately. **Never** commit tokens |
 | 6 | **Labels** | GitHub → Labels | `bug` (defects), `enhancement` (plan tasks, default on task template), `approved` (human — dev agent gate), optional `no-agent` (opt out) |
-| 7 | **Dev agent workflow** | `.github/workflows/dev-agent-on-approved.yml` | `approved` on any issue (not only `bug`) + `workflow_dispatch` with issue # → plan task (`feat/*`) or bug (`fix/*`) per labels. See `AGENTS.md` |
-| 7b | **Dev agent PR feedback** | `.github/workflows/dev-agent-pr-feedback.yml` | `issue_comment` / `pull_request_review_comment` / `pull_request_review` when body contains `@claude` (PR only for issue comments). Interactive mode (no `prompt`); pushes to current PR branch. Same OAuth secret as #7 |
+| 7 | **Dev agent workflow** | `.github/workflows/dev-agent-on-approved.yml` | `approved` on any issue (not only `bug`) + `workflow_dispatch` with issue # → plan task (`feat/*`) or bug (`fix/*`) per labels. Requires `BOT_PAT` for pushes that trigger CI. See `AGENTS.md` |
+| 7b | **Dev agent PR feedback** | `.github/workflows/dev-agent-pr-feedback.yml` | `issue_comment` / `pull_request_review_comment` / `pull_request_review` when body contains `@claude` (PR only for issue comments). Interactive mode (no `prompt`); pushes to current PR branch. Requires `CLAUDE_CODE_OAUTH_TOKEN` + `BOT_PAT` (see Authentication) |
 | 8 | **CI workflow** | `.github/workflows/ci.yml` | On PR: `lint` → `format:check` → `test:ci` → `build` |
 | 9 | **Post-deploy e2e** | `.github/workflows/e2e-preview.yml` | `on: deployment_status` (Vercel success) → Playwright against preview URL |
 | 10 | **Vercel** | vercel.com → import GitHub repo | Preview on PRs, production on `main`; emits `deployment_status` for step 9 |
@@ -350,7 +350,8 @@ main updated → optional scheduled QA Action → new bug issues only
 
 | Piece | Purpose |
 |-------|---------|
-| **Claude GitHub App** | Repo access for the action (clone, push branch, open PR) |
+| **Claude GitHub App** | Optional if using `BOT_PAT` for git/GitHub API; still useful for local `@claude` on PRs |
+| **`BOT_PAT`** | Fine-grained PAT in agent workflows (`github_token` + checkout) so agent pushes trigger CI (workflow `GITHUB_TOKEN` does not) |
 | **`CLAUDE_CODE_OAUTH_TOKEN`** | Bills against Claude Pro/Max when the action runs Claude |
 | **`ANTHROPIC_API_KEY`** | Optional; separate Console billing — not required if using OAuth token |
 | **Claude Routines** | **Out of scope** for this project |
