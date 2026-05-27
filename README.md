@@ -11,20 +11,13 @@ This project uses Claude Code skills bundled in `.claude/skills/` so any agent w
 | `irega` | Coding philosophy, commit conventions, and code style rules — always active |
 | `tdd` | Red-green-refactor loop for all implementation tasks |
 | `security-audit` | OWASP-based security review — run before shipping (Phase 6) |
-| `save-worklog` | On-demand session capture to `docs/WORKLOG.md` |
 
 Skills are sourced from [github.com/irega/skills](https://github.com/irega/skills) and copied (not symlinked) for portability.
 
-## Worklog
+## Worklog & audit trail
 
-**Development approach:** This is a take-home exercise completed in focused sessions across multiple days. Development time is **not continuous** — work is done in discrete focus time blocks with gaps between them. Commits and worklog reflect this paced approach.
+**Development approach:** Take-home exercise in focused sessions across multiple days — not continuous time; commits and PRs reflect that pace.
 
-**For reviewers:** This project uses a manual `/save-worklog` command (skill-based) to record progress in `docs/WORKLOG.md`. **Note:** The prompts recorded in each worklog entry may be representative examples rather than the full verbatim prompt — they capture the intent and direction of the request, not necessarily the exact wording used. When invoked, it:
-- Generates a concise summary of what was done
-- Captures the user's original prompt, translated to English
-- Shows the entry for review/editing before saving
-- Appends to the worklog with timestamp
-
-**Why this exists:** This is a **take-home exercise optimization** to keep `docs/WORKLOG.md` updated with full transparency. The command provides an audit trail of what was accomplished each step and what was requested, while giving the user explicit control over when entries are recorded.
-
-**In production:** Such manual logging would not be standard (most teams rely on git commits + PR descriptions for history). This is included here to demonstrate how session context can be efficiently captured and summarized for documentation and transparency.
+**For reviewers:**
+- **`docs/WORKLOG.md`** — planning phase only (through `plan-v2.md`). Prompts in entries may be representative, not verbatim.
+- **Phase 1 onward** — history in **GitHub Issues and Pull Requests** (titles, descriptions, review comments). See `AGENTS.md` for how dev/QA agents are triggered.

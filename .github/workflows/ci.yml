@@ -1,5 +1,3 @@
-# Pre-deploy checks (plan-v2): lint → format:check → test:ci → build
-# Stub npm scripts until feat/scaffolding; job names match branch protection targets.
 name: CI
 
 on:

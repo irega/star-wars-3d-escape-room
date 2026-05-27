@@ -13,7 +13,7 @@ body:
   - type: dropdown
     id: plan_branch
     attributes:
-      label: Plan-v2 branch (from Implementation Order)
+      label: Branch
       options:
         - feat/scaffolding
         - feat/ci-cd
@@ -35,11 +35,17 @@ body:
   - type: textarea
     id: scope
     attributes:
-      label: What to implement
-      description: Concrete slice for one PR — small enough to review in under an hour
-      placeholder: e.g. Zustand game store with tests for room transitions
+      label: What to implement (in scope)
+      description: Concrete slice for one PR — small enough to review in under an hour. This is what the dev agent will build.
+      placeholder: e.g. Vite + React + TS scaffold only (no R3F/Husky yet)
     validations:
       required: true
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope (optional)
+      description: Explicitly exclude plan-v2 items you are NOT asking for in this issue
+      placeholder: e.g. R3F, drei, Husky, empty room scene — defer to follow-up issues
   - type: textarea
     id: acceptance
     attributes:

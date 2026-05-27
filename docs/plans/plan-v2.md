@@ -267,7 +267,7 @@ format:check    — prettier --check src/
 
 ### Phase 6: Ship
 - **Security audit** — run `/security-audit` skill against the full codebase. Focus: CSP headers, dependency CVEs, input sanitization on any user-facing inputs (player name, terminal input), asset loading. See `.claude/skills/security-audit/` for methodology
-- `feat/readme` — README (run instructions, design decisions summary, AI usage summary — both derived from `docs/WORKLOG.md`)
+- `feat/readme` — README (run instructions, design decisions summary, AI/process transparency). Planning-era notes from `docs/WORKLOG.md`; implementation and agent usage from GitHub Issues, PRs, and commit history (WORKLOG is planning-only after Phase 1)
 
 ### Automated Tests vs QA Agent
 
