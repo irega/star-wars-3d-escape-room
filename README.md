@@ -34,3 +34,5 @@ npx playwright install chromium
 npm run test:e2e      # smoke tests in e2e/ (starts dev server)
 npm run test:e2e:ui   # Playwright UI
 ```
+
+CI against Vercel previews needs repo secret `VERCEL_AUTOMATION_BYPASS_SECRET` (Vercel → Project → Deployment Protection → Protection Bypass for Automation).
