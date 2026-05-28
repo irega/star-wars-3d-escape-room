@@ -21,34 +21,39 @@ export const SCREENS = [
   { x: 2.25, label: 'ESH', symbol: 'E', emissive: '#006633', activeEmissive: '#009944' },
 ];
 
-type Bar = { pos: [number, number, number]; size: [number, number, number] };
+type Bar = {
+  pos: [number, number, number];
+  size: [number, number, number];
+  rotation?: [number, number, number];
+};
 
-// Aurebesh-inspired geometric symbols — each letter rendered as a unique bar composition
-// Aligned with canonical Aurebesh alphabet shapes from aurebesh.org
+// Aurebesh A U R E — bar compositions matching canonical letter shapes (aurebesh.org)
 export const AUREBESH_SYMBOL_BARS: Record<string, Bar[]> = {
-  // AUREK (A): Angular shape — top-right bar, left vertical, bottom-right bar
+  // AUREK (A): left stem → mid arm → fork opening right (>)
   A: [
-    { pos: [0.08, 0.2, 0.06], size: [0.22, 0.06, 0.02] },   // top bar (right-aligned)
-    { pos: [-0.15, 0.06, 0.06], size: [0.06, 0.28, 0.02] }, // left vertical
-    { pos: [0.08, -0.15, 0.06], size: [0.22, 0.06, 0.02] }, // bottom bar (right-aligned)
+    { pos: [-0.125, 0, 0.06], size: [0.05, 0.32, 0.02] },
+    { pos: [-0.03, 0, 0.06], size: [0.14, 0.05, 0.02] },
+    { pos: [0.085, 0.06, 0.06], size: [0.13, 0.05, 0.02], rotation: [0, 0, 0.93] },
+    { pos: [0.085, -0.06, 0.06], size: [0.13, 0.05, 0.02], rotation: [0, 0, -0.93] },
   ],
-  // UNESH (U): Classic U-shape — two verticals + bottom horizontal bar
+  // USK (U): open top-right frame + interior diagonal
   U: [
-    { pos: [-0.15, 0.08, 0.06], size: [0.06, 0.32, 0.02] }, // left vertical
-    { pos: [0.15, 0.08, 0.06], size: [0.06, 0.32, 0.02] },  // right vertical
-    { pos: [0, -0.15, 0.06], size: [0.3, 0.06, 0.02] },     // bottom horizontal
+    { pos: [-0.13, 0, 0.06], size: [0.05, 0.32, 0.02] },
+    { pos: [0, -0.14, 0.06], size: [0.28, 0.05, 0.02] },
+    { pos: [0.13, -0.03, 0.06], size: [0.05, 0.24, 0.02] },
+    { pos: [-0.03, 0.14, 0.06], size: [0.18, 0.05, 0.02] },
+    { pos: [0, 0, 0.06], size: [0.24, 0.05, 0.02], rotation: [0, 0, 0.62] },
   ],
-  // RESH (R): Angular form (like "7") — top horizontal + left vertical + lower-right bar
+  // RESH (R): classic "7" — top bar, diagonal from top-right down to bottom-left
   R: [
-    { pos: [0.05, 0.2, 0.06], size: [0.2, 0.06, 0.02] },    // top horizontal
-    { pos: [-0.1, 0.05, 0.06], size: [0.06, 0.3, 0.02] },   // left vertical
-    { pos: [0.1, -0.08, 0.06], size: [0.18, 0.06, 0.02] },  // lower-right bar
+    { pos: [0, 0.15, 0.06], size: [0.28, 0.05, 0.02] },
+    { pos: [0.01, -0.01, 0.06], size: [0.38, 0.05, 0.02], rotation: [0, 0, -2.38] },
   ],
-  // ESH (E): V-shape with top bar — left diagonal + right diagonal + top horizontal
+  // ESK (E): "VI" — V on the left + separate vertical stroke on the right
   E: [
-    { pos: [0, 0.2, 0.06], size: [0.2, 0.06, 0.02] },       // top horizontal bar
-    { pos: [-0.08, 0.05, 0.06], size: [0.1, 0.32, 0.02] },  // left diagonal stroke
-    { pos: [0.08, 0.05, 0.06], size: [0.1, 0.32, 0.02] },   // right diagonal stroke
+    { pos: [-0.095, -0.01, 0.06], size: [0.25, 0.05, 0.02], rotation: [0, 0, -1.22] },
+    { pos: [-0.02, -0.01, 0.06], size: [0.24, 0.05, 0.02], rotation: [0, 0, 1.33] },
+    { pos: [0.11, 0, 0.06], size: [0.05, 0.3, 0.02] },
   ],
 };
 
@@ -225,7 +230,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
             </mesh>
             {/* Symbol indicator — unique bar composition per Aurebesh letter */}
             {AUREBESH_SYMBOL_BARS[screen.symbol].map((bar, j) => (
-              <mesh key={j} position={bar.pos}>
+              <mesh key={j} position={bar.pos} rotation={bar.rotation ?? [0, 0, 0]}>
                 <boxGeometry args={bar.size} />
                 <meshStandardMaterial color={screenEmissive} emissive={screenEmissive} />
               </mesh>
