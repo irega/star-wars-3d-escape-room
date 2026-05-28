@@ -21,9 +21,9 @@ import { test, expect } from '@playwright/test';
 //   Blast door center   world [0, 1.4, -3.92] → depth 8.56 → (640, 221)
 //   (Blast door is on the back wall so it does not occlude the terminal)
 // Scene 3 — Corridor
-//   Cell 0  world [0.7,  0.3, 2.0]  → depth 3.25 → (741, 407)
-//   Cell 1  world [1.4,  0.3, 1.5]  → depth 3.73 → (816, 382)
-//   Cell 2  world [2.0,  0.3, 2.0]  → depth 3.25 → (928, 407)
+//   Cell 0  world [0.5,  0.3, 2.3]  → depth 2.97 → (719, 426)
+//   Cell 1  world [2.6,  0.3, 1.3]  → depth 3.92 → (951, 373)
+//   Cell 2  world [1.5,  0.3, 2.8]  → depth 2.49 → (922, 467)
 //   Slot 0  world [-2.85, 2.0, -2.0] → depth 6.55 → (429, 180)
 //   Slot 1  world [-2.85, 1.5, -2.0] → depth 6.70 → (433, 217)
 //   Slot 2  world [-2.85, 1.0, -2.0] → depth 6.85 → (438, 253)
@@ -42,9 +42,9 @@ const SCENE2 = {
 };
 
 const SCENE3 = {
-  cell0: { x: 741, y: 407 },
-  cell1: { x: 816, y: 382 },
-  cell2: { x: 928, y: 407 },
+  cell0: { x: 719, y: 426 },
+  cell1: { x: 951, y: 373 },
+  cell2: { x: 922, y: 467 },
   slot0: { x: 429, y: 180 },
   slot1: { x: 433, y: 217 },
   slot2: { x: 438, y: 253 },
