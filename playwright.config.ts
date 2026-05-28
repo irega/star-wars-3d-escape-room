@@ -27,7 +27,6 @@ export default defineConfig({
       ],
   use: {
     baseURL,
-    locale: 'en-US',
     ...(vercelProtectionHeaders && { extraHTTPHeaders: vercelProtectionHeaders }),
     trace: 'on-first-retry',
   },

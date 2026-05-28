@@ -68,7 +68,6 @@ export default function App() {
       <HUD inventory={[...inventory]} hint={hintText} />
       {phase === 'playing' && (
         <Canvas
-          data-testid="game-canvas"
           gl={{ antialias: true }}
           camera={{ position: [0, 1.6, 5], fov: 75 }}
           onCreated={({ scene, gl }) => {
