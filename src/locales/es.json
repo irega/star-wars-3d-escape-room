@@ -2,6 +2,14 @@
   "app": {
     "title": "Escapar del Bloque de Detención AA-23"
   },
+  "intro": {
+    "title": "ESCAPAR DEL BLOQUE DE DETENCIÓN AA-23",
+    "story1": "Eres un operativo de la Alianza Rebelde capturado a bordo de la Estrella de la Muerte.",
+    "story2": "Un fallo parcial de energía ha debilitado la seguridad Imperial. Esta es tu oportunidad.",
+    "story3": "Resuelve 4 puzzles para llegar a la bahía del hangar y escapar antes de que las fuerzas Imperiales restauren el orden.",
+    "namePlaceholder": "Tu nombre (opcional)",
+    "startButton": "INICIAR MISIÓN"
+  },
   "hud": {
     "hint": "Pista",
     "inventory": "Inventario"

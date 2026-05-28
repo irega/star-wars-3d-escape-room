@@ -8,6 +8,7 @@ import { HangarBay } from './scenes/HangarBay';
 import { HUD } from './ui/HUD';
 import { Dialogue } from './ui/Dialogue';
 import { Victory } from './ui/Victory';
+import { Intro } from './ui/Intro';
 import { useGameStore } from './stores/useGameStore';
 import { useInventoryStore } from './stores/useInventoryStore';
 import { useHintStore } from './stores/useHintStore';
@@ -23,6 +24,8 @@ export default function App() {
   const currentRoom = useGameStore((s) => s.currentRoom);
   const phase = useGameStore((s) => s.phase);
   const playerName = useGameStore((s) => s.playerName);
+  const setPlayerName = useGameStore((s) => s.setPlayerName);
+  const startGame = useGameStore((s) => s.startGame);
   const resetGame = useGameStore((s) => s.reset);
   const resetInventory = useInventoryStore((s) => s.reset);
   const resetHints = useHintStore((s) => s.reset);
@@ -31,6 +34,14 @@ export default function App() {
   const puzzle2HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_2_ID));
   const puzzle3HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_3_ID));
   const puzzle4HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_4_ID));
+
+  const handleStart = useCallback(
+    (name: string) => {
+      setPlayerName(name);
+      startGame();
+    },
+    [setPlayerName, startGame],
+  );
 
   const handleReplay = useCallback(() => {
     resetGame();
@@ -62,6 +73,7 @@ export default function App() {
         </Suspense>
       </Canvas>
       {dialogue && <Dialogue text={dialogue} isOpen onClose={() => setDialogue(null)} />}
+      {phase === 'intro' && <Intro onStart={handleStart} />}
       {phase === 'won' && <Victory playerName={playerName} onReplay={handleReplay} />}
     </div>
   );

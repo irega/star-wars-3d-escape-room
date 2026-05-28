@@ -19,8 +19,8 @@ describe('useGameStore', () => {
       expect(useGameStore.getState().solvedPuzzles).toEqual([]);
     });
 
-    it('starts in playing phase', () => {
-      expect(useGameStore.getState().phase).toBe('playing');
+    it('starts in intro phase', () => {
+      expect(useGameStore.getState().phase).toBe('intro');
     });
   });
 
@@ -28,6 +28,14 @@ describe('useGameStore', () => {
     it('updates the player name', () => {
       useGameStore.getState().setPlayerName('Luke');
       expect(useGameStore.getState().playerName).toBe('Luke');
+    });
+  });
+
+  describe('startGame', () => {
+    it('transitions phase from intro to playing', () => {
+      expect(useGameStore.getState().phase).toBe('intro');
+      useGameStore.getState().startGame();
+      expect(useGameStore.getState().phase).toBe('playing');
     });
   });
 
@@ -87,7 +95,7 @@ describe('useGameStore', () => {
       expect(state.playerName).toBe('Rebel');
       expect(state.currentRoom).toBe('detention-cell');
       expect(state.solvedPuzzles).toEqual([]);
-      expect(state.phase).toBe('playing');
+      expect(state.phase).toBe('intro');
     });
   });
 });
