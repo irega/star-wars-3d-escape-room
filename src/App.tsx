@@ -55,7 +55,13 @@ export default function App() {
   }, [currentRoom, resetControlRoomTerminal]);
 
   const showDialogue = useCallback(
-    (text: string) => setDialogueEntry({ text, room: currentRoom }),
+    (text: string | null) => {
+      if (text === null) {
+        setDialogueEntry(null);
+      } else {
+        setDialogueEntry({ text, room: currentRoom });
+      }
+    },
     [currentRoom],
   );
 
