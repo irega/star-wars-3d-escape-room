@@ -70,7 +70,7 @@ jobs:
 
       - name: Skip (no @claude trigger)
         if: steps.gate.outputs.should_run != 'true'
-        run: echo "Skipping: no valid @claude mention from a human on a PR event."
+        run: 'echo "Skipping: no valid @claude mention from a human on a PR event."'
 
       - name: Checkout repository
         if: steps.gate.outputs.should_run == 'true'
