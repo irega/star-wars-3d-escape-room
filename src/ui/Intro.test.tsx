@@ -80,4 +80,20 @@ describe('Intro', () => {
     await userEvent.click(screen.getByRole('button', { name: /begin mission/i }));
     expect(onStart).toHaveBeenCalledWith('Rebel');
   });
+
+  it('calls onStart when Enter is pressed in the name input', async () => {
+    const onStart = vi.fn();
+    render(<Intro onStart={onStart} />);
+    await skipIntroCrawl();
+    await userEvent.type(screen.getByRole('textbox'), 'Leia{Enter}');
+    expect(onStart).toHaveBeenCalledWith('Leia');
+  });
+
+  it('calls onStart with default name "Rebel" when Enter is pressed with no name', async () => {
+    const onStart = vi.fn();
+    render(<Intro onStart={onStart} />);
+    await skipIntroCrawl();
+    await userEvent.type(screen.getByRole('textbox'), '{Enter}');
+    expect(onStart).toHaveBeenCalledWith('Rebel');
+  });
 });
