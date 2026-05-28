@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Mock } from 'vitest';
 import {
   isAmbientMuted,
   resetAmbientMusic,
@@ -8,16 +9,16 @@ import {
 } from './ambientMusic';
 
 describe('ambientMusic', () => {
-  let playMock: ReturnType<typeof vi.fn>;
-  let pauseMock: ReturnType<typeof vi.fn>;
+  let playMock: Mock<() => Promise<void>>;
+  let pauseMock: Mock<() => void>;
   let lastAudio: {
     loop: boolean;
     volume: number;
     src: string;
     paused: boolean;
     currentTime: number;
-    play: ReturnType<typeof vi.fn>;
-    pause: ReturnType<typeof vi.fn>;
+    play: () => Promise<void>;
+    pause: () => void;
   } | null;
 
   beforeEach(() => {
