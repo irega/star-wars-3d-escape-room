@@ -1,7 +1,6 @@
-export const PUZZLE_4_ID = 4;
+export { LAUNCH_FREQUENCY } from './launchFrequency';
 
-// THX 1138 — in-world frequency shown on hangar console when player has the frequency item
-export const LAUNCH_FREQUENCY = '1138';
+export const PUZZLE_4_ID = 4;
 
 export const PUZZLE_4_HINT_DELAYS: number[] = [25_000, 60_000, 120_000];
 

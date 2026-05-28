@@ -17,9 +17,9 @@ import {
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
   PUZZLE_3_HINT_DELAYS,
-  FREQUENCY_NUMBER,
   type CellOrientation,
 } from './corridorPuzzle';
+import { LAUNCH_FREQUENCY } from './launchFrequency';
 import { BlastDoor, ImperialRoomShell } from '../three';
 import { DamagedAstromechDroid } from './DamagedAstromechDroid';
 
@@ -156,7 +156,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
           setTimeout(() => {
             addItem('frequency');
             solvePuzzle(PUZZLE_3_ID);
-            onDialogue?.(t('puzzle3.solved', { freq: FREQUENCY_NUMBER }));
+            onDialogue?.(t('puzzle3.solved', { freq: LAUNCH_FREQUENCY }));
           }, 0);
         }
 

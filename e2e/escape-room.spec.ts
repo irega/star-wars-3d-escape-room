@@ -158,7 +158,7 @@ test('happy path: escape from detention cell through control room to corridor', 
 
   // All conduits powered — frequency in inventory, dialogue shown
   await expect(
-    page.getByText(/All conduits powered! Frequency 47 acquired/),
+    page.getByText(/All conduits powered! Frequency 1138 acquired/),
   ).toBeVisible();
   await expect(page.getByRole('listitem').filter({ hasText: 'frequency' })).toBeVisible();
   await page.getByRole('button', { name: /close/i }).click();

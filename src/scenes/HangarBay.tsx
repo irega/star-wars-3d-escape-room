@@ -3,7 +3,6 @@ import { Html } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../stores/useGameStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
-import { useHintStore } from '../stores/useHintStore';
 import { InteractiveObject } from '../components/InteractiveObject';
 import { HintTrigger } from '../components/HintTrigger';
 import { ImperialRoomShell, TerminalConsole, imperialPalette } from '../three';
@@ -29,11 +28,8 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
 
   const solvePuzzle = useGameStore((s) => s.solvePuzzle);
   const win = useGameStore((s) => s.win);
-  const phase = useGameStore((s) => s.phase);
   const solvedPuzzles = useGameStore((s) => s.solvedPuzzles);
   const puzzleSolved = solvedPuzzles.includes(PUZZLE_4_ID);
-
-  const hintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_4_ID));
 
   const canLaunch = validateLaunchClearance(hasKeycard, hasOverrideCode, hasFrequency);
 
@@ -74,10 +70,6 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
     : canLaunch
       ? '#553300'
       : imperialPalette.indicatorLockedEmissive;
-
-  const freqDisplay = hasFrequency ? LAUNCH_FREQUENCY : '???';
-  const announcementEmissive = hintLevel >= 1 ? '#003399' : '#001133';
-  const showAnnouncement = phase === 'playing';
 
   return (
     <group>
@@ -242,44 +234,6 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
           </TerminalConsole>
         </group>
       </InteractiveObject>
-
-      {showAnnouncement && (
-        <group position={[0, 4.2, -5.95]}>
-          <mesh>
-            <boxGeometry args={[3.2, 0.9, 0.1]} />
-            <meshStandardMaterial
-              color="#0a0a1a"
-              emissive={announcementEmissive}
-              emissiveIntensity={0.25}
-            />
-          </mesh>
-          <mesh position={[0, 0, 0.05]}>
-            <boxGeometry args={[2.9, 0.55, 0.02]} />
-            <meshStandardMaterial
-              color="#000011"
-              emissive={announcementEmissive}
-              emissiveIntensity={hintLevel >= 1 ? 2.5 : 1.2}
-            />
-          </mesh>
-          <Html center position={[0, 0, 0.08]}>
-            <div
-              style={{
-                fontFamily: '"Courier New", Courier, monospace',
-                fontSize: '9px',
-                color: hintLevel >= 1 ? '#66aaff' : '#3355aa',
-                whiteSpace: 'nowrap',
-                pointerEvents: 'none',
-                userSelect: 'none',
-                textAlign: 'center',
-                lineHeight: 1.4,
-              }}
-            >
-              <div>{t('puzzle4.announcement.header')}</div>
-              <div>{t('puzzle4.announcement.freq', { freq: freqDisplay })}</div>
-            </div>
-          </Html>
-        </group>
-      )}
 
       {consoleActive && (
         <Html fullscreen>

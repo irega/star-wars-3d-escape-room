@@ -73,7 +73,7 @@
     "hint": {
       "1": "A launch console near the entrance glows faintly. Three inputs are required.",
       "2": "The console needs a keycard, an override code, and a launch frequency. Check your inventory.",
-      "3": "The frequency is broadcast on the hangar announcement display above the shuttle bay."
+      "3": "The launch console shows the broadcast frequency once you have collected it."
     },
     "console": {
       "header": "IMPERIAL LAUNCH CONTROL v7.1",

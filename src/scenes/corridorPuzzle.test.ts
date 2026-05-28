@@ -8,9 +8,9 @@ import {
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
   PUZZLE_3_HINT_DELAYS,
-  FREQUENCY_NUMBER,
   type CellOrientation,
 } from './corridorPuzzle';
+import { LAUNCH_FREQUENCY } from './launchFrequency';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import { useGameStore } from '../stores/useGameStore';
 
@@ -177,8 +177,8 @@ describe('puzzle 3 constants', () => {
     expect(PUZZLE_3_ID).toBe(3);
   });
 
-  it('frequency number is 47', () => {
-    expect(FREQUENCY_NUMBER).toBe(47);
+  it('launch frequency is 1138', () => {
+    expect(LAUNCH_FREQUENCY).toBe('1138');
   });
 
   it('has three cell solutions', () => {

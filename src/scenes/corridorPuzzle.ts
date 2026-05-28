@@ -1,5 +1,4 @@
 export const PUZZLE_3_ID = 3;
-export const FREQUENCY_NUMBER = 47;
 export const PUZZLE_3_HINT_DELAYS: number[] = [30_000, 60_000];
 
 export type CellOrientation = 0 | 90 | 180 | 270;

@@ -73,7 +73,7 @@
     "hint": {
       "1": "Una consola de lanzamiento cerca de la entrada brilla débilmente. Se necesitan tres entradas.",
       "2": "La consola necesita una tarjeta de acceso, un código de anulación y una frecuencia de lanzamiento. Revisa tu inventario.",
-      "3": "La frecuencia se transmite en el panel de anuncios del hangar, encima de la bahía de lanzamiento."
+      "3": "La consola de lanzamiento muestra la frecuencia cuando la hayas conseguido."
     },
     "console": {
       "header": "CONTROL DE LANZAMIENTO IMPERIAL v7.1",
