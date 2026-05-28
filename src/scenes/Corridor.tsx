@@ -19,6 +19,7 @@ import {
   FREQUENCY_NUMBER,
   type CellOrientation,
 } from './corridorPuzzle';
+import { DamagedAstromechDroid } from './DamagedAstromechDroid';
 
 export const DROID_GROUP_POSITION: [number, number, number] = [1.5, 0, 1.2];
 
@@ -307,105 +308,22 @@ export function Corridor({ onDialogue }: CorridorProps) {
         );
       })}
 
-      {/* Dedicated fill light so the droid is visible regardless of hint level */}
+      {/* Droid wreckage — front fill from camera side + top key */}
       <pointLight
-        position={[DROID_GROUP_POSITION[0], 2, DROID_GROUP_POSITION[2]]}
-        intensity={0.5}
-        color="#99bbdd"
-        distance={2.5}
+        position={[DROID_GROUP_POSITION[0], 1.2, DROID_GROUP_POSITION[2] + 1.2]}
+        intensity={1.2}
+        color="#e8f0ff"
+        distance={3}
+      />
+      <pointLight
+        position={[DROID_GROUP_POSITION[0] + 0.5, 2.2, DROID_GROUP_POSITION[2]]}
+        intensity={0.85}
+        color="#b8d0e8"
+        distance={2.8}
       />
 
-      {/* Droid wreckage — astromech-style geometric droid */}
       <group position={DROID_GROUP_POSITION}>
-        {/* Main cylindrical body (core chassis) */}
-        <mesh position={[0, 0.2, 0]} rotation={[0, 0.3, 0.15]}>
-          <boxGeometry args={[0.55, 0.52, 0.48]} />
-          <meshStandardMaterial color="#d0d8e0" emissive="#4a5a6a" emissiveIntensity={1.2} />
-        </mesh>
-
-        {/* Body panel — dark accent panel on body */}
-        <mesh position={[-0.18, 0.25, 0]} rotation={[0, 0.3, 0.15]}>
-          <boxGeometry args={[0.08, 0.4, 0.35]} />
-          <meshStandardMaterial color="#3a4a5a" emissive="#1a2a3a" emissiveIntensity={1.0} />
-        </mesh>
-
-        {/* Top access panel */}
-        <mesh position={[0, 0.35, 0.05]} rotation={[0.1, 0.3, 0.15]}>
-          <boxGeometry args={[0.4, 0.12, 0.3]} />
-          <meshStandardMaterial color="#4a6a8a" emissive="#1a3a5a" emissiveIntensity={1.1} />
-        </mesh>
-
-        {/* Dome head — upper chassis assembly */}
-        <mesh position={[0.12, 0.72, 0.12]} rotation={[0.25, 0.1, 0.08]}>
-          <boxGeometry args={[0.36, 0.38, 0.3]} />
-          <meshStandardMaterial color="#c8d0d8" emissive="#5a6a7a" emissiveIntensity={1.2} />
-        </mesh>
-
-        {/* Dome top crown — brightens the head area */}
-        <mesh position={[0.12, 0.92, 0.12]} rotation={[0.25, 0.1, 0.08]}>
-          <boxGeometry args={[0.28, 0.12, 0.24]} />
-          <meshStandardMaterial color="#e0e8f0" emissive="#8a9aaa" emissiveIntensity={1.3} />
-        </mesh>
-
-        {/* Primary sensor eye — bright blue optical element */}
-        <mesh position={[0.18, 0.7, 0.32]} rotation={[0.2, 0.15, 0.05]}>
-          <boxGeometry args={[0.07, 0.08, 0.05]} />
-          <meshStandardMaterial
-            color={hintLevel >= 1 ? '#77ccff' : '#5599dd'}
-            emissive={hintLevel >= 1 ? '#2266aa' : '#1a4488'}
-            emissiveIntensity={hintLevel >= 1 ? 2.0 : 1.3}
-          />
-        </mesh>
-
-        {/* Secondary sensor detail */}
-        <mesh position={[0.22, 0.62, 0.28]}>
-          <boxGeometry args={[0.05, 0.04, 0.03]} />
-          <meshStandardMaterial color="#8899aa" emissive="#334455" emissiveIntensity={1.0} />
-        </mesh>
-
-        {/* Front control panel — detail on lower body */}
-        <mesh position={[0.2, 0.18, 0.28]} rotation={[0.05, 0.1, 0]}>
-          <boxGeometry args={[0.12, 0.3, 0.06]} />
-          <meshStandardMaterial color="#5a7a9a" emissive="#2a4a6a" emissiveIntensity={1.1} />
-        </mesh>
-
-        {/* Left manipulator arm — extend to show damage/disassembly */}
-        <mesh position={[-0.38, 0.22, 0.08]} rotation={[0.1, 0, -0.9]}>
-          <boxGeometry args={[0.08, 0.45, 0.08]} />
-          <meshStandardMaterial color="#a8b8c8" emissive="#4a5a6a" emissiveIntensity={1.1} />
-        </mesh>
-
-        {/* Arm joint detail */}
-        <mesh position={[-0.42, 0.18, 0.05]}>
-          <boxGeometry args={[0.1, 0.08, 0.1]} />
-          <meshStandardMaterial color="#7a8a9a" emissive="#3a4a5a" emissiveIntensity={1.0} />
-        </mesh>
-
-        {/* Right foot/stabilizer — bottom support */}
-        <mesh position={[0.2, -0.02, -0.25]}>
-          <boxGeometry args={[0.14, 0.08, 0.16]} />
-          <meshStandardMaterial color="#8a9aaa" emissive="#3a4a5a" emissiveIntensity={1.0} />
-        </mesh>
-
-        {/* Left foot/stabilizer */}
-        <mesh position={[-0.2, -0.02, -0.25]}>
-          <boxGeometry args={[0.14, 0.08, 0.16]} />
-          <meshStandardMaterial color="#8a9aaa" emissive="#3a4a5a" emissiveIntensity={1.0} />
-        </mesh>
-
-        {/* Center foot/stabilizer */}
-        <mesh position={[0, -0.02, 0.22]}>
-          <boxGeometry args={[0.12, 0.08, 0.12]} />
-          <meshStandardMaterial color="#8a9aaa" emissive="#3a4a5a" emissiveIntensity={1.0} />
-        </mesh>
-
-        {/* Holographic projector unit — glows at hint level 1+ */}
-        {hintLevel >= 1 && (
-          <mesh position={[0, 0.5, 0.02]}>
-            <boxGeometry args={[0.14, 0.1, 0.14]} />
-            <meshStandardMaterial color="#44aaff" emissive="#1166cc" emissiveIntensity={1.6} />
-          </mesh>
-        )}
+        <DamagedAstromechDroid hintLevel={hintLevel} />
       </group>
 
       {/* Clickable droid schematic trigger — shows schematic overlay when hint level >= 1 */}
