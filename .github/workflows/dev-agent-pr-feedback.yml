@@ -2,11 +2,11 @@ name: Dev agent PR feedback
 
 on:
   issue_comment:
-    types: [created]
+    types: [created, edited]
   pull_request_review_comment:
-    types: [created]
+    types: [created, edited]
   pull_request_review:
-    types: [submitted]
+    types: [submitted, edited]
 
 permissions:
   contents: write
@@ -35,25 +35,51 @@ jobs:
         Run npm run test:ci and npm run lint when you change code.
 
         When updating a PR description, follow `.github/pull_request_template.md` (What, How, Testing, Checklist).
-    if: |
-      (github.event_name == 'issue_comment' &&
-        github.event.issue.pull_request &&
-        contains(github.event.comment.body, '@claude') &&
-        github.event.comment.user.type != 'Bot') ||
-      (github.event_name == 'pull_request_review_comment' &&
-        contains(github.event.comment.body, '@claude') &&
-        github.event.comment.user.type != 'Bot') ||
-      (github.event_name == 'pull_request_review' &&
-        contains(github.event.review.body, '@claude') &&
-        github.event.review.user.type != 'Bot')
     runs-on: ubuntu-latest
     steps:
+      - name: Evaluate trigger conditions
+        id: gate
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const payload = context.payload;
+            const body = payload.comment?.body ?? payload.review?.body ?? '';
+            const userType = payload.comment?.user?.type ?? payload.review?.user?.type ?? '';
+            const hasPR = Boolean(payload.issue?.pull_request || payload.pull_request);
+            const isHuman = userType !== 'Bot';
+            const hasMention = /(^|\s)@claude\b/i.test(body);
+            const shouldRun = hasPR && isHuman && hasMention;
+
+            core.info(
+              JSON.stringify(
+                {
+                  eventName: context.eventName,
+                  action: payload.action,
+                  hasPR,
+                  userType,
+                  hasMention,
+                  shouldRun,
+                  bodyPreview: body.slice(0, 140),
+                },
+                null,
+                2,
+              ),
+            );
+
+            core.setOutput('should_run', String(shouldRun));
+
+      - name: Skip (no @claude trigger)
+        if: steps.gate.outputs.should_run != 'true'
+        run: 'echo "Skipping: no valid @claude mention from a human on a PR event."'
+
       - name: Checkout repository
+        if: steps.gate.outputs.should_run == 'true'
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Apply PR feedback
+        if: steps.gate.outputs.should_run == 'true'
         id: agent
         uses: anthropics/claude-code-action@v1
         with:
