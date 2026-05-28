@@ -28,6 +28,8 @@ import { test, expect } from '@playwright/test';
 //   Slot 1  world [-2.85, 1.5, -2.0] → depth 6.70 → (433, 217)
 //   Slot 2  world [-2.85, 1.0, -2.0] → depth 6.85 → (438, 253)
 //   Blast door  world [0, 1.4, -3.92] → depth 8.56 → (640, 221)
+// Scene 4 — Hangar Bay
+//   Launch console world [0, 0.5, -0.5] → depth 5.57 → (640, 307)
 
 const SCENE1 = {
   panel: { x: 813, y: 216 },
@@ -49,13 +51,16 @@ const SCENE3 = {
   door: { x: 640, y: 221 },
 };
 
+const SCENE4 = {
+  console: { x: 640, y: 307 },
+};
+
 const CORRECT_SEQUENCE = ['A', 'U', 'R', 'E'];
 
 test('happy path: escape from detention cell through control room to corridor', async ({
   page,
 }) => {
   test.setTimeout(60_000);
-
   await page.goto('/');
   await expect(page.getByTestId('app')).toBeVisible();
   await page.locator('canvas').waitFor({ state: 'visible' });
@@ -144,4 +149,23 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page
     .locator('[data-testid="app"][data-room="hangar-bay"]')
     .waitFor({ state: 'attached', timeout: 5000 });
+
+  // ── Scene 4: Hangar Bay ───────────────────────────────────────────────────
+
+  // Click the launch console to open the credential verification overlay
+  await page.locator('canvas').click({ position: SCENE4.console });
+  await expect(page.getByText('IMPERIAL LAUNCH CONTROL v7.1')).toBeVisible();
+
+  // Verify all three credentials are present and slots show "filled" status
+  await expect(page.getByText('KEYCARD INSERTED')).toBeVisible();
+  await expect(page.getByText('AURE — ACCEPTED')).toBeVisible();
+  await expect(page.getByText('FREQ 1138 — LOCKED')).toBeVisible();
+
+  // Launch the shuttle — all credentials are present
+  await page.getByRole('button', { name: /INITIATE LAUNCH/i }).click();
+  await page.waitForTimeout(500);
+
+  // Verify victory screen appears
+  await expect(page.getByText(/escaped Detention Block AA-23/)).toBeVisible();
+  await expect(page.getByRole('button', { name: /Play Again/i })).toBeVisible();
 });

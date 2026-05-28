@@ -54,6 +54,36 @@
       "instructions": "Selecciona una celda, haz clic de nuevo para girarla y luego haz clic en la ranura correcta."
     }
   },
+  "puzzle4": {
+    "hint": {
+      "1": "Una consola de lanzamiento cerca de la entrada brilla débilmente. Se necesitan tres entradas.",
+      "2": "La consola necesita una tarjeta de acceso, un código de anulación y una frecuencia de lanzamiento. Revisa tu inventario.",
+      "3": "La frecuencia se transmite en el panel de anuncios del hangar, encima de la bahía de lanzamiento."
+    },
+    "console": {
+      "header": "CONTROL DE LANZAMIENTO IMPERIAL v7.1",
+      "prompt": "INSERTAR CREDENCIALES DE LANZAMIENTO",
+      "slot1Label": "RANURA DE TARJETA",
+      "slot1Filled": "TARJETA INSERTADA",
+      "slot2Label": "CÓDIGO DE ANULACIÓN IMPERIAL",
+      "slot2Filled": "AURE — ACEPTADO",
+      "slot3Label": "FRECUENCIA DE LANZAMIENTO",
+      "slot3Filled": "FREC {{freq}} — BLOQUEADO",
+      "slotEmpty": "— FALTANTE —",
+      "incomplete": "Secuencia incompleta. Recoge todas las credenciales antes del lanzamiento.",
+      "launch": "INICIAR LANZAMIENTO"
+    },
+    "announcement": {
+      "header": "— CONTROL DEL HANGAR IMPERIAL —",
+      "freq": "FREC LANZAMIENTO: {{freq}}"
+    },
+    "launch": {
+      "success": "Todas las credenciales verificadas. Campo de fuerza desactivado. Lanzamiento de la nave — que la Fuerza te acompañe."
+    },
+    "shuttle": {
+      "locked": "El campo de fuerza bloquea la nave. Desactívalo en la consola de lanzamiento."
+    }
+  },
   "puzzle1": {
     "hint": {
       "1": "Algo en esta celda podría ayudarte a escapar. Mira con atención tu entorno.",
