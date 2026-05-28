@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Html } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../stores/useGameStore';
@@ -55,6 +55,16 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
   const handleCloseConsole = useCallback(() => {
     setConsoleActive(false);
   }, []);
+
+  // Close console modal on Escape key
+  useEffect(() => {
+    if (!consoleActive) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setConsoleActive(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [consoleActive]);
 
   const forceFieldEmissive = puzzleSolved ? '#000000' : '#0033cc';
   const forceFieldColor = puzzleSolved ? '#000033' : '#0044ff';
