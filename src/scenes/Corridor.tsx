@@ -166,9 +166,9 @@ export function Corridor({ onDialogue }: CorridorProps) {
     <group>
       <HintTrigger puzzleId={PUZZLE_3_ID} delays={PUZZLE_3_HINT_DELAYS} />
 
-      <ambientLight intensity={0.15} />
-      <pointLight position={[0, 3, 0]} intensity={0.5} color="#334466" />
-      <pointLight position={[-2, 2, -1]} intensity={0.3} color="#225588" />
+      <ambientLight intensity={0.35} />
+      <pointLight position={[0, 3, 0]} intensity={0.9} color="#5577aa" />
+      <pointLight position={[-2, 2, -1]} intensity={0.6} color="#225588" />
 
       {/* Pulsing lights near each correct slot at hint level 2 */}
       {SLOT_POSITIONS.map((pos, i) => (
@@ -183,7 +183,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
       {/* Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <planeGeometry args={[6, 8]} />
-        <meshStandardMaterial color="#0d0d14" />
+        <meshStandardMaterial color="#131320" />
       </mesh>
 
       {/* Ceiling */}
@@ -195,25 +195,25 @@ export function Corridor({ onDialogue }: CorridorProps) {
       {/* Back wall */}
       <mesh position={[0, 1.75, -4]}>
         <planeGeometry args={[6, 3.5]} />
-        <meshStandardMaterial color="#111120" />
+        <meshStandardMaterial color="#171730" />
       </mesh>
 
       {/* Left wall */}
       <mesh rotation={[0, Math.PI / 2, 0]} position={[-3, 1.75, 0]}>
         <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#0e0e1c" />
+        <meshStandardMaterial color="#181830" />
       </mesh>
 
       {/* Right wall */}
       <mesh rotation={[0, -Math.PI / 2, 0]} position={[3, 1.75, 0]}>
         <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#0e0e1c" />
+        <meshStandardMaterial color="#181830" />
       </mesh>
 
       {/* Conduit panel backing on left wall */}
       <mesh position={[-2.98, 1.5, -2.0]}>
         <boxGeometry args={[0.04, 2.0, 1.4]} />
-        <meshStandardMaterial color="#1a1a2e" emissive="#000011" />
+        <meshStandardMaterial color="#252545" emissive="#000022" />
       </mesh>
 
       {/* Conduit slots — three slots in vertical column on left wall */}
@@ -309,12 +309,12 @@ export function Corridor({ onDialogue }: CorridorProps) {
         {/* Main droid body (collapsed) */}
         <mesh position={[0, 0.18, 0]} rotation={[0, 0.4, 0.2]}>
           <boxGeometry args={[0.5, 0.36, 0.4]} />
-          <meshStandardMaterial color="#334455" emissive="#001122" />
+          <meshStandardMaterial color="#445566" emissive="#001122" />
         </mesh>
         {/* Droid head */}
         <mesh position={[0.1, 0.55, 0.15]} rotation={[0.3, 0, 0.1]}>
           <boxGeometry args={[0.28, 0.28, 0.22]} />
-          <meshStandardMaterial color="#2a3a4a" emissive="#001122" />
+          <meshStandardMaterial color="#3a4a5a" emissive="#001122" />
         </mesh>
         {/* Eye sensor */}
         <mesh position={[0.1, 0.56, 0.27]}>
@@ -328,7 +328,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
         {/* Arm fragment */}
         <mesh position={[-0.35, 0.12, 0.1]} rotation={[0, 0, -0.8]}>
           <boxGeometry args={[0.08, 0.5, 0.08]} />
-          <meshStandardMaterial color="#2a3a4a" />
+          <meshStandardMaterial color="#3a4a5a" />
         </mesh>
         {/* Holographic projector (glows at hint level 1+) */}
         {hintLevel >= 1 && (
