@@ -17,9 +17,9 @@ import {
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
   PUZZLE_3_HINT_DELAYS,
-  FREQUENCY_NUMBER,
   type CellOrientation,
 } from './corridorPuzzle';
+import { LAUNCH_FREQUENCY } from './launchFrequency';
 import { BlastDoor, ImperialRoomShell } from '../three';
 import { DamagedAstromechDroid } from './DamagedAstromechDroid';
 
@@ -60,9 +60,9 @@ function PulsingLight({ position, color, active }: PulsingLightProps) {
   const ref = useRef<THREE.PointLight>(null);
   useFrame(({ clock }) => {
     if (!ref.current || !active) return;
-    ref.current.intensity = 0.15 + Math.sin(clock.getElapsedTime() * 3) * 0.1;
+    ref.current.intensity = 0.35 + Math.sin(clock.getElapsedTime() * 3) * 0.15;
   });
-  return <pointLight ref={ref} position={position} color={color} intensity={active ? 0.15 : 0} />;
+  return <pointLight ref={ref} position={position} color={color} intensity={active ? 0.35 : 0} />;
 }
 
 export interface CorridorProps {
@@ -156,7 +156,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
           setTimeout(() => {
             addItem('frequency');
             solvePuzzle(PUZZLE_3_ID);
-            onDialogue?.(t('puzzle3.solved', { freq: FREQUENCY_NUMBER }));
+            onDialogue?.(t('puzzle3.solved', { freq: LAUNCH_FREQUENCY }));
           }, 0);
         }
 
@@ -180,12 +180,13 @@ export function Corridor({ onDialogue }: CorridorProps) {
     <group>
       <HintTrigger puzzleId={PUZZLE_3_ID} delays={PUZZLE_3_HINT_DELAYS} />
 
-      <pointLight position={[-2, 2, -1]} intensity={0.35} color="#225588" distance={4} decay={2} />
+      <pointLight position={[-2, 2, -1]} intensity={0.6} color="#3366aa" distance={5} decay={2} />
+      <pointLight position={[0, 3.2, 0]} intensity={0.55} color="#8899bb" distance={8} decay={2} />
 
       <ImperialRoomShell
-        floorColor="#131320"
-        wallBackColor="#171730"
-        wallSideColor="#181830"
+        floorColor="#222838"
+        wallBackColor="#283858"
+        wallSideColor="#262a3a"
         trimColor="#2a3048"
       />
 

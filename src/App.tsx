@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { ACESFilmicToneMapping, Color } from 'three';
-import { Suspense, useState, useCallback } from 'react';
+import { Suspense, useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DetentionCell } from './scenes/DetentionCell';
 import { ControlRoom } from './scenes/ControlRoom';
@@ -8,6 +8,8 @@ import { Corridor } from './scenes/Corridor';
 import { HangarBay } from './scenes/HangarBay';
 import { HUD } from './ui/HUD';
 import { Dialogue } from './ui/Dialogue';
+import { ControlRoomTerminal } from './ui/ControlRoomTerminal';
+import { useControlRoomTerminalStore } from './stores/useControlRoomTerminalStore';
 import { Victory } from './ui/Victory';
 import { Intro } from './ui/Intro';
 import { useGameStore } from './stores/useGameStore';
@@ -36,6 +38,17 @@ export default function App() {
   const puzzle2HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_2_ID));
   const puzzle3HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_3_ID));
   const puzzle4HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_4_ID));
+  const controlRoomTerminalActive = useControlRoomTerminalStore((s) => s.active);
+  const controlRoomInputBuffer = useControlRoomTerminalStore((s) => s.inputBuffer);
+  const controlRoomInputFeedback = useControlRoomTerminalStore((s) => s.inputFeedback);
+  const closeControlRoomTerminal = useControlRoomTerminalStore((s) => s.close);
+  const resetControlRoomTerminal = useControlRoomTerminalStore((s) => s.reset);
+
+  useEffect(() => {
+    if (currentRoom !== 'control-room') {
+      resetControlRoomTerminal();
+    }
+  }, [currentRoom, resetControlRoomTerminal]);
 
   const handleStart = useCallback(
     (name: string) => {
@@ -49,8 +62,9 @@ export default function App() {
     resetGame();
     resetInventory();
     resetHints();
+    resetControlRoomTerminal();
     setDialogue(null);
-  }, [resetGame, resetInventory, resetHints]);
+  }, [resetGame, resetInventory, resetHints, resetControlRoomTerminal]);
 
   let hintText: string | undefined;
   if (currentRoom === 'detention-cell' && puzzle1HintLevel > 0) {
@@ -65,7 +79,18 @@ export default function App() {
 
   return (
     <div style={{ width: '100%', height: '100%' }} data-testid="app" data-room={currentRoom}>
-      <HUD inventory={[...inventory]} hint={hintText} />
+      <HUD
+        inventory={[...inventory]}
+        currentRoom={phase === 'playing' ? currentRoom : undefined}
+        hint={hintText}
+      />
+      {currentRoom === 'control-room' && controlRoomTerminalActive && (
+        <ControlRoomTerminal
+          inputBuffer={controlRoomInputBuffer}
+          inputFeedback={controlRoomInputFeedback}
+          onClose={closeControlRoomTerminal}
+        />
+      )}
       {phase === 'playing' && (
         <Canvas
           gl={{ antialias: true }}
@@ -73,7 +98,7 @@ export default function App() {
           onCreated={({ scene, gl }) => {
             scene.background = new Color(imperialPalette.background);
             gl.toneMapping = ACESFilmicToneMapping;
-            gl.toneMappingExposure = 1.2;
+            gl.toneMappingExposure = 1.5;
           }}
         >
           <ImperialLighting />

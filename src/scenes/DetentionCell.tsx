@@ -23,7 +23,7 @@ function FlickerLight({ hintLevel, position, active }: FlickerLightProps) {
     if (!lightRef.current || !active) return;
     const t = clock.getElapsedTime();
     const speed = hintLevel >= 1 ? 14 : 4;
-    const base = hintLevel >= 1 ? 1.2 : 0.55;
+    const base = hintLevel >= 1 ? 1.5 : 0.85;
     lightRef.current.intensity = base + Math.sin(t * speed) * 0.35;
   });
 
@@ -32,7 +32,7 @@ function FlickerLight({ hintLevel, position, active }: FlickerLightProps) {
       ref={lightRef}
       position={position}
       color="#88aaff"
-      intensity={active ? 0.55 : 0}
+      intensity={active ? 0.85 : 0}
       distance={2.5}
       decay={2}
     />
@@ -98,12 +98,12 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       {/* Ceiling panel — diegetic fill on back wall */}
       <mesh position={[0, 3.35, -3.85]}>
         <boxGeometry args={[1.4, 0.08, 0.12]} />
-        <meshStandardMaterial color="#334466" emissive="#223355" emissiveIntensity={0.35} />
+        <meshStandardMaterial color="#445577" emissive="#334466" emissiveIntensity={0.55} />
       </mesh>
       <pointLight
         position={[0, 3.2, -3.5]}
         color="#88aaff"
-        intensity={0.35}
+        intensity={0.65}
         distance={3}
         decay={2}
       />

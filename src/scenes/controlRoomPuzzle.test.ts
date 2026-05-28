@@ -4,6 +4,7 @@ import {
   canExitControlRoom,
   PUZZLE_2_ID,
   PUZZLE_2_HINT_DELAYS,
+  SEQUENCE_HIGHLIGHT_MS,
   CORRECT_SEQUENCE,
 } from './controlRoomPuzzle';
 import { useInventoryStore } from '../stores/useInventoryStore';
@@ -116,5 +117,9 @@ describe('puzzle 2 constants', () => {
 
   it('third hint fires at 90 seconds', () => {
     expect(PUZZLE_2_HINT_DELAYS[2]).toBe(90_000);
+  });
+
+  it('sequence highlight lasts eight seconds after terminal opens', () => {
+    expect(SEQUENCE_HIGHLIGHT_MS).toBe(8_000);
   });
 });

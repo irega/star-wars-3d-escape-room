@@ -60,14 +60,14 @@ export function DamagedAstromechDroid({ hintLevel }: DamagedAstromechDroidProps)
       <group rotation={pose}>
         <pointLight
           position={[0.2, 0.55, 0.45]}
-          intensity={0.5}
+          intensity={0.75}
           color="#d8e8f8"
-          distance={1.8}
+          distance={2.2}
           decay={2}
         />
         <pointLight
           position={[-0.35, 0.25, 0.2]}
-          intensity={0.25}
+          intensity={0.4}
           color="#88bbaa"
           distance={1.4}
           decay={2}

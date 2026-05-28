@@ -9,10 +9,17 @@
   color: #ffd700;
 }
 
-.inventory {
+.topBar {
   position: absolute;
   top: 16px;
   left: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.inventory,
+.location {
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #ffd700;
   border-radius: 4px;
@@ -20,12 +27,17 @@
   min-width: 140px;
 }
 
-.inventoryLabel {
+.panelLabel {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   opacity: 0.8;
   margin-bottom: 6px;
+}
+
+.locationName {
+  font-size: 0.85rem;
+  line-height: 1.3;
 }
 
 .inventoryList {

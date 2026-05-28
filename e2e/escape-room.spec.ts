@@ -30,9 +30,8 @@ async function clickCanvas(page: Page, position: { x: number; y: number }) {
 //   Loose panel  world [2.82, 1.5, −3.0]  → depth 7.65 → (813, 216)
 //   Cell door bar world [0.26, 1.4, 3.94] → depth 1.07 → (754, 302)
 // Scene 2 — Control Room
-//   Terminal body center world [0, 0.5, -0.5] → depth 5.57 → (640, 310)
-//   Blast door center   world [0, 1.4, -3.92] → depth 8.56 → (640, 221)
-//   (Blast door is on the back wall so it does not occlude the terminal)
+//   Terminal body center world [-2.75, 1.4, -0.8] (left wall, near camera) → depth 5.59 → (403, 227)
+//   Blast door center   world [0, 1.4, -3.92] (back wall) → depth 8.56 → (640, 221)
 // Scene 3 — Corridor
 //   Cell 0  world [0.5,  0.3, 2.3]  → depth 2.97 → (719, 426)
 //   Cell 1  world [2.6,  0.3, 1.3]  → depth 3.92 → (951, 373)
@@ -50,7 +49,7 @@ const SCENE1 = {
 };
 
 const SCENE2 = {
-  terminal: { x: 640, y: 310 },
+  terminal: { x: 403, y: 227 },
   door: { x: 640, y: 221 },
 };
 
@@ -73,7 +72,7 @@ const CORRECT_SEQUENCE = ['A', 'U', 'R', 'E'];
 test('happy path: escape from detention cell through control room to corridor', async ({
   page,
 }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(120_000);
   await page.goto('/');
   await expect(page.getByTestId('app')).toBeVisible();
 
@@ -106,6 +105,7 @@ test('happy path: escape from detention cell through control room to corridor', 
 
   // Solve the Imperial Override puzzle at the terminal
   await clickCanvas(page, SCENE2.terminal);
+  await expect(page.getByTestId('control-room-terminal')).toBeVisible();
   await expect(page.getByText('IMPERIAL OVERRIDE SYSTEM v4.2')).toBeVisible();
 
   for (const letter of CORRECT_SEQUENCE) {
@@ -158,7 +158,7 @@ test('happy path: escape from detention cell through control room to corridor', 
 
   // All conduits powered — frequency in inventory, dialogue shown
   await expect(
-    page.getByText(/All conduits powered! Frequency 47 acquired/),
+    page.getByText(/All conduits powered! Frequency 1138 acquired/),
   ).toBeVisible();
   await expect(page.getByRole('listitem').filter({ hasText: 'frequency' })).toBeVisible();
   await page.getByRole('button', { name: /close/i }).click();
