@@ -40,3 +40,11 @@ export function areAllSlotsCorrect(
 export function canExitCorridor(hasSolvedPuzzle3: boolean): boolean {
   return hasSolvedPuzzle3;
 }
+
+export function shouldExtractFromSlot(
+  selectedCellId: number | null,
+  slotOccupied: boolean,
+  puzzleSolved: boolean,
+): boolean {
+  return selectedCellId === null && slotOccupied && !puzzleSolved;
+}

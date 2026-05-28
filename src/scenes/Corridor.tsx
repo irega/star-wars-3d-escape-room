@@ -13,6 +13,7 @@ import {
   canExitCorridor,
   cycleOrientation,
   isCellPlacementCorrect,
+  shouldExtractFromSlot,
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
   PUZZLE_3_HINT_DELAYS,
@@ -113,8 +114,21 @@ export function Corridor({ onDialogue }: CorridorProps) {
 
   const handleSlotClick = useCallback(
     (slotIndex: number) => {
-      if (selectedCellId === null || puzzleSolved) return;
+      if (puzzleSolved) return;
 
+      const slotOccupied = cells.some((c) => c.placedInSlot === slotIndex);
+
+      if (shouldExtractFromSlot(selectedCellId, slotOccupied, puzzleSolved)) {
+        // Extract mode: return the occupying cell to its world position
+        setCells((prev) =>
+          prev.map((c) => (c.placedInSlot === slotIndex ? { ...c, placedInSlot: null } : c)),
+        );
+        return;
+      }
+
+      if (selectedCellId === null) return;
+
+      // Place mode: put the selected cell into the slot
       setCells((prev) => {
         const next = prev.map((c, id) => {
           // Evict any existing cell in that slot
@@ -149,7 +163,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
 
       setSelectedCellId(null);
     },
-    [selectedCellId, puzzleSolved, addItem, solvePuzzle, t, onDialogue],
+    [cells, selectedCellId, puzzleSolved, addItem, solvePuzzle, t, onDialogue],
   );
 
   const handleDoorClick = useCallback(() => {
