@@ -35,4 +35,23 @@ describe('Corridor', () => {
       );
     });
   });
+
+  it('power cell positions do not overlap with each other', () => {
+    // Regression test: cells must be separated to avoid visual overlap.
+    // Each cell is approximately [0.28, 0.5, 0.18], so minimum safe distance ≈ 0.6 units.
+    const MIN_CELL_SEPARATION = 0.6;
+
+    for (let i = 0; i < CELL_POSITIONS.length; i++) {
+      for (let j = i + 1; j < CELL_POSITIONS.length; j++) {
+        const pos1 = CELL_POSITIONS[i];
+        const pos2 = CELL_POSITIONS[j];
+        const dx = pos1[0] - pos2[0];
+        const dz = pos1[2] - pos2[2];
+        const distXZ = Math.sqrt(dx * dx + dz * dz);
+        expect(distXZ, `cell ${i} and ${j} are overlapping`).toBeGreaterThanOrEqual(
+          MIN_CELL_SEPARATION,
+        );
+      }
+    }
+  });
 });
