@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { startAmbientMusic } from '../audio/ambientMusic';
 import styles from './Intro.module.css';
 
 interface IntroProps {
@@ -10,8 +11,20 @@ export function Intro({ onStart }: IntroProps) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
 
+  const trimmedName = name.trim();
+  const canStart = trimmedName.length > 0;
+  const audioUnlocked = useRef(false);
+
+  const unlockAudio = () => {
+    if (audioUnlocked.current) return;
+    audioUnlocked.current = true;
+    startAmbientMusic();
+  };
+
   const handleStart = () => {
-    onStart(name.trim() || 'Rebel');
+    if (!canStart) return;
+    startAmbientMusic();
+    onStart(trimmedName);
   };
 
   return (
@@ -26,11 +39,22 @@ export function Intro({ onStart }: IntroProps) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          onKeyDown={unlockAudio}
+          onPointerDown={unlockAudio}
+          onPaste={unlockAudio}
           placeholder={t('intro.namePlaceholder')}
           maxLength={30}
+          required
+          autoFocus
           aria-label={t('intro.namePlaceholder')}
+          aria-describedby="intro-name-hint"
         />
-        <button className={styles.startBtn} onClick={handleStart}>
+        <button
+          type="button"
+          className={styles.startBtn}
+          onClick={handleStart}
+          disabled={!canStart}
+        >
           {t('intro.startButton')}
         </button>
       </div>

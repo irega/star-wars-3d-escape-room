@@ -7,8 +7,14 @@
     "story1": "You are a Rebel Alliance operative captured aboard the Death Star.",
     "story2": "A partial power failure has weakened Imperial security. This is your chance.",
     "story3": "Solve 4 puzzles to reach the hangar bay and escape before Imperial forces restore order.",
-    "namePlaceholder": "Your name (optional)",
+    "namePlaceholder": "Your name",
     "startButton": "BEGIN MISSION"
+  },
+  "audio": {
+    "on": "Music on",
+    "off": "Music off",
+    "mute": "Mute Imperial March",
+    "unmute": "Unmute Imperial March"
   },
   "hud": {
     "hint": "Hint",

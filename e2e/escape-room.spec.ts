@@ -78,8 +78,8 @@ test('happy path: escape from detention cell through control room to corridor', 
 
   // ── Intro Screen ───────────────────────────────────────────────────────────
 
-  // Wait for intro screen and click "BEGIN MISSION" button
   await expect(page.getByTestId('intro')).toBeVisible();
+  await page.getByRole('textbox').fill('Playwright');
   await page.getByRole('button', { name: /BEGIN MISSION/i }).click();
   await page.locator('canvas').waitFor({ state: 'visible' });
   await page.waitForTimeout(1000);
