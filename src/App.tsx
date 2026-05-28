@@ -21,6 +21,8 @@ import { PUZZLE_1_ID } from './scenes/detentionCellPuzzle';
 import { PUZZLE_2_ID } from './scenes/controlRoomPuzzle';
 import { PUZZLE_3_ID } from './scenes/corridorPuzzle';
 import { PUZZLE_4_ID } from './scenes/hangarBayPuzzle';
+import { resetAmbientMusic, stopAmbientMusic } from './audio/ambientMusic';
+import { AmbientMusicToggle } from './ui/AmbientMusicToggle';
 
 export default function App() {
   const { t } = useTranslation();
@@ -74,6 +76,8 @@ export default function App() {
   );
 
   const handleReplay = useCallback(() => {
+    stopAmbientMusic();
+    resetAmbientMusic();
     resetGame();
     resetInventory();
     resetHints();
@@ -127,6 +131,7 @@ export default function App() {
       )}
       {dialogue && <Dialogue text={dialogue} isOpen onClose={() => setDialogueEntry(null)} />}
       {phase === 'intro' && <Intro onStart={handleStart} />}
+      <AmbientMusicToggle />
       {phase === 'won' && <Victory playerName={playerName} onReplay={handleReplay} />}
     </div>
   );

@@ -13,6 +13,22 @@ async function clickCanvas(page: Page, position: { x: number; y: number }) {
   await page.locator('canvas').click({ position, force: true });
 }
 
+/** Skip crawl and start the game (intro requires skip or full crawl before the name form). */
+async function completeIntro(page: Page, playerName = 'Playwright') {
+  await expect(page.getByTestId('intro')).toBeVisible();
+
+  await page.getByTestId('skip-crawl').click();
+
+  const nameInput = page.getByRole('textbox', { name: /your name|tu nombre/i });
+  await expect(nameInput).toBeVisible({ timeout: 10_000 });
+  await nameInput.fill(playerName);
+
+  await page.getByRole('button', { name: /begin mission|iniciar misión/i }).click();
+
+  await expect(page.locator('canvas')).toBeVisible({ timeout: 10_000 });
+  await page.waitForTimeout(500);
+}
+
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
 // Camera: position [0, 1.6, 5], fov=75, lookAt [0,0,0] (R3F default).
 // Camera is tilted ~17.7° downward (rotation.x = -atan(1.6/5) ≈ -0.310 rad).
@@ -76,13 +92,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.goto('/');
   await expect(page.getByTestId('app')).toBeVisible();
 
-  // ── Intro Screen ───────────────────────────────────────────────────────────
-
-  // Wait for intro screen and click "BEGIN MISSION" button
-  await expect(page.getByTestId('intro')).toBeVisible();
-  await page.getByRole('button', { name: /BEGIN MISSION/i }).click();
-  await page.locator('canvas').waitFor({ state: 'visible' });
-  await page.waitForTimeout(1000);
+  await completeIntro(page);
 
   // ── Scene 1: Detention Cell ───────────────────────────────────────────────
 

@@ -2,14 +2,10 @@
   position: fixed;
   inset: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(ellipse at center, #0a0c14 0%, #000 72%);
+  flex-direction: column;
+  background: #000;
   z-index: 50;
-  font-family: 'Courier New', monospace;
-  color: #ffd700;
   overflow: hidden;
-  padding: 24px;
 }
 
 .overlay::after {
@@ -24,56 +20,197 @@
     rgba(0, 0, 0, 0.14) 2px,
     rgba(0, 0, 0, 0.14) 4px
   );
-  opacity: 0.4;
+  opacity: 0.35;
+  z-index: 3;
 }
 
-.panel {
+/* ── Star Wars crawl ───────────────────────────────────────────────────── */
+
+.crawlStage {
   position: relative;
-  z-index: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  gap: 20px;
-  padding: 40px 48px;
-  max-width: 640px;
   width: 100%;
-  border: 1px solid rgba(255, 215, 0, 0.28);
-  border-radius: 4px;
-  background: rgba(10, 12, 20, 0.82);
-  box-shadow:
-    0 0 48px rgba(85, 119, 170, 0.1),
-    inset 0 0 80px rgba(0, 0, 0, 0.35);
+  min-height: 0;
+  z-index: 1;
 }
 
-.title {
-  font-size: 1.6rem;
-  font-weight: bold;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin: 0 0 12px;
-  text-shadow: 0 0 20px rgba(255, 215, 0, 0.25);
-}
-
-.story {
-  font-size: 1rem;
-  max-width: 560px;
-  line-height: 1.6;
-  opacity: 0.9;
+.longTimeAgo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0;
+  padding: 0 32px;
+  color: #4bd5ee;
+  font-family: 'Segoe UI', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: clamp(1rem, 2.8vw, 1.25rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-align: center;
+  line-height: 1.5;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  animation: longTimeAgoFade 2.5s ease-out 0.4s forwards;
+}
+
+.crawlViewport {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  perspective: 320px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 78%, transparent 100%);
+}
+
+.crawl {
+  position: absolute;
+  left: 50%;
+  bottom: -8%;
+  width: min(72%, 34rem);
+  transform-origin: 50% 100%;
+  color: #ffe81f;
+  font-family: 'Segoe UI', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-weight: 700;
+  text-align: justify;
+  line-height: 1.65;
+  letter-spacing: 0.035em;
+  will-change: transform;
+}
+
+.crawlRunning {
+  transform: translateX(-50%) rotateX(22deg);
+  animation: starWarsCrawl 42s linear forwards;
+}
+
+.crawlTitle {
+  font-size: clamp(1.5rem, 4.5vw, 2.4rem);
+  text-align: center;
+  margin: 0 0 2.5rem;
+  line-height: 1.25;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.crawlBody p {
+  margin: 0 0 1.75rem;
+  font-size: clamp(0.95rem, 2.4vw, 1.25rem);
+}
+
+@keyframes longTimeAgoFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes starWarsCrawl {
+  0% {
+    transform: translateX(-50%) rotateX(22deg) translateY(70%);
+  }
+  100% {
+    transform: translateX(-50%) rotateX(22deg) translateY(-240%);
+  }
+}
+
+.introBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 215, 0, 0.55);
+  color: rgba(255, 215, 0, 0.9);
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  padding: 10px 24px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-radius: 4px;
+  min-width: 160px;
+}
+
+.introBtn:hover {
+  background: rgba(255, 215, 0, 0.12);
+  border-color: #ffd700;
+  color: #ffd700;
+}
+
+.introBtn:focus-visible {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+.preCrawlActions {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.skipCrawlSolo {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* ── Post-crawl controls ─────────────────────────────────────────────────── */
+
+.controlsHidden,
+.controlsVisible {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity 0.7s ease;
+}
+
+.controlsHidden {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.controlsVisible {
+  opacity: 1;
+  pointer-events: auto;
+  margin-top: auto;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 40%, transparent);
+}
+
+.controlsPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
 .nameInput {
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.5);
   border: 1px solid #ffd700;
   color: #ffd700;
-  font-family: inherit;
+  font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   padding: 10px 16px;
-  width: 260px;
+  width: min(280px, 90vw);
   border-radius: 2px;
   letter-spacing: 0.05em;
-  margin-top: 12px;
 }
 
 .nameInput::placeholder {
@@ -90,16 +227,54 @@
   background: transparent;
   border: 1px solid #ffd700;
   color: #ffd700;
-  font-family: inherit;
+  font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   padding: 10px 32px;
   cursor: pointer;
   border-radius: 2px;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  margin-top: 8px;
 }
 
-.startBtn:hover {
+.startBtn:hover:not(:disabled) {
   background: rgba(255, 215, 0, 0.15);
+}
+
+.startBtn:focus-visible {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .longTimeAgo {
+    animation: none;
+    opacity: 1;
+  }
+
+  .crawl,
+  .crawlRunning {
+    animation: none;
+    position: static;
+    transform: none;
+    width: min(90%, 34rem);
+    margin: 2rem auto;
+    text-align: center;
+  }
+
+  .preCrawlActions {
+    display: none;
+  }
+
+  .crawlViewport {
+    perspective: none;
+    overflow: auto;
+    mask-image: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .crawlBody p {
+    text-align: center;
+  }
 }
