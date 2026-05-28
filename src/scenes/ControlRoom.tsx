@@ -14,12 +14,44 @@ import {
 } from './controlRoomPuzzle';
 
 // Each screen has a distinct Aurebesh symbol and color identity
-const SCREENS = [
+export const SCREENS = [
   { x: -2.25, label: 'AUREK', symbol: 'A', emissive: '#0055cc', activeEmissive: '#0077ff' },
   { x: -0.75, label: 'UNESH', symbol: 'U', emissive: '#007777', activeEmissive: '#009999' },
   { x: 0.75, label: 'RESH', symbol: 'R', emissive: '#660099', activeEmissive: '#8800cc' },
   { x: 2.25, label: 'ESH', symbol: 'E', emissive: '#006633', activeEmissive: '#009944' },
 ];
+
+type Bar = { pos: [number, number, number]; size: [number, number, number] };
+
+// Aurebesh-inspired geometric symbols — each letter rendered as a unique bar composition
+export const AUREBESH_SYMBOL_BARS: Record<string, Bar[]> = {
+  // AUREK (A): top bar + left vertical + middle crossbar
+  A: [
+    { pos: [0, 0.22, 0.06], size: [0.45, 0.06, 0.02] },
+    { pos: [-0.17, 0, 0.06], size: [0.06, 0.45, 0.02] },
+    { pos: [0.05, 0, 0.06], size: [0.3, 0.06, 0.02] },
+  ],
+  // UNESH (U): left vertical + right vertical + bottom bar
+  U: [
+    { pos: [-0.17, 0.05, 0.06], size: [0.06, 0.4, 0.02] },
+    { pos: [0.17, 0.05, 0.06], size: [0.06, 0.4, 0.02] },
+    { pos: [0, -0.17, 0.06], size: [0.4, 0.06, 0.02] },
+  ],
+  // RESH (R): left vertical + top bar + upper-right bar + lower-right leg
+  R: [
+    { pos: [-0.17, 0, 0.06], size: [0.06, 0.45, 0.02] },
+    { pos: [0, 0.22, 0.06], size: [0.45, 0.06, 0.02] },
+    { pos: [0.08, 0.08, 0.06], size: [0.22, 0.06, 0.02] },
+    { pos: [0.12, -0.13, 0.06], size: [0.22, 0.06, 0.02] },
+  ],
+  // ESH (E): left vertical + top bar + middle bar + bottom bar
+  E: [
+    { pos: [-0.17, 0, 0.06], size: [0.06, 0.45, 0.02] },
+    { pos: [0, 0.22, 0.06], size: [0.4, 0.06, 0.02] },
+    { pos: [-0.03, 0, 0.06], size: [0.3, 0.06, 0.02] },
+    { pos: [0, -0.22, 0.06], size: [0.4, 0.06, 0.02] },
+  ],
+};
 
 export interface ControlRoomProps {
   onDialogue?: (text: string | null) => void;
@@ -192,16 +224,13 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
                 emissiveIntensity={isFirstScreen && hintLevel >= 1 ? 2.5 : 1.8}
               />
             </mesh>
-            {/* Symbol indicator — thin horizontal bar (top) */}
-            <mesh position={[0, 0.22, 0.06]}>
-              <boxGeometry args={[0.5, 0.06, 0.02]} />
-              <meshStandardMaterial color={screenEmissive} emissive={screenEmissive} />
-            </mesh>
-            {/* Symbol indicator — vertical bar */}
-            <mesh position={[-0.15, 0, 0.06]}>
-              <boxGeometry args={[0.06, 0.45, 0.02]} />
-              <meshStandardMaterial color={screenEmissive} emissive={screenEmissive} />
-            </mesh>
+            {/* Symbol indicator — unique bar composition per Aurebesh letter */}
+            {AUREBESH_SYMBOL_BARS[screen.symbol].map((bar, j) => (
+              <mesh key={j} position={bar.pos}>
+                <boxGeometry args={bar.size} />
+                <meshStandardMaterial color={screenEmissive} emissive={screenEmissive} />
+              </mesh>
+            ))}
           </group>
         );
       })}
