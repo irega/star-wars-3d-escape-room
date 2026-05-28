@@ -12,7 +12,14 @@
   },
   "hud": {
     "hint": "Hint",
-    "inventory": "Inventory"
+    "inventory": "Inventory",
+    "location": "Location",
+    "rooms": {
+      "detention-cell": "Detention Cell",
+      "control-room": "Control Room",
+      "corridor": "Corridor",
+      "hangar-bay": "Hangar Bay"
+    }
   },
   "dialogue": {
     "close": "Close"

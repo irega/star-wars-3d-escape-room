@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Html } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../stores/useGameStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import { useHintStore } from '../stores/useHintStore';
+import { useControlRoomTerminalStore } from '../stores/useControlRoomTerminalStore';
 import { InteractiveObject } from '../components/InteractiveObject';
 import { HintTrigger } from '../components/HintTrigger';
 import {
@@ -18,14 +18,41 @@ import {
   canExitControlRoom,
   PUZZLE_2_ID,
   PUZZLE_2_HINT_DELAYS,
+  SEQUENCE_HIGHLIGHT_MS,
 } from './controlRoomPuzzle';
 
+const SYMBOL_COLOR = '#f4f8ff';
+
 export const SCREENS = [
-  { x: -2.25, label: 'AUREK', symbol: 'A', emissive: '#0055cc', activeEmissive: '#0077ff' },
-  { x: -0.75, label: 'UNESH', symbol: 'U', emissive: '#007777', activeEmissive: '#009999' },
-  { x: 0.75, label: 'RESH', symbol: 'R', emissive: '#660099', activeEmissive: '#8800cc' },
-  { x: 2.25, label: 'ESH', symbol: 'E', emissive: '#006633', activeEmissive: '#009944' },
-];
+  {
+    x: -2.25,
+    label: 'AUREK',
+    symbol: 'A',
+    tint: '#2d6eb5',
+    highlightTint: '#5ca8ff',
+  },
+  {
+    x: -0.75,
+    label: 'UNESH',
+    symbol: 'U',
+    tint: '#1f8f8a',
+    highlightTint: '#4fd9d2',
+  },
+  {
+    x: 0.75,
+    label: 'RESH',
+    symbol: 'R',
+    tint: '#7a4cad',
+    highlightTint: '#b87aff',
+  },
+  {
+    x: 2.25,
+    label: 'ESH',
+    symbol: 'E',
+    tint: '#2d9458',
+    highlightTint: '#5ee088',
+  },
+] as const;
 
 type Bar = {
   pos: [number, number, number];
@@ -65,9 +92,11 @@ export interface ControlRoomProps {
 export function ControlRoom({ onDialogue }: ControlRoomProps) {
   const { t } = useTranslation();
 
-  const [terminalActive, setTerminalActive] = useState(false);
-  const [inputBuffer, setInputBuffer] = useState<string[]>([]);
-  const [inputFeedback, setInputFeedback] = useState<'none' | 'wrong'>('none');
+  const terminalActive = useControlRoomTerminalStore((s) => s.active);
+  const openTerminal = useControlRoomTerminalStore((s) => s.open);
+  const closeTerminal = useControlRoomTerminalStore((s) => s.close);
+  const setInputBuffer = useControlRoomTerminalStore((s) => s.setInputBuffer);
+  const setInputFeedback = useControlRoomTerminalStore((s) => s.setInputFeedback);
 
   const addItem = useInventoryStore((s) => s.addItem);
   const solvePuzzle = useGameStore((s) => s.solvePuzzle);
@@ -75,13 +104,21 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
   const solvedPuzzles = useGameStore((s) => s.solvedPuzzles);
   const puzzleSolved = solvedPuzzles.includes(PUZZLE_2_ID);
   const hintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_2_ID));
+  const [highlightPulse, setHighlightPulse] = useState(true);
+  const sequenceHighlight = terminalActive && highlightPulse;
+
+  useEffect(() => {
+    if (!terminalActive) return;
+
+    const timer = setTimeout(() => setHighlightPulse(false), SEQUENCE_HIGHLIGHT_MS);
+    return () => clearTimeout(timer);
+  }, [terminalActive]);
 
   const handleTerminalClick = useCallback(() => {
     if (puzzleSolved || terminalActive) return;
-    setInputBuffer([]);
-    setInputFeedback('none');
-    setTerminalActive(true);
-  }, [puzzleSolved, terminalActive]);
+    setHighlightPulse(true);
+    openTerminal();
+  }, [puzzleSolved, terminalActive, openTerminal]);
 
   const handleDoorClick = useCallback(() => {
     if (canExitControlRoom(puzzleSolved)) {
@@ -96,8 +133,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
       if (validateSequence(buffer)) {
         addItem('override-code');
         solvePuzzle(PUZZLE_2_ID);
-        setTerminalActive(false);
-        setInputBuffer([]);
+        closeTerminal();
         onDialogue?.(t('puzzle2.terminal.correct'));
       } else {
         setInputFeedback('wrong');
@@ -122,7 +158,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
         }, 1500);
       }
     },
-    [addItem, solvePuzzle, t, onDialogue],
+    [addItem, solvePuzzle, closeTerminal, setInputBuffer, setInputFeedback, t, onDialogue],
   );
 
   useEffect(() => {
@@ -130,9 +166,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
 
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setTerminalActive(false);
-        setInputBuffer([]);
-        setInputFeedback('none');
+        closeTerminal();
         return;
       }
       if (e.key === 'Backspace') {
@@ -140,10 +174,8 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
         return;
       }
       if (e.key === 'Enter') {
-        setInputBuffer((prev) => {
-          submitInput(prev);
-          return prev;
-        });
+        const buffer = useControlRoomTerminalStore.getState().inputBuffer;
+        submitInput(buffer);
         return;
       }
       if (/^[a-zA-Z]$/.test(e.key)) {
@@ -156,7 +188,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [terminalActive, submitInput]);
+  }, [terminalActive, submitInput, closeTerminal, setInputBuffer]);
 
   const doorIndicatorColor = puzzleSolved
     ? imperialPalette.indicatorOpen
@@ -167,41 +199,57 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
 
   const terminalScreenColor = puzzleSolved ? '#003300' : '#001133';
   const terminalScreenEmissive = puzzleSolved ? '#00aa22' : terminalActive ? '#0044cc' : '#003388';
+  const showSequence = terminalActive;
 
   return (
     <group>
       <HintTrigger puzzleId={PUZZLE_2_ID} delays={PUZZLE_2_HINT_DELAYS} />
 
-      <pointLight position={[0, 2, -3]} intensity={0.45} color="#2244aa" distance={4} decay={2} />
+      <pointLight position={[0, 2, -3]} intensity={0.7} color="#4466bb" distance={5} decay={2} />
+      <pointLight
+        position={[-2.5, 2, -1]}
+        intensity={0.55}
+        color="#4466bb"
+        distance={4}
+        decay={2}
+      />
+      <pointLight position={[0, 3.2, -2]} intensity={0.5} color="#8899cc" distance={6} decay={2} />
 
-      <ImperialRoomShell floorColor="#161626" wallBackColor="#1a2238" wallSideColor="#181828" />
+      <ImperialRoomShell floorColor="#222838" wallBackColor="#283858" wallSideColor="#262a3a" />
 
-      {SCREENS.map((screen, i) => {
-        const isFirstScreen = i === 0;
-        const screenEmissive =
-          isFirstScreen && hintLevel >= 1 ? screen.activeEmissive : screen.emissive;
-        const faceIntensity = isFirstScreen && hintLevel >= 1 ? 2.5 : 1.8;
+      {showSequence &&
+        SCREENS.map((screen, i) => {
+          const isFirstScreen = i === 0;
+          const hintBoost = isFirstScreen && hintLevel >= 1 && sequenceHighlight;
+          const tint = hintBoost ? screen.highlightTint : screen.tint;
+          const bezelIntensity = sequenceHighlight ? 1.1 : 0.65;
+          const faceIntensity = sequenceHighlight ? (hintBoost ? 1.6 : 1.25) : 0.85;
 
-        return (
-          <group key={screen.symbol} position={[screen.x, 2.1, -3.88]}>
-            <HologramScreen
-              emissive={screenEmissive}
-              emissiveIntensity={1.8}
-              faceEmissiveIntensity={faceIntensity}
-            >
-              {AUREBESH_SYMBOL_BARS[screen.symbol].map((bar, j) => (
-                <mesh key={j} position={bar.pos} rotation={bar.rotation ?? [0, 0, 0]}>
-                  <boxGeometry args={bar.size} />
-                  <meshStandardMaterial color={screenEmissive} emissive={screenEmissive} />
-                </mesh>
-              ))}
-            </HologramScreen>
-          </group>
-        );
-      })}
+          return (
+            <group key={screen.symbol} position={[screen.x, 2.75, -3.88]}>
+              <HologramScreen
+                emissive={tint}
+                emissiveIntensity={bezelIntensity}
+                faceEmissiveIntensity={faceIntensity}
+                wallGlow={sequenceHighlight}
+              >
+                {AUREBESH_SYMBOL_BARS[screen.symbol].map((bar, j) => (
+                  <mesh key={j} position={bar.pos} rotation={bar.rotation ?? [0, 0, 0]}>
+                    <boxGeometry args={bar.size} />
+                    <meshStandardMaterial
+                      color={SYMBOL_COLOR}
+                      emissive={SYMBOL_COLOR}
+                      emissiveIntensity={sequenceHighlight ? 2.6 : 1.9}
+                    />
+                  </mesh>
+                ))}
+              </HologramScreen>
+            </group>
+          );
+        })}
 
       <InteractiveObject onClick={handleTerminalClick} isDisabled={puzzleSolved || terminalActive}>
-        <group position={[0, 0, -0.5]}>
+        <group position={[-2.75, 0.9, -0.8]} rotation={[0, Math.PI / 2, 0]}>
           <TerminalConsole
             screenColor={terminalScreenColor}
             screenEmissive={terminalScreenEmissive}
@@ -216,81 +264,6 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
           <BlastDoor unlocked={puzzleSolved} />
         </group>
       </InteractiveObject>
-
-      {terminalActive && (
-        <Html fullscreen>
-          <div
-            style={{
-              position: 'fixed',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(0,0,0,0.75)',
-              zIndex: 30,
-              fontFamily: '"Courier New", Courier, monospace',
-            }}
-          >
-            <div
-              style={{
-                border: '1px solid #ffd700',
-                padding: '2rem',
-                background: 'rgba(0,0,16,0.95)',
-                minWidth: '380px',
-                color: '#ffd700',
-              }}
-            >
-              <div style={{ fontSize: '0.75rem', marginBottom: '0.5rem', opacity: 0.7 }}>
-                {t('puzzle2.terminal.header')}
-              </div>
-              <div style={{ fontSize: '1.1rem', marginBottom: '1.25rem' }}>
-                {t('puzzle2.terminal.prompt')}
-              </div>
-              <div
-                style={{
-                  fontSize: '1.5rem',
-                  letterSpacing: '0.3em',
-                  marginBottom: '1rem',
-                  color: inputFeedback === 'wrong' ? '#ff4444' : '#ffd700',
-                }}
-              >
-                {'> '}
-                {inputBuffer.join('')}
-                {inputBuffer.length < 4 && inputFeedback !== 'wrong' && (
-                  <span style={{ animation: 'none' }}>_</span>
-                )}
-              </div>
-              {inputFeedback === 'wrong' && (
-                <div style={{ color: '#ff4444', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                  {t('puzzle2.terminal.wrong')}
-                </div>
-              )}
-              <div style={{ fontSize: '0.75rem', opacity: 0.6 }}>
-                {t('puzzle2.terminal.instructions')}
-              </div>
-              <button
-                onClick={() => {
-                  setTerminalActive(false);
-                  setInputBuffer([]);
-                  setInputFeedback('none');
-                }}
-                style={{
-                  marginTop: '1.25rem',
-                  background: 'transparent',
-                  border: '1px solid #ffd700',
-                  color: '#ffd700',
-                  padding: '0.4rem 1rem',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  fontSize: '0.85rem',
-                }}
-              >
-                {t('dialogue.close')}
-              </button>
-            </div>
-          </div>
-        </Html>
-      )}
     </group>
   );
 }

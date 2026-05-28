@@ -83,10 +83,17 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
     <group>
       <HintTrigger puzzleId={PUZZLE_4_ID} delays={PUZZLE_4_HINT_DELAYS} />
 
-      <pointLight position={[0, 3, -4]} intensity={0.5} color="#2244aa" distance={6} decay={2} />
-      <pointLight position={[-4, 2.5, 0]} intensity={0.45} color="#880000" distance={5} decay={2} />
-      <pointLight position={[4, 2.5, 0]} intensity={0.45} color="#880000" distance={5} decay={2} />
-      <pointLight position={[0, 1.2, 2]} intensity={0.55} color="#5577aa" distance={8} decay={2} />
+      <pointLight position={[0, 3, -4]} intensity={0.75} color="#4466bb" distance={8} decay={2} />
+      <pointLight position={[-4, 2.5, 0]} intensity={0.65} color="#aa4444" distance={6} decay={2} />
+      <pointLight position={[4, 2.5, 0]} intensity={0.65} color="#aa4444" distance={6} decay={2} />
+      <pointLight position={[0, 1.2, 2]} intensity={0.8} color="#7799cc" distance={10} decay={2} />
+      <pointLight
+        position={[0, 4.5, -2]}
+        intensity={0.6}
+        color="#aabbdd"
+        distance={12}
+        decay={1.5}
+      />
 
       <ImperialRoomShell
         width={10}

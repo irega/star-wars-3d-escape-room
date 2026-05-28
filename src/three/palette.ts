@@ -1,11 +1,11 @@
 /** Imperial interior color tokens for procedural room geometry. */
 export const imperialPalette = {
-  background: '#0a0c14',
-  deck: '#1e2038',
-  wall: '#222238',
-  wallBack: '#1e2d50',
-  wallSide: '#222238',
-  ceiling: '#0d0d1a',
+  background: '#161c2e',
+  deck: '#2a3048',
+  wall: '#2e3448',
+  wallBack: '#283858',
+  wallSide: '#2e3448',
+  ceiling: '#1a1e2e',
   trim: '#2a3048',
   frame: '#2a3048',
   panel: '#1a2038',

@@ -32,6 +32,17 @@ describe('HUD', () => {
     expect(screen.queryByText('Hint')).not.toBeInTheDocument();
   });
 
+  it('renders current room label when currentRoom is provided', () => {
+    render(<HUD inventory={[]} currentRoom="control-room" />);
+    expect(screen.getByText('Location')).toBeInTheDocument();
+    expect(screen.getByText('Control Room')).toBeInTheDocument();
+  });
+
+  it('does not render location when currentRoom is absent', () => {
+    render(<HUD inventory={[]} />);
+    expect(screen.queryByText('Location')).not.toBeInTheDocument();
+  });
+
   it('has an aria-live region for screen reader announcements', () => {
     render(<HUD inventory={[]} announcement="Keycard collected" />);
     const liveRegion = screen.getByRole('status');

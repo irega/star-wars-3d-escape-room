@@ -24,7 +24,7 @@ export function HologramScreen({
         <pointLight
           position={[0, 0, -0.35]}
           color={emissive}
-          intensity={0.25}
+          intensity={0.45}
           distance={1.2}
           decay={2}
         />
@@ -42,7 +42,7 @@ export function HologramScreen({
       <mesh position={[0, 0, 0.04]}>
         <boxGeometry args={[0.7, 0.7, 0.01]} />
         <meshStandardMaterial
-          color="#000011"
+          color="#0a1420"
           emissive={emissive}
           emissiveIntensity={faceIntensity}
         />

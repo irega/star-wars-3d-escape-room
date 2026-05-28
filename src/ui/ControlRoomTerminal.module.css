@@ -1,0 +1,73 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 18vh;
+  z-index: 25;
+  pointer-events: none;
+  font-family: 'Courier New', Courier, monospace;
+  color: #ffd700;
+}
+
+.panel {
+  background: rgba(0, 0, 16, 0.92);
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  width: min(360px, calc(100vw - 48px));
+  pointer-events: auto;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.75);
+}
+
+.header {
+  font-size: 0.65rem;
+  margin-bottom: 0.35rem;
+  opacity: 0.7;
+}
+
+.prompt {
+  font-size: 0.85rem;
+  margin-bottom: 0.6rem;
+}
+
+.input {
+  font-size: 1.25rem;
+  letter-spacing: 0.25em;
+  margin-bottom: 0.5rem;
+}
+
+.inputWrong {
+  color: #ff4444;
+}
+
+.wrong {
+  color: #ff4444;
+  font-size: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.instructions {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  line-height: 1.35;
+}
+
+.closeBtn {
+  margin-top: 0.6rem;
+  background: transparent;
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.75rem;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 215, 0, 0.12);
+}

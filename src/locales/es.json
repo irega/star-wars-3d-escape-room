@@ -12,7 +12,14 @@
   },
   "hud": {
     "hint": "Pista",
-    "inventory": "Inventario"
+    "inventory": "Inventario",
+    "location": "Ubicación",
+    "rooms": {
+      "detention-cell": "Celda de detención",
+      "control-room": "Sala de control",
+      "corridor": "Corredor",
+      "hangar-bay": "Bahía del hangar"
+    }
   },
   "dialogue": {
     "close": "Cerrar"
