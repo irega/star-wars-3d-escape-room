@@ -8,48 +8,56 @@ vi.mock('../audio/ambientMusic', () => ({
   startAmbientMusic: vi.fn(),
 }));
 
+async function skipIntroCrawl() {
+  await userEvent.click(screen.getByTestId('skip-crawl'));
+}
+
 describe('Intro', () => {
-  it('renders the game title', () => {
+  it('shows long time ago before play intro', () => {
     render(<Intro onStart={vi.fn()} />);
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.getByText(/long time ago/i)).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument();
   });
 
-  it('renders story context paragraphs', () => {
+  it('renders the crawl title after play intro', async () => {
     render(<Intro onStart={vi.fn()} />);
+    await userEvent.click(screen.getByTestId('begin-crawl'));
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.queryByText(/long time ago/i)).not.toBeInTheDocument();
+  });
+
+  it('renders story context paragraphs after play intro', async () => {
+    render(<Intro onStart={vi.fn()} />);
+    await userEvent.click(screen.getByTestId('begin-crawl'));
     expect(screen.getByText(/Rebel Alliance/i)).toBeInTheDocument();
     expect(screen.getByText(/power failure/i)).toBeInTheDocument();
     expect(screen.getByText(/4 puzzles/i)).toBeInTheDocument();
   });
 
-  it('renders the name input field', () => {
+  it('renders the name input after skipping the crawl', async () => {
     render(<Intro onStart={vi.fn()} />);
+    await skipIntroCrawl();
     expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 
-  it('renders the start button', () => {
+  it('renders the start button after skipping the crawl', async () => {
     render(<Intro onStart={vi.fn()} />);
+    await skipIntroCrawl();
     expect(screen.getByRole('button', { name: /begin mission/i })).toBeInTheDocument();
   });
 
-  it('keeps start disabled until a name is entered', async () => {
-    render(<Intro onStart={vi.fn()} />);
-    const start = screen.getByRole('button', { name: /begin mission/i });
-    expect(start).toBeDisabled();
-    await userEvent.type(screen.getByRole('textbox'), 'Leia');
-    expect(start).toBeEnabled();
-  });
-
-  it('does not call onStart when name is empty', async () => {
+  it('calls onStart with default name "Rebel" when no name entered', async () => {
     const onStart = vi.fn();
     render(<Intro onStart={onStart} />);
-    const start = screen.getByRole('button', { name: /begin mission/i });
-    await userEvent.click(start);
-    expect(onStart).not.toHaveBeenCalled();
+    await skipIntroCrawl();
+    await userEvent.click(screen.getByRole('button', { name: /begin mission/i }));
+    expect(onStart).toHaveBeenCalledWith('Rebel');
   });
 
   it('calls onStart with entered player name', async () => {
     const onStart = vi.fn();
     render(<Intro onStart={onStart} />);
+    await skipIntroCrawl();
     await userEvent.type(screen.getByRole('textbox'), 'Han Solo');
     await userEvent.click(screen.getByRole('button', { name: /begin mission/i }));
     expect(onStart).toHaveBeenCalledWith('Han Solo');
@@ -58,18 +66,18 @@ describe('Intro', () => {
   it('calls onStart with trimmed name', async () => {
     const onStart = vi.fn();
     render(<Intro onStart={onStart} />);
+    await skipIntroCrawl();
     await userEvent.type(screen.getByRole('textbox'), '  Luke  ');
     await userEvent.click(screen.getByRole('button', { name: /begin mission/i }));
     expect(onStart).toHaveBeenCalledWith('Luke');
   });
 
-  it('keeps start disabled when name is only whitespace', async () => {
+  it('calls onStart with "Rebel" when name is only whitespace', async () => {
     const onStart = vi.fn();
     render(<Intro onStart={onStart} />);
+    await skipIntroCrawl();
     await userEvent.type(screen.getByRole('textbox'), '   ');
-    const start = screen.getByRole('button', { name: /begin mission/i });
-    expect(start).toBeDisabled();
-    await userEvent.click(start);
-    expect(onStart).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole('button', { name: /begin mission/i }));
+    expect(onStart).toHaveBeenCalledWith('Rebel');
   });
 });

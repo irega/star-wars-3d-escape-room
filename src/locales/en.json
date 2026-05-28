@@ -4,10 +4,13 @@
   },
   "intro": {
     "title": "ESCAPE FROM DETENTION BLOCK AA-23",
+    "longTimeAgo": "A long time ago in a galaxy far, far away…",
     "story1": "You are a Rebel Alliance operative captured aboard the Death Star.",
     "story2": "A partial power failure has weakened Imperial security. This is your chance.",
     "story3": "Solve 4 puzzles to reach the hangar bay and escape before Imperial forces restore order.",
-    "namePlaceholder": "Your name",
+    "beginCrawl": "Play intro",
+    "skipCrawl": "Skip intro",
+    "namePlaceholder": "Your name (optional)",
     "startButton": "BEGIN MISSION"
   },
   "audio": {

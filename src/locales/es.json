@@ -4,10 +4,13 @@
   },
   "intro": {
     "title": "ESCAPAR DEL BLOQUE DE DETENCIÓN AA-23",
+    "longTimeAgo": "Hace mucho tiempo, en una galaxia muy, muy lejana…",
     "story1": "Eres un operativo de la Alianza Rebelde capturado a bordo de la Estrella de la Muerte.",
     "story2": "Un fallo parcial de energía ha debilitado la seguridad Imperial. Esta es tu oportunidad.",
     "story3": "Resuelve 4 puzzles para llegar a la bahía del hangar y escapar antes de que las fuerzas Imperiales restauren el orden.",
-    "namePlaceholder": "Tu nombre",
+    "beginCrawl": "Reproducir intro",
+    "skipCrawl": "Saltar intro",
+    "namePlaceholder": "Tu nombre (opcional)",
     "startButton": "INICIAR MISIÓN"
   },
   "audio": {
