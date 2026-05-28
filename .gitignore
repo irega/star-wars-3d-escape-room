@@ -149,7 +149,4 @@ vite.config.ts.timestamp-*
 /playwright/.cache/
 .playwright-mcp
 
-# User-provided Imperial March
-public/audio/imperial-march.mp3
-
 .DS_Store
