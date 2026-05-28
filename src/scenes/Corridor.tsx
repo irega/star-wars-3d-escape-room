@@ -20,11 +20,13 @@ import {
   type CellOrientation,
 } from './corridorPuzzle';
 
-// World positions for each power cell (scattered near droid wreckage)
-const CELL_POSITIONS: [number, number, number][] = [
-  [0.7, 0.3, 2.0], // Cell 0
-  [1.4, 0.3, 1.5], // Cell 1
-  [2.0, 0.3, 2.0], // Cell 2
+export const DROID_GROUP_POSITION: [number, number, number] = [1.5, 0, 1.2];
+
+// World positions for each power cell (scattered near droid wreckage, clear of droid footprint)
+export const CELL_POSITIONS: [number, number, number][] = [
+  [0.7, 0.3, 2.0], // Cell 0 — left of droid
+  [2.4, 0.3, 1.5], // Cell 1 — right of droid (was [1.4, 0.3, 1.5], overlapped droid)
+  [2.0, 0.3, 2.0], // Cell 2 — behind-right of droid
 ];
 
 // World positions for conduit slots on the left wall panel
@@ -304,31 +306,39 @@ export function Corridor({ onDialogue }: CorridorProps) {
         );
       })}
 
+      {/* Dedicated fill light so the droid is visible regardless of hint level */}
+      <pointLight
+        position={[DROID_GROUP_POSITION[0], 2, DROID_GROUP_POSITION[2]]}
+        intensity={0.5}
+        color="#99bbdd"
+        distance={2.5}
+      />
+
       {/* Droid wreckage — scattered boxes on right side */}
-      <group position={[1.5, 0, 1.2]}>
+      <group position={DROID_GROUP_POSITION}>
         {/* Main droid body (collapsed) */}
         <mesh position={[0, 0.18, 0]} rotation={[0, 0.4, 0.2]}>
           <boxGeometry args={[0.5, 0.36, 0.4]} />
-          <meshStandardMaterial color="#556677" emissive="#112233" emissiveIntensity={0.8} />
+          <meshStandardMaterial color="#7b8fa3" emissive="#223344" emissiveIntensity={1.2} />
         </mesh>
         {/* Droid head */}
         <mesh position={[0.1, 0.55, 0.15]} rotation={[0.3, 0, 0.1]}>
           <boxGeometry args={[0.28, 0.28, 0.22]} />
-          <meshStandardMaterial color="#4a5a6a" emissive="#112233" emissiveIntensity={0.8} />
+          <meshStandardMaterial color="#b0bec7" emissive="#334455" emissiveIntensity={1.2} />
         </mesh>
         {/* Eye sensor */}
         <mesh position={[0.1, 0.56, 0.27]}>
           <boxGeometry args={[0.06, 0.06, 0.04]} />
           <meshStandardMaterial
-            color={hintLevel >= 1 ? '#44aaff' : '#1a2a3a'}
-            emissive={hintLevel >= 1 ? '#1144aa' : '#112233'}
-            emissiveIntensity={hintLevel >= 1 ? 2 : 0.8}
+            color={hintLevel >= 1 ? '#44aaff' : '#4488cc'}
+            emissive={hintLevel >= 1 ? '#1144aa' : '#224466'}
+            emissiveIntensity={hintLevel >= 1 ? 2 : 1.2}
           />
         </mesh>
         {/* Arm fragment */}
         <mesh position={[-0.35, 0.12, 0.1]} rotation={[0, 0, -0.8]}>
           <boxGeometry args={[0.08, 0.5, 0.08]} />
-          <meshStandardMaterial color="#4a5a6a" emissive="#112233" emissiveIntensity={0.8} />
+          <meshStandardMaterial color="#6a7d8e" emissive="#223344" emissiveIntensity={1.2} />
         </mesh>
         {/* Holographic projector (glows at hint level 1+) */}
         {hintLevel >= 1 && (
