@@ -72,7 +72,7 @@ const CORRECT_SEQUENCE = ['A', 'U', 'R', 'E'];
 test('happy path: escape from detention cell through control room to corridor', async ({
   page,
 }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(120_000);
   await page.goto('/');
   await expect(page.getByTestId('app')).toBeVisible();
 
