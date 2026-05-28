@@ -7,13 +7,19 @@ import { useHintStore } from '../stores/useHintStore';
 import { InteractiveObject } from '../components/InteractiveObject';
 import { HintTrigger } from '../components/HintTrigger';
 import {
+  BlastDoor,
+  HologramScreen,
+  ImperialRoomShell,
+  TerminalConsole,
+  imperialPalette,
+} from '../three';
+import {
   validateSequence,
   canExitControlRoom,
   PUZZLE_2_ID,
   PUZZLE_2_HINT_DELAYS,
 } from './controlRoomPuzzle';
 
-// Each screen has a distinct Aurebesh symbol and color identity
 export const SCREENS = [
   { x: -2.25, label: 'AUREK', symbol: 'A', emissive: '#0055cc', activeEmissive: '#0077ff' },
   { x: -0.75, label: 'UNESH', symbol: 'U', emissive: '#007777', activeEmissive: '#009999' },
@@ -27,16 +33,13 @@ type Bar = {
   rotation?: [number, number, number];
 };
 
-// Aurebesh A U R E — bar compositions matching canonical letter shapes (aurebesh.org)
 export const AUREBESH_SYMBOL_BARS: Record<string, Bar[]> = {
-  // AUREK (A): left stem → mid arm → fork opening right (>)
   A: [
     { pos: [-0.125, 0, 0.06], size: [0.05, 0.32, 0.02] },
     { pos: [-0.03, 0, 0.06], size: [0.14, 0.05, 0.02] },
     { pos: [0.085, 0.06, 0.06], size: [0.13, 0.05, 0.02], rotation: [0, 0, 0.93] },
     { pos: [0.085, -0.06, 0.06], size: [0.13, 0.05, 0.02], rotation: [0, 0, -0.93] },
   ],
-  // USK (U): open top-right frame + interior diagonal
   U: [
     { pos: [-0.13, 0, 0.06], size: [0.05, 0.32, 0.02] },
     { pos: [0, -0.14, 0.06], size: [0.28, 0.05, 0.02] },
@@ -44,12 +47,10 @@ export const AUREBESH_SYMBOL_BARS: Record<string, Bar[]> = {
     { pos: [-0.03, 0.14, 0.06], size: [0.18, 0.05, 0.02] },
     { pos: [0, 0, 0.06], size: [0.24, 0.05, 0.02], rotation: [0, 0, 0.62] },
   ],
-  // RESH (R): classic "7" — top bar, diagonal from top-right down to bottom-left
   R: [
     { pos: [0, 0.15, 0.06], size: [0.28, 0.05, 0.02] },
     { pos: [0.01, -0.01, 0.06], size: [0.38, 0.05, 0.02], rotation: [0, 0, -2.38] },
   ],
-  // ESK (E): "VI" — V on the left + separate vertical stroke on the right
   E: [
     { pos: [-0.095, -0.01, 0.06], size: [0.25, 0.05, 0.02], rotation: [0, 0, -1.22] },
     { pos: [-0.02, -0.01, 0.06], size: [0.24, 0.05, 0.02], rotation: [0, 0, 1.33] },
@@ -157,10 +158,12 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
     return () => window.removeEventListener('keydown', handleKey);
   }, [terminalActive, submitInput]);
 
-  const doorColor = puzzleSolved ? '#1e3a1e' : '#1a1a2e';
-  const doorEmissive = puzzleSolved ? '#0d3311' : '#00001a';
-  const doorIndicatorColor = puzzleSolved ? '#44ff44' : '#ff4444';
-  const doorIndicatorEmissive = puzzleSolved ? '#004400' : '#440000';
+  const doorIndicatorColor = puzzleSolved
+    ? imperialPalette.indicatorOpen
+    : imperialPalette.indicatorLocked;
+  const doorIndicatorEmissive = puzzleSolved
+    ? imperialPalette.indicatorOpenEmissive
+    : imperialPalette.indicatorLockedEmissive;
 
   const terminalScreenColor = puzzleSolved ? '#003300' : '#001133';
   const terminalScreenEmissive = puzzleSolved ? '#00aa22' : terminalActive ? '#0044cc' : '#003388';
@@ -169,156 +172,51 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
     <group>
       <HintTrigger puzzleId={PUZZLE_2_ID} delays={PUZZLE_2_HINT_DELAYS} />
 
-      <ambientLight intensity={0.4} />
-      <pointLight position={[0, 3, 0]} intensity={1.0} color="#5577aa" />
-      <pointLight position={[0, 2, -3]} intensity={0.7} color="#2244aa" />
+      <pointLight position={[0, 2, -3]} intensity={0.45} color="#2244aa" distance={4} decay={2} />
 
-      {/* Floor */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <planeGeometry args={[6, 8]} />
-        <meshStandardMaterial color="#161626" />
-      </mesh>
+      <ImperialRoomShell floorColor="#161626" wallBackColor="#1a2238" wallSideColor="#181828" />
 
-      {/* Ceiling */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 3.5, 0]}>
-        <planeGeometry args={[6, 8]} />
-        <meshStandardMaterial color="#0a0a18" />
-      </mesh>
-
-      {/* Back wall */}
-      <mesh position={[0, 1.75, -4]}>
-        <planeGeometry args={[6, 3.5]} />
-        <meshStandardMaterial color="#111122" />
-      </mesh>
-
-      {/* Left wall */}
-      <mesh rotation={[0, Math.PI / 2, 0]} position={[-3, 1.75, 0]}>
-        <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#181828" />
-      </mesh>
-
-      {/* Right wall */}
-      <mesh rotation={[0, -Math.PI / 2, 0]} position={[3, 1.75, 0]}>
-        <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#181828" />
-      </mesh>
-
-      {/* Holographic screens on back wall — read left to right: A U R E */}
       {SCREENS.map((screen, i) => {
         const isFirstScreen = i === 0;
         const screenEmissive =
           isFirstScreen && hintLevel >= 1 ? screen.activeEmissive : screen.emissive;
+        const faceIntensity = isFirstScreen && hintLevel >= 1 ? 2.5 : 1.8;
+
         return (
           <group key={screen.symbol} position={[screen.x, 2.1, -3.88]}>
-            {/* Screen frame */}
-            <mesh>
-              <boxGeometry args={[0.85, 0.85, 0.06]} />
-              <meshStandardMaterial
-                color="#0a0a1a"
-                emissive={screenEmissive}
-                emissiveIntensity={1.8}
-              />
-            </mesh>
-            {/* Screen face — inner glow panel */}
-            <mesh position={[0, 0, 0.04]}>
-              <boxGeometry args={[0.7, 0.7, 0.01]} />
-              <meshStandardMaterial
-                color="#000011"
-                emissive={screenEmissive}
-                emissiveIntensity={isFirstScreen && hintLevel >= 1 ? 2.5 : 1.8}
-              />
-            </mesh>
-            {/* Symbol indicator — unique bar composition per Aurebesh letter */}
-            {AUREBESH_SYMBOL_BARS[screen.symbol].map((bar, j) => (
-              <mesh key={j} position={bar.pos} rotation={bar.rotation ?? [0, 0, 0]}>
-                <boxGeometry args={bar.size} />
-                <meshStandardMaterial color={screenEmissive} emissive={screenEmissive} />
-              </mesh>
-            ))}
+            <HologramScreen
+              emissive={screenEmissive}
+              emissiveIntensity={1.8}
+              faceEmissiveIntensity={faceIntensity}
+            >
+              {AUREBESH_SYMBOL_BARS[screen.symbol].map((bar, j) => (
+                <mesh key={j} position={bar.pos} rotation={bar.rotation ?? [0, 0, 0]}>
+                  <boxGeometry args={bar.size} />
+                  <meshStandardMaterial color={screenEmissive} emissive={screenEmissive} />
+                </mesh>
+              ))}
+            </HologramScreen>
           </group>
         );
       })}
 
-      {/* Main terminal — central input station */}
       <InteractiveObject onClick={handleTerminalClick} isDisabled={puzzleSolved || terminalActive}>
         <group position={[0, 0, -0.5]}>
-          {/* Terminal body */}
-          <mesh position={[0, 0.5, 0]}>
-            <boxGeometry args={[1.4, 1.0, 0.5]} />
-            <meshStandardMaterial color="#0a0a18" emissive="#000011" />
-          </mesh>
-          {/* Terminal screen surface */}
-          <mesh position={[0, 0.65, 0.26]}>
-            <boxGeometry args={[1.1, 0.55, 0.02]} />
-            <meshStandardMaterial
-              color={terminalScreenColor}
-              emissive={terminalScreenEmissive}
-              emissiveIntensity={1.5}
-            />
-          </mesh>
-          {/* Keyboard row */}
-          <mesh position={[0, 0.18, 0.26]}>
-            <boxGeometry args={[1.0, 0.12, 0.02]} />
-            <meshStandardMaterial color="#111122" emissive="#001133" />
-          </mesh>
-          {/* Status indicator light */}
-          <mesh position={[0.5, 0.18, 0.27]}>
-            <boxGeometry args={[0.08, 0.08, 0.02]} />
-            <meshStandardMaterial
-              color={doorIndicatorColor}
-              emissive={doorIndicatorEmissive}
-              emissiveIntensity={2}
-            />
-          </mesh>
+          <TerminalConsole
+            screenColor={terminalScreenColor}
+            screenEmissive={terminalScreenEmissive}
+            indicatorColor={doorIndicatorColor}
+            indicatorEmissive={doorIndicatorEmissive}
+          />
         </group>
       </InteractiveObject>
 
-      {/* Blast door — locked until puzzle solved */}
       <InteractiveObject onClick={handleDoorClick}>
         <group position={[0, 1.4, -3.92]}>
-          {/* Door frame */}
-          {[
-            {
-              pos: [-1.0, 0, 0] as [number, number, number],
-              args: [0.2, 2.8, 0.1] as [number, number, number],
-            },
-            {
-              pos: [1.0, 0, 0] as [number, number, number],
-              args: [0.2, 2.8, 0.1] as [number, number, number],
-            },
-            {
-              pos: [0, 1.3, 0] as [number, number, number],
-              args: [2.2, 0.2, 0.1] as [number, number, number],
-            },
-            {
-              pos: [0, -1.3, 0] as [number, number, number],
-              args: [2.2, 0.2, 0.1] as [number, number, number],
-            },
-          ].map(({ pos, args }, i) => (
-            <mesh key={i} position={pos}>
-              <boxGeometry args={args} />
-              <meshStandardMaterial color={doorColor} emissive={doorEmissive} />
-            </mesh>
-          ))}
-          {/* Door panel (solid blast door, not bars) */}
-          <mesh>
-            <boxGeometry args={[1.6, 2.4, 0.06]} />
-            <meshStandardMaterial color={doorColor} emissive={doorEmissive} />
-          </mesh>
-          {/* Door center seam */}
-          <mesh position={[0, 0, 0.04]}>
-            <boxGeometry args={[0.04, 2.4, 0.02]} />
-            <meshStandardMaterial color="#334466" emissive="#112233" />
-          </mesh>
-          {/* Status indicator */}
-          <mesh position={[0.9, -0.9, 0.08]}>
-            <boxGeometry args={[0.16, 0.07, 0.04]} />
-            <meshStandardMaterial color={doorIndicatorColor} emissive={doorIndicatorEmissive} />
-          </mesh>
+          <BlastDoor unlocked={puzzleSolved} />
         </group>
       </InteractiveObject>
 
-      {/* Terminal input overlay — shown when terminal is active */}
       {terminalActive && (
         <Html fullscreen>
           <div

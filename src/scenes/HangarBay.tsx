@@ -6,6 +6,7 @@ import { useInventoryStore } from '../stores/useInventoryStore';
 import { useHintStore } from '../stores/useHintStore';
 import { InteractiveObject } from '../components/InteractiveObject';
 import { HintTrigger } from '../components/HintTrigger';
+import { ImperialRoomShell, TerminalConsole, imperialPalette } from '../three';
 import {
   validateLaunchClearance,
   PUZZLE_4_ID,
@@ -28,6 +29,7 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
 
   const solvePuzzle = useGameStore((s) => s.solvePuzzle);
   const win = useGameStore((s) => s.win);
+  const phase = useGameStore((s) => s.phase);
   const solvedPuzzles = useGameStore((s) => s.solvedPuzzles);
   const puzzleSolved = solvedPuzzles.includes(PUZZLE_4_ID);
 
@@ -58,115 +60,110 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
     setConsoleActive(false);
   }, []);
 
-  // Force field: active (blocking) until puzzle solved
   const forceFieldEmissive = puzzleSolved ? '#000000' : '#0033cc';
   const forceFieldColor = puzzleSolved ? '#000033' : '#0044ff';
   const forceFieldOpacity = puzzleSolved ? 0 : 0.45;
 
-  // Console status indicator
-  const consoleIndicatorColor = puzzleSolved ? '#44ff44' : canLaunch ? '#ffaa00' : '#ff4444';
-  const consoleIndicatorEmissive = puzzleSolved ? '#004400' : canLaunch ? '#553300' : '#440000';
+  const consoleIndicatorColor = puzzleSolved
+    ? imperialPalette.indicatorOpen
+    : canLaunch
+      ? '#ffaa00'
+      : imperialPalette.indicatorLocked;
+  const consoleIndicatorEmissive = puzzleSolved
+    ? imperialPalette.indicatorOpenEmissive
+    : canLaunch
+      ? '#553300'
+      : imperialPalette.indicatorLockedEmissive;
 
-  // Announcement display: shows frequency hint
   const freqDisplay = hasFrequency ? LAUNCH_FREQUENCY : '???';
   const announcementEmissive = hintLevel >= 1 ? '#003399' : '#001133';
+  const showAnnouncement = phase === 'playing';
 
   return (
     <group>
       <HintTrigger puzzleId={PUZZLE_4_ID} delays={PUZZLE_4_HINT_DELAYS} />
 
-      <ambientLight intensity={0.35} />
-      <pointLight position={[0, 5, 0]} intensity={1.0} color="#5577aa" />
-      <pointLight position={[0, 3, -4]} intensity={0.7} color="#2244aa" />
-      {/* Red emergency lighting — hangar bay feel */}
-      <pointLight position={[-4, 2.5, 0]} intensity={0.6} color="#880000" />
-      <pointLight position={[4, 2.5, 0]} intensity={0.6} color="#880000" />
+      <pointLight position={[0, 3, -4]} intensity={0.5} color="#2244aa" distance={6} decay={2} />
+      <pointLight position={[-4, 2.5, 0]} intensity={0.45} color="#880000" distance={5} decay={2} />
+      <pointLight position={[4, 2.5, 0]} intensity={0.45} color="#880000" distance={5} decay={2} />
+      <pointLight position={[0, 1.2, 2]} intensity={0.55} color="#5577aa" distance={8} decay={2} />
 
-      {/* Floor — wide hangar deck */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <planeGeometry args={[10, 12]} />
-        <meshStandardMaterial color="#141421" />
-      </mesh>
+      <ImperialRoomShell
+        width={10}
+        depth={12}
+        height={6}
+        ceilingY={6}
+        floorColor={imperialPalette.deck}
+        ceilingColor="#0a0a14"
+        wallBackColor="#131322"
+        wallSideColor="#12121e"
+        sidePanelCount={3}
+      />
 
-      {/* Ceiling — high hangar ceiling */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 6, 0]}>
-        <planeGeometry args={[10, 12]} />
-        <meshStandardMaterial color="#0a0a14" />
-      </mesh>
-
-      {/* Back wall */}
-      <mesh position={[0, 3, -6]}>
-        <planeGeometry args={[10, 6]} />
-        <meshStandardMaterial color="#131322" />
-      </mesh>
-
-      {/* Left wall */}
-      <mesh rotation={[0, Math.PI / 2, 0]} position={[-5, 3, 0]}>
-        <planeGeometry args={[12, 6]} />
-        <meshStandardMaterial color="#12121e" />
-      </mesh>
-
-      {/* Right wall */}
-      <mesh rotation={[0, -Math.PI / 2, 0]} position={[5, 3, 0]}>
-        <planeGeometry args={[12, 6]} />
-        <meshStandardMaterial color="#12121e" />
-      </mesh>
-
-      {/* Floor grid lines — hangar deck markings */}
-      {([-2, 0, 2] as number[]).map((x) => (
+      {/* Deck grid — longitudinal and transverse */}
+      {([-4, -2, 0, 2, 4] as number[]).map((x) => (
         <mesh key={`grid-x-${x}`} rotation={[-Math.PI / 2, 0, 0]} position={[x, 0.001, 0]}>
           <planeGeometry args={[0.04, 12]} />
-          <meshStandardMaterial color="#2a2a50" emissive="#151528" />
+          <meshStandardMaterial color="#3a3a60" emissive="#2a2a48" emissiveIntensity={0.8} />
         </mesh>
       ))}
-      {([-4, -2, 0, 2, 4] as number[]).map((z) => (
+      {([-5, -3, -1, 1, 3, 5] as number[]).map((z) => (
         <mesh key={`grid-z-${z}`} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, z]}>
           <planeGeometry args={[10, 0.04]} />
-          <meshStandardMaterial color="#2a2a50" emissive="#151528" />
+          <meshStandardMaterial color="#3a3a60" emissive="#2a2a48" emissiveIntensity={0.8} />
         </mesh>
       ))}
 
-      {/* Imperial Shuttle — main hull body */}
+      {/* Space viewport — back wall */}
+      <group position={[0, 3.2, -5.92]}>
+        <mesh>
+          <boxGeometry args={[4.2, 2.4, 0.08]} />
+          <meshStandardMaterial color="#0a0a1a" emissive="#001133" emissiveIntensity={0.2} />
+        </mesh>
+        <mesh position={[0, 0, 0.05]}>
+          <planeGeometry args={[3.6, 1.8]} />
+          <meshStandardMaterial color="#000822" emissive="#113366" emissiveIntensity={0.55} />
+        </mesh>
+        {([-1.9, 1.9] as const).map((x) => (
+          <mesh key={x} position={[x, 0, 0.04]}>
+            <boxGeometry args={[0.12, 2.5, 0.1]} />
+            <meshStandardMaterial color="#2a3048" emissive="#151a28" emissiveIntensity={0.15} />
+          </mesh>
+        ))}
+      </group>
+
       <InteractiveObject onClick={handleShuttleClick}>
         <group position={[-0.5, 0, -4.5]}>
-          {/* Fuselage */}
           <mesh position={[0, 1.1, 0]}>
             <boxGeometry args={[1.4, 1.0, 3.2]} />
-            <meshStandardMaterial color="#282840" emissive="#050510" />
+            <meshStandardMaterial color="#282840" emissive="#0a0a18" emissiveIntensity={0.08} />
           </mesh>
-          {/* Cockpit nose */}
           <mesh position={[0, 1.3, 1.7]}>
             <boxGeometry args={[0.9, 0.7, 0.8]} />
-            <meshStandardMaterial color="#1e1e33" emissive="#050510" />
+            <meshStandardMaterial color="#1e1e33" emissive="#080812" emissiveIntensity={0.06} />
           </mesh>
-          {/* Cockpit viewport */}
           <mesh position={[0, 1.4, 2.08]}>
             <boxGeometry args={[0.6, 0.3, 0.04]} />
             <meshStandardMaterial color="#001133" emissive="#002266" emissiveIntensity={1.2} />
           </mesh>
-          {/* Upper fin (folded position while landed) */}
           <mesh position={[0, 2.5, -0.4]} rotation={[0.15, 0, 0]}>
             <boxGeometry args={[0.14, 2.2, 1.6]} />
-            <meshStandardMaterial color="#282840" emissive="#050510" />
+            <meshStandardMaterial color="#282840" emissive="#0a0a18" emissiveIntensity={0.06} />
           </mesh>
-          {/* Left wing */}
           <mesh position={[-1.8, 0.5, -0.2]} rotation={[0, 0, 0.18]}>
             <boxGeometry args={[2.2, 0.12, 1.2]} />
-            <meshStandardMaterial color="#20202e" emissive="#040408" />
+            <meshStandardMaterial color="#20202e" emissive="#060610" emissiveIntensity={0.05} />
           </mesh>
-          {/* Right wing */}
           <mesh position={[1.8, 0.5, -0.2]} rotation={[0, 0, -0.18]}>
             <boxGeometry args={[2.2, 0.12, 1.2]} />
-            <meshStandardMaterial color="#20202e" emissive="#040408" />
+            <meshStandardMaterial color="#20202e" emissive="#060610" emissiveIntensity={0.05} />
           </mesh>
-          {/* Landing struts */}
           {([-0.5, 0.5] as number[]).map((x) => (
             <mesh key={`strut-${x}`} position={[x, 0.18, 0.6]}>
               <boxGeometry args={[0.1, 0.36, 0.1]} />
               <meshStandardMaterial color="#30303f" />
             </mesh>
           ))}
-          {/* Engine glow (dim when idle) */}
           <mesh position={[0, 0.9, -1.65]}>
             <boxGeometry args={[0.5, 0.3, 0.08]} />
             <meshStandardMaterial
@@ -178,7 +175,6 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
         </group>
       </InteractiveObject>
 
-      {/* Force field — energy barrier blocking shuttle access */}
       {!puzzleSolved && (
         <mesh position={[0, 2.5, -2.8]}>
           <planeGeometry args={[10, 5]} />
@@ -191,7 +187,6 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
           />
         </mesh>
       )}
-      {/* Force field edge beams */}
       {!puzzleSolved && (
         <>
           <mesh position={[-5, 2.5, -2.8]}>
@@ -209,97 +204,76 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
         </>
       )}
 
-      {/* Launch console — center-front of hangar */}
       <InteractiveObject onClick={handleConsoleClick} isDisabled={puzzleSolved || consoleActive}>
         <group position={[0, 0, -0.5]}>
-          {/* Console body */}
-          <mesh position={[0, 0.5, 0]}>
-            <boxGeometry args={[1.6, 1.0, 0.5]} />
-            <meshStandardMaterial color="#0a0a18" emissive="#000011" />
-          </mesh>
-          {/* Console screen */}
-          <mesh position={[0, 0.65, 0.26]}>
-            <boxGeometry args={[1.3, 0.55, 0.02]} />
-            <meshStandardMaterial
-              color={puzzleSolved ? '#003300' : '#001133'}
-              emissive={consoleIndicatorEmissive}
-              emissiveIntensity={1.5}
-            />
-          </mesh>
-          {/* Keyboard base */}
-          <mesh position={[0, 0.18, 0.26]}>
-            <boxGeometry args={[1.1, 0.12, 0.02]} />
-            <meshStandardMaterial color="#111122" emissive="#001133" />
-          </mesh>
-          {/* Status indicator */}
-          <mesh position={[0.6, 0.18, 0.27]}>
-            <boxGeometry args={[0.09, 0.09, 0.02]} />
-            <meshStandardMaterial
-              color={consoleIndicatorColor}
-              emissive={consoleIndicatorEmissive}
-              emissiveIntensity={2}
-            />
-          </mesh>
-          {/* Three input slot indicators */}
-          {(
-            [
-              [-0.35, 0.62, 0.27],
-              [0, 0.62, 0.27],
-              [0.35, 0.62, 0.27],
-            ] as [number, number, number][]
-          ).map((pos, i) => {
-            const filled = [hasKeycard, hasOverrideCode, hasFrequency][i];
-            return (
-              <mesh key={i} position={pos}>
-                <boxGeometry args={[0.12, 0.08, 0.02]} />
-                <meshStandardMaterial
-                  color={filled ? '#44ff44' : '#ff4444'}
-                  emissive={filled ? '#004400' : '#440000'}
-                  emissiveIntensity={1.5}
-                />
-              </mesh>
-            );
-          })}
+          <TerminalConsole
+            bodyWidth={1.6}
+            screenColor={puzzleSolved ? '#003300' : '#001133'}
+            screenEmissive={consoleIndicatorEmissive}
+            indicatorColor={consoleIndicatorColor}
+            indicatorEmissive={consoleIndicatorEmissive}
+          >
+            {(
+              [
+                [-0.35, 0.62, 0.27],
+                [0, 0.62, 0.27],
+                [0.35, 0.62, 0.27],
+              ] as [number, number, number][]
+            ).map((pos, i) => {
+              const filled = [hasKeycard, hasOverrideCode, hasFrequency][i];
+              return (
+                <mesh key={i} position={pos}>
+                  <boxGeometry args={[0.12, 0.08, 0.02]} />
+                  <meshStandardMaterial
+                    color={filled ? '#44ff44' : '#ff4444'}
+                    emissive={filled ? '#004400' : '#440000'}
+                    emissiveIntensity={1.5}
+                  />
+                </mesh>
+              );
+            })}
+          </TerminalConsole>
         </group>
       </InteractiveObject>
 
-      {/* Hangar announcement display — shows launch frequency hint */}
-      <group position={[0, 4.2, -5.95]}>
-        {/* Display frame */}
-        <mesh>
-          <boxGeometry args={[3.0, 0.8, 0.06]} />
-          <meshStandardMaterial color="#0a0a1a" emissive={announcementEmissive} />
-        </mesh>
-        {/* Display face */}
-        <mesh position={[0, 0, 0.04]}>
-          <boxGeometry args={[2.7, 0.5, 0.01]} />
-          <meshStandardMaterial
-            color="#000011"
-            emissive={announcementEmissive}
-            emissiveIntensity={hintLevel >= 1 ? 2.5 : 1.2}
-          />
-        </mesh>
-        {/* HTML overlay for the announcement text */}
-        <Html center position={[0, 0, 0.06]}>
-          <div
-            style={{
-              fontFamily: '"Courier New", Courier, monospace',
-              fontSize: '9px',
-              color: hintLevel >= 1 ? '#66aaff' : '#3355aa',
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
-              userSelect: 'none',
-              textAlign: 'center',
-              lineHeight: 1.4,
-            }}
-          >
-            <div>{t('puzzle4.announcement.header')}</div>
-            <div>{t('puzzle4.announcement.freq', { freq: freqDisplay })}</div>
-          </div>
-        </Html>
-      </group>
+      {showAnnouncement && (
+        <group position={[0, 4.2, -5.95]}>
+          <mesh>
+            <boxGeometry args={[3.2, 0.9, 0.1]} />
+            <meshStandardMaterial
+              color="#0a0a1a"
+              emissive={announcementEmissive}
+              emissiveIntensity={0.25}
+            />
+          </mesh>
+          <mesh position={[0, 0, 0.05]}>
+            <boxGeometry args={[2.9, 0.55, 0.02]} />
+            <meshStandardMaterial
+              color="#000011"
+              emissive={announcementEmissive}
+              emissiveIntensity={hintLevel >= 1 ? 2.5 : 1.2}
+            />
+          </mesh>
+          <Html center position={[0, 0, 0.08]}>
+            <div
+              style={{
+                fontFamily: '"Courier New", Courier, monospace',
+                fontSize: '9px',
+                color: hintLevel >= 1 ? '#66aaff' : '#3355aa',
+                whiteSpace: 'nowrap',
+                pointerEvents: 'none',
+                userSelect: 'none',
+                textAlign: 'center',
+                lineHeight: 1.4,
+              }}
+            >
+              <div>{t('puzzle4.announcement.header')}</div>
+              <div>{t('puzzle4.announcement.freq', { freq: freqDisplay })}</div>
+            </div>
+          </Html>
+        </group>
+      )}
 
-      {/* Console overlay — shown when console is active */}
       {consoleActive && (
         <Html fullscreen>
           <div
@@ -330,7 +304,6 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
                 {t('puzzle4.console.prompt')}
               </div>
 
-              {/* Slot 1 — Keycard */}
               <div
                 style={{
                   marginBottom: '0.75rem',
@@ -359,7 +332,6 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
                 </div>
               </div>
 
-              {/* Slot 2 — Override code */}
               <div
                 style={{
                   marginBottom: '0.75rem',
@@ -392,7 +364,6 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
                 </div>
               </div>
 
-              {/* Slot 3 — Frequency */}
               <div
                 style={{
                   marginBottom: '1.5rem',
