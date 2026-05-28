@@ -4,6 +4,7 @@ import {
   cycleOrientation,
   areAllSlotsCorrect,
   canExitCorridor,
+  shouldExtractFromSlot,
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
   PUZZLE_3_HINT_DELAYS,
@@ -150,6 +151,24 @@ describe('power conduit gate sequence', () => {
 
     useGameStore.getState().moveToRoom('hangar-bay');
     expect(useGameStore.getState().currentRoom).toBe('hangar-bay');
+  });
+});
+
+describe('shouldExtractFromSlot (regression: issue #58 — undo power cell placement)', () => {
+  it('returns true when no cell is selected, the slot is occupied, and the puzzle is unsolved', () => {
+    expect(shouldExtractFromSlot(null, true, false)).toBe(true);
+  });
+
+  it('returns false when a cell is selected — place mode takes priority over extract mode', () => {
+    expect(shouldExtractFromSlot(0, true, false)).toBe(false);
+  });
+
+  it('returns false when the slot is empty — nothing to extract', () => {
+    expect(shouldExtractFromSlot(null, false, false)).toBe(false);
+  });
+
+  it('returns false when the puzzle is already solved — no further changes allowed', () => {
+    expect(shouldExtractFromSlot(null, true, true)).toBe(false);
   });
 });
 
