@@ -92,8 +92,8 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       <HintTrigger puzzleId={PUZZLE_1_ID} delays={PUZZLE_1_HINT_DELAYS} />
 
       {/* Ambient and fill light */}
-      <ambientLight intensity={0.25} />
-      <pointLight position={[0, 3, 0]} intensity={0.5} color="#334466" />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[0, 3, 0]} intensity={1.0} color="#5577aa" />
 
       {/* Flickering panel light — hint escalation: slow flicker → aggressive at 30s */}
       <FlickerLight hintLevel={hintLevel} position={panelLightPos} />
@@ -101,7 +101,7 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       {/* Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <planeGeometry args={[6, 8]} />
-        <meshStandardMaterial color="#1a1a2e" />
+        <meshStandardMaterial color="#141428" />
       </mesh>
 
       {/* Ceiling */}
@@ -113,25 +113,25 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       {/* Back wall */}
       <mesh position={[0, 1.75, -4]}>
         <planeGeometry args={[6, 3.5]} />
-        <meshStandardMaterial color="#16213e" />
+        <meshStandardMaterial color="#1e2d50" />
       </mesh>
 
       {/* Left wall */}
       <mesh rotation={[0, Math.PI / 2, 0]} position={[-3, 1.75, 0]}>
         <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#1a1a2e" />
+        <meshStandardMaterial color="#222238" />
       </mesh>
 
       {/* Right wall */}
       <mesh rotation={[0, -Math.PI / 2, 0]} position={[3, 1.75, 0]}>
         <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#1a1a2e" />
+        <meshStandardMaterial color="#222238" />
       </mesh>
 
       {/* Cot frame */}
       <mesh position={[-1.5, 0.25, -2]}>
         <boxGeometry args={[1.8, 0.1, 0.8]} />
-        <meshStandardMaterial color="#2a2a3e" />
+        <meshStandardMaterial color="#3a3a58" />
       </mesh>
       {/* Cot legs */}
       {(
@@ -144,7 +144,7 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       ).map(([x, y, z]) => (
         <mesh key={`${x},${z}`} position={[x, y, z]}>
           <boxGeometry args={[0.08, 0.24, 0.08]} />
-          <meshStandardMaterial color="#1a1a2e" />
+          <meshStandardMaterial color="#252542" />
         </mesh>
       ))}
 

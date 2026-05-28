@@ -15,10 +15,10 @@ import {
 
 // Each screen has a distinct Aurebesh symbol and color identity
 const SCREENS = [
-  { x: -2.25, label: 'AUREK', symbol: 'A', emissive: '#003399', activeEmissive: '#0055ff' },
-  { x: -0.75, label: 'UNESH', symbol: 'U', emissive: '#005555', activeEmissive: '#005555' },
-  { x: 0.75, label: 'RESH', symbol: 'R', emissive: '#440066', activeEmissive: '#440066' },
-  { x: 2.25, label: 'ESH', symbol: 'E', emissive: '#004422', activeEmissive: '#004422' },
+  { x: -2.25, label: 'AUREK', symbol: 'A', emissive: '#0055cc', activeEmissive: '#0077ff' },
+  { x: -0.75, label: 'UNESH', symbol: 'U', emissive: '#007777', activeEmissive: '#009999' },
+  { x: 0.75, label: 'RESH', symbol: 'R', emissive: '#660099', activeEmissive: '#8800cc' },
+  { x: 2.25, label: 'ESH', symbol: 'E', emissive: '#006633', activeEmissive: '#009944' },
 ];
 
 export interface ControlRoomProps {
@@ -127,20 +127,20 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
   const doorIndicatorEmissive = puzzleSolved ? '#004400' : '#440000';
 
   const terminalScreenColor = puzzleSolved ? '#003300' : '#001133';
-  const terminalScreenEmissive = puzzleSolved ? '#00aa22' : terminalActive ? '#002266' : '#001144';
+  const terminalScreenEmissive = puzzleSolved ? '#00aa22' : terminalActive ? '#0044cc' : '#003388';
 
   return (
     <group>
       <HintTrigger puzzleId={PUZZLE_2_ID} delays={PUZZLE_2_HINT_DELAYS} />
 
-      <ambientLight intensity={0.2} />
-      <pointLight position={[0, 3, 0]} intensity={0.6} color="#334466" />
-      <pointLight position={[0, 2, -3]} intensity={0.4} color="#2244aa" />
+      <ambientLight intensity={0.4} />
+      <pointLight position={[0, 3, 0]} intensity={1.0} color="#5577aa" />
+      <pointLight position={[0, 2, -3]} intensity={0.7} color="#2244aa" />
 
       {/* Floor */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <planeGeometry args={[6, 8]} />
-        <meshStandardMaterial color="#111122" />
+        <meshStandardMaterial color="#161626" />
       </mesh>
 
       {/* Ceiling */}
@@ -158,13 +158,13 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
       {/* Left wall */}
       <mesh rotation={[0, Math.PI / 2, 0]} position={[-3, 1.75, 0]}>
         <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#0e0e1e" />
+        <meshStandardMaterial color="#181828" />
       </mesh>
 
       {/* Right wall */}
       <mesh rotation={[0, -Math.PI / 2, 0]} position={[3, 1.75, 0]}>
         <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#0e0e1e" />
+        <meshStandardMaterial color="#181828" />
       </mesh>
 
       {/* Holographic screens on back wall — read left to right: A U R E */}
@@ -177,7 +177,11 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
             {/* Screen frame */}
             <mesh>
               <boxGeometry args={[0.85, 0.85, 0.06]} />
-              <meshStandardMaterial color="#0a0a1a" emissive={screenEmissive} />
+              <meshStandardMaterial
+                color="#0a0a1a"
+                emissive={screenEmissive}
+                emissiveIntensity={1.8}
+              />
             </mesh>
             {/* Screen face — inner glow panel */}
             <mesh position={[0, 0, 0.04]}>
@@ -185,7 +189,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
               <meshStandardMaterial
                 color="#000011"
                 emissive={screenEmissive}
-                emissiveIntensity={isFirstScreen && hintLevel >= 1 ? 2.5 : 1.2}
+                emissiveIntensity={isFirstScreen && hintLevel >= 1 ? 2.5 : 1.8}
               />
             </mesh>
             {/* Symbol indicator — thin horizontal bar (top) */}

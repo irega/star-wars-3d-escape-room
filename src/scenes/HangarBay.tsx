@@ -75,54 +75,54 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
     <group>
       <HintTrigger puzzleId={PUZZLE_4_ID} delays={PUZZLE_4_HINT_DELAYS} />
 
-      <ambientLight intensity={0.15} />
-      <pointLight position={[0, 5, 0]} intensity={0.5} color="#334466" />
-      <pointLight position={[0, 3, -4]} intensity={0.4} color="#2244aa" />
+      <ambientLight intensity={0.35} />
+      <pointLight position={[0, 5, 0]} intensity={1.0} color="#5577aa" />
+      <pointLight position={[0, 3, -4]} intensity={0.7} color="#2244aa" />
       {/* Red emergency lighting — hangar bay feel */}
-      <pointLight position={[-4, 2.5, 0]} intensity={0.3} color="#440000" />
-      <pointLight position={[4, 2.5, 0]} intensity={0.3} color="#440000" />
+      <pointLight position={[-4, 2.5, 0]} intensity={0.6} color="#880000" />
+      <pointLight position={[4, 2.5, 0]} intensity={0.6} color="#880000" />
 
       {/* Floor — wide hangar deck */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
         <planeGeometry args={[10, 12]} />
-        <meshStandardMaterial color="#0d0d14" />
+        <meshStandardMaterial color="#141421" />
       </mesh>
 
       {/* Ceiling — high hangar ceiling */}
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 6, 0]}>
         <planeGeometry args={[10, 12]} />
-        <meshStandardMaterial color="#080810" />
+        <meshStandardMaterial color="#0a0a14" />
       </mesh>
 
       {/* Back wall */}
       <mesh position={[0, 3, -6]}>
         <planeGeometry args={[10, 6]} />
-        <meshStandardMaterial color="#0a0a18" />
+        <meshStandardMaterial color="#131322" />
       </mesh>
 
       {/* Left wall */}
       <mesh rotation={[0, Math.PI / 2, 0]} position={[-5, 3, 0]}>
         <planeGeometry args={[12, 6]} />
-        <meshStandardMaterial color="#090914" />
+        <meshStandardMaterial color="#12121e" />
       </mesh>
 
       {/* Right wall */}
       <mesh rotation={[0, -Math.PI / 2, 0]} position={[5, 3, 0]}>
         <planeGeometry args={[12, 6]} />
-        <meshStandardMaterial color="#090914" />
+        <meshStandardMaterial color="#12121e" />
       </mesh>
 
       {/* Floor grid lines — hangar deck markings */}
       {([-2, 0, 2] as number[]).map((x) => (
         <mesh key={`grid-x-${x}`} rotation={[-Math.PI / 2, 0, 0]} position={[x, 0.001, 0]}>
           <planeGeometry args={[0.04, 12]} />
-          <meshStandardMaterial color="#1a1a33" emissive="#0a0a1a" />
+          <meshStandardMaterial color="#2a2a50" emissive="#151528" />
         </mesh>
       ))}
       {([-4, -2, 0, 2, 4] as number[]).map((z) => (
         <mesh key={`grid-z-${z}`} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, z]}>
           <planeGeometry args={[10, 0.04]} />
-          <meshStandardMaterial color="#1a1a33" emissive="#0a0a1a" />
+          <meshStandardMaterial color="#2a2a50" emissive="#151528" />
         </mesh>
       ))}
 
@@ -132,12 +132,12 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
           {/* Fuselage */}
           <mesh position={[0, 1.1, 0]}>
             <boxGeometry args={[1.4, 1.0, 3.2]} />
-            <meshStandardMaterial color="#1a1a2e" emissive="#050510" />
+            <meshStandardMaterial color="#282840" emissive="#050510" />
           </mesh>
           {/* Cockpit nose */}
           <mesh position={[0, 1.3, 1.7]}>
             <boxGeometry args={[0.9, 0.7, 0.8]} />
-            <meshStandardMaterial color="#111122" emissive="#050510" />
+            <meshStandardMaterial color="#1e1e33" emissive="#050510" />
           </mesh>
           {/* Cockpit viewport */}
           <mesh position={[0, 1.4, 2.08]}>
@@ -147,23 +147,23 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
           {/* Upper fin (folded position while landed) */}
           <mesh position={[0, 2.5, -0.4]} rotation={[0.15, 0, 0]}>
             <boxGeometry args={[0.14, 2.2, 1.6]} />
-            <meshStandardMaterial color="#1a1a2e" emissive="#050510" />
+            <meshStandardMaterial color="#282840" emissive="#050510" />
           </mesh>
           {/* Left wing */}
           <mesh position={[-1.8, 0.5, -0.2]} rotation={[0, 0, 0.18]}>
             <boxGeometry args={[2.2, 0.12, 1.2]} />
-            <meshStandardMaterial color="#141420" emissive="#040408" />
+            <meshStandardMaterial color="#20202e" emissive="#040408" />
           </mesh>
           {/* Right wing */}
           <mesh position={[1.8, 0.5, -0.2]} rotation={[0, 0, -0.18]}>
             <boxGeometry args={[2.2, 0.12, 1.2]} />
-            <meshStandardMaterial color="#141420" emissive="#040408" />
+            <meshStandardMaterial color="#20202e" emissive="#040408" />
           </mesh>
           {/* Landing struts */}
           {([-0.5, 0.5] as number[]).map((x) => (
             <mesh key={`strut-${x}`} position={[x, 0.18, 0.6]}>
               <boxGeometry args={[0.1, 0.36, 0.1]} />
-              <meshStandardMaterial color="#222233" />
+              <meshStandardMaterial color="#30303f" />
             </mesh>
           ))}
           {/* Engine glow (dim when idle) */}
