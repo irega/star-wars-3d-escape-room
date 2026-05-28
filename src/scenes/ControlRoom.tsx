@@ -127,7 +127,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
   const doorIndicatorEmissive = puzzleSolved ? '#004400' : '#440000';
 
   const terminalScreenColor = puzzleSolved ? '#003300' : '#001133';
-  const terminalScreenEmissive = puzzleSolved ? '#00aa22' : terminalActive ? '#002266' : '#001144';
+  const terminalScreenEmissive = puzzleSolved ? '#00aa22' : terminalActive ? '#0044cc' : '#003388';
 
   return (
     <group>
@@ -177,7 +177,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
             {/* Screen frame */}
             <mesh>
               <boxGeometry args={[0.85, 0.85, 0.06]} />
-              <meshStandardMaterial color="#0a0a1a" emissive={screenEmissive} />
+              <meshStandardMaterial color="#0a0a1a" emissive={screenEmissive} emissiveIntensity={1.8} />
             </mesh>
             {/* Screen face — inner glow panel */}
             <mesh position={[0, 0, 0.04]}>
@@ -185,7 +185,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
               <meshStandardMaterial
                 color="#000011"
                 emissive={screenEmissive}
-                emissiveIntensity={isFirstScreen && hintLevel >= 1 ? 2.5 : 1.2}
+                emissiveIntensity={isFirstScreen && hintLevel >= 1 ? 2.5 : 1.8}
               />
             </mesh>
             {/* Symbol indicator — thin horizontal bar (top) */}
