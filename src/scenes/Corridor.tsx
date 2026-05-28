@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -175,6 +175,16 @@ export function Corridor({ onDialogue }: CorridorProps) {
       onDialogue?.(t('puzzle3.door.locked'));
     }
   }, [puzzleSolved, moveToRoom, t, onDialogue]);
+
+  // Close schematic modal on Escape key
+  useEffect(() => {
+    if (!schematicOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSchematicOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [schematicOpen]);
 
   return (
     <group>
