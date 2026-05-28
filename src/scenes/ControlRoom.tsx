@@ -24,32 +24,34 @@ export const SCREENS = [
 type Bar = { pos: [number, number, number]; size: [number, number, number] };
 
 // Aurebesh-inspired geometric symbols — each letter rendered as a unique bar composition
+// Aligned with canonical Aurebesh alphabet shapes from aurebesh.org
 export const AUREBESH_SYMBOL_BARS: Record<string, Bar[]> = {
-  // AUREK (A): top bar + left vertical + middle crossbar
+  // AUREK (A): pointed roof with crossbar — narrow top, two sides, middle bar
   A: [
-    { pos: [0, 0.22, 0.06], size: [0.45, 0.06, 0.02] },
-    { pos: [-0.17, 0, 0.06], size: [0.06, 0.45, 0.02] },
-    { pos: [0.05, 0, 0.06], size: [0.3, 0.06, 0.02] },
+    { pos: [0, 0.18, 0.06], size: [0.15, 0.06, 0.02] },
+    { pos: [-0.12, 0.05, 0.06], size: [0.06, 0.3, 0.02] },
+    { pos: [0.12, 0.05, 0.06], size: [0.06, 0.3, 0.02] },
+    { pos: [0, -0.02, 0.06], size: [0.25, 0.06, 0.02] },
   ],
-  // UNESH (U): left vertical + right vertical + bottom bar
+  // UNESH (U): horseshoe shape — two verticals + bottom bar
   U: [
-    { pos: [-0.17, 0.05, 0.06], size: [0.06, 0.4, 0.02] },
-    { pos: [0.17, 0.05, 0.06], size: [0.06, 0.4, 0.02] },
-    { pos: [0, -0.17, 0.06], size: [0.4, 0.06, 0.02] },
+    { pos: [-0.15, 0.05, 0.06], size: [0.06, 0.35, 0.02] },
+    { pos: [0.15, 0.05, 0.06], size: [0.06, 0.35, 0.02] },
+    { pos: [0, -0.15, 0.06], size: [0.3, 0.06, 0.02] },
   ],
-  // RESH (R): left vertical + top bar + upper-right bar + lower-right leg
+  // RESH (R): P-like form — left vertical + top bar + middle bar + lower-right leg
   R: [
-    { pos: [-0.17, 0, 0.06], size: [0.06, 0.45, 0.02] },
-    { pos: [0, 0.22, 0.06], size: [0.45, 0.06, 0.02] },
-    { pos: [0.08, 0.08, 0.06], size: [0.22, 0.06, 0.02] },
-    { pos: [0.12, -0.13, 0.06], size: [0.22, 0.06, 0.02] },
+    { pos: [-0.15, 0, 0.06], size: [0.06, 0.4, 0.02] },
+    { pos: [0.05, 0.18, 0.06], size: [0.25, 0.06, 0.02] },
+    { pos: [0.05, 0.02, 0.06], size: [0.2, 0.06, 0.02] },
+    { pos: [0.15, -0.12, 0.06], size: [0.2, 0.06, 0.02] },
   ],
-  // ESH (E): left vertical + top bar + middle bar + bottom bar
+  // ESH (E): vertical with three horizontal extensions (top, middle, bottom)
   E: [
-    { pos: [-0.17, 0, 0.06], size: [0.06, 0.45, 0.02] },
-    { pos: [0, 0.22, 0.06], size: [0.4, 0.06, 0.02] },
-    { pos: [-0.03, 0, 0.06], size: [0.3, 0.06, 0.02] },
-    { pos: [0, -0.22, 0.06], size: [0.4, 0.06, 0.02] },
+    { pos: [-0.15, 0, 0.06], size: [0.06, 0.4, 0.02] },
+    { pos: [0.08, 0.18, 0.06], size: [0.28, 0.06, 0.02] },
+    { pos: [0.08, 0, 0.06], size: [0.22, 0.06, 0.02] },
+    { pos: [0.08, -0.18, 0.06], size: [0.28, 0.06, 0.02] },
   ],
 };
 
@@ -205,7 +207,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
         const screenEmissive =
           isFirstScreen && hintLevel >= 1 ? screen.activeEmissive : screen.emissive;
         return (
-          <group key={screen.symbol} position={[screen.x, 2.1, -3.92]}>
+          <group key={screen.symbol} position={[screen.x, 2.1, -3.88]}>
             {/* Screen frame */}
             <mesh>
               <boxGeometry args={[0.85, 0.85, 0.06]} />
