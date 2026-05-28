@@ -20,6 +20,7 @@ import {
   FREQUENCY_NUMBER,
   type CellOrientation,
 } from './corridorPuzzle';
+import { BlastDoor, ImperialRoomShell } from '../three';
 import { DamagedAstromechDroid } from './DamagedAstromechDroid';
 
 export const DROID_GROUP_POSITION: [number, number, number] = [1.5, 0, 1.2];
@@ -175,18 +176,18 @@ export function Corridor({ onDialogue }: CorridorProps) {
     }
   }, [puzzleSolved, moveToRoom, t, onDialogue]);
 
-  const doorColor = puzzleSolved ? '#1e3a1e' : '#1a1a2e';
-  const doorEmissive = puzzleSolved ? '#0d3311' : '#00001a';
-  const doorIndicatorColor = puzzleSolved ? '#44ff44' : '#ff4444';
-  const doorIndicatorEmissive = puzzleSolved ? '#004400' : '#440000';
-
   return (
     <group>
       <HintTrigger puzzleId={PUZZLE_3_ID} delays={PUZZLE_3_HINT_DELAYS} />
 
-      <ambientLight intensity={0.35} />
-      <pointLight position={[0, 3, 0]} intensity={0.9} color="#5577aa" />
-      <pointLight position={[-2, 2, -1]} intensity={0.6} color="#225588" />
+      <pointLight position={[-2, 2, -1]} intensity={0.35} color="#225588" distance={4} decay={2} />
+
+      <ImperialRoomShell
+        floorColor="#131320"
+        wallBackColor="#171730"
+        wallSideColor="#181830"
+        trimColor="#2a3048"
+      />
 
       {/* Pulsing lights near each correct slot at hint level 2 */}
       {SLOT_POSITIONS.map((pos, i) => (
@@ -197,36 +198,6 @@ export function Corridor({ onDialogue }: CorridorProps) {
           active={hintLevel >= 2 && !puzzleSolved}
         />
       ))}
-
-      {/* Floor */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <planeGeometry args={[6, 8]} />
-        <meshStandardMaterial color="#131320" />
-      </mesh>
-
-      {/* Ceiling */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 3.5, 0]}>
-        <planeGeometry args={[6, 8]} />
-        <meshStandardMaterial color="#0a0a12" />
-      </mesh>
-
-      {/* Back wall */}
-      <mesh position={[0, 1.75, -4]}>
-        <planeGeometry args={[6, 3.5]} />
-        <meshStandardMaterial color="#171730" />
-      </mesh>
-
-      {/* Left wall */}
-      <mesh rotation={[0, Math.PI / 2, 0]} position={[-3, 1.75, 0]}>
-        <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#181830" />
-      </mesh>
-
-      {/* Right wall */}
-      <mesh rotation={[0, -Math.PI / 2, 0]} position={[3, 1.75, 0]}>
-        <planeGeometry args={[8, 3.5]} />
-        <meshStandardMaterial color="#181830" />
-      </mesh>
 
       {/* Conduit panel backing on left wall */}
       <mesh position={[-2.98, 1.5, -2.0]}>
@@ -322,20 +293,6 @@ export function Corridor({ onDialogue }: CorridorProps) {
         );
       })}
 
-      {/* Droid wreckage — front fill from camera side + top key */}
-      <pointLight
-        position={[DROID_GROUP_POSITION[0], 1.2, DROID_GROUP_POSITION[2] + 1.2]}
-        intensity={1.2}
-        color="#e8f0ff"
-        distance={3}
-      />
-      <pointLight
-        position={[DROID_GROUP_POSITION[0] + 0.5, 2.2, DROID_GROUP_POSITION[2]]}
-        intensity={0.85}
-        color="#b8d0e8"
-        distance={2.8}
-      />
-
       <group position={DROID_GROUP_POSITION}>
         <DamagedAstromechDroid hintLevel={hintLevel} />
 
@@ -412,48 +369,9 @@ export function Corridor({ onDialogue }: CorridorProps) {
         );
       })}
 
-      {/* Blast door — leads to Hangar Bay when puzzle solved */}
       <InteractiveObject onClick={handleDoorClick}>
         <group position={[0, 1.4, -3.92]}>
-          {/* Door frame */}
-          {[
-            {
-              pos: [-1.0, 0, 0] as [number, number, number],
-              args: [0.2, 2.8, 0.1] as [number, number, number],
-            },
-            {
-              pos: [1.0, 0, 0] as [number, number, number],
-              args: [0.2, 2.8, 0.1] as [number, number, number],
-            },
-            {
-              pos: [0, 1.3, 0] as [number, number, number],
-              args: [2.2, 0.2, 0.1] as [number, number, number],
-            },
-            {
-              pos: [0, -1.3, 0] as [number, number, number],
-              args: [2.2, 0.2, 0.1] as [number, number, number],
-            },
-          ].map(({ pos, args }, i) => (
-            <mesh key={i} position={pos}>
-              <boxGeometry args={args} />
-              <meshStandardMaterial color={doorColor} emissive={doorEmissive} />
-            </mesh>
-          ))}
-          {/* Door panel */}
-          <mesh>
-            <boxGeometry args={[1.6, 2.4, 0.06]} />
-            <meshStandardMaterial color={doorColor} emissive={doorEmissive} />
-          </mesh>
-          {/* Door center seam */}
-          <mesh position={[0, 0, 0.04]}>
-            <boxGeometry args={[0.04, 2.4, 0.02]} />
-            <meshStandardMaterial color="#334466" emissive="#112233" />
-          </mesh>
-          {/* Status indicator */}
-          <mesh position={[0.9, -0.9, 0.08]}>
-            <boxGeometry args={[0.16, 0.07, 0.04]} />
-            <meshStandardMaterial color={doorIndicatorColor} emissive={doorIndicatorEmissive} />
-          </mesh>
+          <BlastDoor unlocked={puzzleSolved} />
         </group>
       </InteractiveObject>
 

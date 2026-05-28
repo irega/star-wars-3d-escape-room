@@ -9,6 +9,8 @@ vi.mock('@react-three/fiber', () => ({
 
 vi.mock('@react-three/drei', () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Environment: () => null,
+  ContactShadows: () => null,
 }));
 
 describe('DetentionCell', () => {

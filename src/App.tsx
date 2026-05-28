@@ -1,4 +1,5 @@
 import { Canvas } from '@react-three/fiber';
+import { ACESFilmicToneMapping, Color } from 'three';
 import { Suspense, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DetentionCell } from './scenes/DetentionCell';
@@ -12,6 +13,7 @@ import { Intro } from './ui/Intro';
 import { useGameStore } from './stores/useGameStore';
 import { useInventoryStore } from './stores/useInventoryStore';
 import { useHintStore } from './stores/useHintStore';
+import { ImperialLighting, imperialPalette } from './three';
 import { PUZZLE_1_ID } from './scenes/detentionCellPuzzle';
 import { PUZZLE_2_ID } from './scenes/controlRoomPuzzle';
 import { PUZZLE_3_ID } from './scenes/corridorPuzzle';
@@ -64,14 +66,25 @@ export default function App() {
   return (
     <div style={{ width: '100%', height: '100%' }} data-testid="app" data-room={currentRoom}>
       <HUD inventory={[...inventory]} hint={hintText} />
-      <Canvas camera={{ position: [0, 1.6, 5], fov: 75 }}>
-        <Suspense fallback={null}>
-          {currentRoom === 'detention-cell' && <DetentionCell onDialogue={setDialogue} />}
-          {currentRoom === 'control-room' && <ControlRoom onDialogue={setDialogue} />}
-          {currentRoom === 'corridor' && <Corridor onDialogue={setDialogue} />}
-          {currentRoom === 'hangar-bay' && <HangarBay onDialogue={setDialogue} />}
-        </Suspense>
-      </Canvas>
+      {phase === 'playing' && (
+        <Canvas
+          gl={{ antialias: true }}
+          camera={{ position: [0, 1.6, 5], fov: 75 }}
+          onCreated={({ scene, gl }) => {
+            scene.background = new Color(imperialPalette.background);
+            gl.toneMapping = ACESFilmicToneMapping;
+            gl.toneMappingExposure = 1.2;
+          }}
+        >
+          <ImperialLighting />
+          <Suspense fallback={null}>
+            {currentRoom === 'detention-cell' && <DetentionCell onDialogue={setDialogue} />}
+            {currentRoom === 'control-room' && <ControlRoom onDialogue={setDialogue} />}
+            {currentRoom === 'corridor' && <Corridor onDialogue={setDialogue} />}
+            {currentRoom === 'hangar-bay' && <HangarBay onDialogue={setDialogue} />}
+          </Suspense>
+        </Canvas>
+      )}
       {dialogue && <Dialogue text={dialogue} isOpen onClose={() => setDialogue(null)} />}
       {phase === 'intro' && <Intro onStart={handleStart} />}
       {phase === 'won' && <Victory playerName={playerName} onReplay={handleReplay} />}
