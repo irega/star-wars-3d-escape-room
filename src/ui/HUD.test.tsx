@@ -43,6 +43,13 @@ describe('HUD', () => {
     expect(screen.queryByText('Location')).not.toBeInTheDocument();
   });
 
+  it('renders inventory list even when empty so min-height CSS applies to match location container height', () => {
+    render(<HUD inventory={[]} currentRoom="control-room" />);
+    const list = screen.getByRole('list');
+    expect(list).toBeInTheDocument();
+    expect(list.children).toHaveLength(0);
+  });
+
   it('has an aria-live region for screen reader announcements', () => {
     render(<HUD inventory={[]} announcement="Keycard collected" />);
     const liveRegion = screen.getByRole('status');
