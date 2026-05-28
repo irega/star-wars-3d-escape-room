@@ -13,6 +13,7 @@ import { useControlRoomTerminalStore } from './stores/useControlRoomTerminalStor
 import { Victory } from './ui/Victory';
 import { Intro } from './ui/Intro';
 import { useGameStore } from './stores/useGameStore';
+import type { Room } from './stores/useGameStore';
 import { useInventoryStore } from './stores/useInventoryStore';
 import { useHintStore } from './stores/useHintStore';
 import { ImperialLighting, imperialPalette } from './three';
@@ -23,7 +24,7 @@ import { PUZZLE_4_ID } from './scenes/hangarBayPuzzle';
 
 export default function App() {
   const { t } = useTranslation();
-  const [dialogue, setDialogue] = useState<string | null>(null);
+  const [dialogueEntry, setDialogueEntry] = useState<{ text: string; room: Room } | null>(null);
 
   const currentRoom = useGameStore((s) => s.currentRoom);
   const phase = useGameStore((s) => s.phase);
@@ -44,11 +45,19 @@ export default function App() {
   const closeControlRoomTerminal = useControlRoomTerminalStore((s) => s.close);
   const resetControlRoomTerminal = useControlRoomTerminalStore((s) => s.reset);
 
+  // Dialogue is only active for the room it was opened in; changing rooms hides it.
+  const dialogue = dialogueEntry?.room === currentRoom ? dialogueEntry.text : null;
+
   useEffect(() => {
     if (currentRoom !== 'control-room') {
       resetControlRoomTerminal();
     }
   }, [currentRoom, resetControlRoomTerminal]);
+
+  const showDialogue = useCallback(
+    (text: string) => setDialogueEntry({ text, room: currentRoom }),
+    [currentRoom],
+  );
 
   const handleStart = useCallback(
     (name: string) => {
@@ -63,7 +72,7 @@ export default function App() {
     resetInventory();
     resetHints();
     resetControlRoomTerminal();
-    setDialogue(null);
+    setDialogueEntry(null);
   }, [resetGame, resetInventory, resetHints, resetControlRoomTerminal]);
 
   let hintText: string | undefined;
@@ -103,14 +112,14 @@ export default function App() {
         >
           <ImperialLighting />
           <Suspense fallback={null}>
-            {currentRoom === 'detention-cell' && <DetentionCell onDialogue={setDialogue} />}
-            {currentRoom === 'control-room' && <ControlRoom onDialogue={setDialogue} />}
-            {currentRoom === 'corridor' && <Corridor onDialogue={setDialogue} />}
-            {currentRoom === 'hangar-bay' && <HangarBay onDialogue={setDialogue} />}
+            {currentRoom === 'detention-cell' && <DetentionCell onDialogue={showDialogue} />}
+            {currentRoom === 'control-room' && <ControlRoom onDialogue={showDialogue} />}
+            {currentRoom === 'corridor' && <Corridor onDialogue={showDialogue} />}
+            {currentRoom === 'hangar-bay' && <HangarBay onDialogue={showDialogue} />}
           </Suspense>
         </Canvas>
       )}
-      {dialogue && <Dialogue text={dialogue} isOpen onClose={() => setDialogue(null)} />}
+      {dialogue && <Dialogue text={dialogue} isOpen onClose={() => setDialogueEntry(null)} />}
       {phase === 'intro' && <Intro onStart={handleStart} />}
       {phase === 'won' && <Victory playerName={playerName} onReplay={handleReplay} />}
     </div>
