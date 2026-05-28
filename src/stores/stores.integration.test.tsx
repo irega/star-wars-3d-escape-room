@@ -50,9 +50,9 @@ describe('store integration with React components', () => {
       expect(screen.getByTestId('current-room')).toHaveTextContent('control-room');
     });
 
-    it('component reflects initial playing phase', () => {
+    it('component reflects initial intro phase', () => {
       render(<PhaseDisplay />);
-      expect(screen.getByTestId('phase')).toHaveTextContent('playing');
+      expect(screen.getByTestId('phase')).toHaveTextContent('intro');
     });
 
     it('component updates to won when win is called', () => {

@@ -2,6 +2,14 @@
   "app": {
     "title": "Escape from Detention Block AA-23"
   },
+  "intro": {
+    "title": "ESCAPE FROM DETENTION BLOCK AA-23",
+    "story1": "You are a Rebel Alliance operative captured aboard the Death Star.",
+    "story2": "A partial power failure has weakened Imperial security. This is your chance.",
+    "story3": "Solve 4 puzzles to reach the hangar bay and escape before Imperial forces restore order.",
+    "namePlaceholder": "Your name (optional)",
+    "startButton": "BEGIN MISSION"
+  },
   "hud": {
     "hint": "Hint",
     "inventory": "Inventory"
