@@ -26,32 +26,29 @@ type Bar = { pos: [number, number, number]; size: [number, number, number] };
 // Aurebesh-inspired geometric symbols — each letter rendered as a unique bar composition
 // Aligned with canonical Aurebesh alphabet shapes from aurebesh.org
 export const AUREBESH_SYMBOL_BARS: Record<string, Bar[]> = {
-  // AUREK (A): pointed roof with crossbar — narrow top, two sides, middle bar
+  // AUREK (A): Angular shape — top-right bar, left vertical, bottom-right bar
   A: [
-    { pos: [0, 0.18, 0.06], size: [0.15, 0.06, 0.02] },
-    { pos: [-0.12, 0.05, 0.06], size: [0.06, 0.3, 0.02] },
-    { pos: [0.12, 0.05, 0.06], size: [0.06, 0.3, 0.02] },
-    { pos: [0, -0.02, 0.06], size: [0.25, 0.06, 0.02] },
+    { pos: [0.08, 0.2, 0.06], size: [0.22, 0.06, 0.02] },   // top bar (right-aligned)
+    { pos: [-0.15, 0.06, 0.06], size: [0.06, 0.28, 0.02] }, // left vertical
+    { pos: [0.08, -0.15, 0.06], size: [0.22, 0.06, 0.02] }, // bottom bar (right-aligned)
   ],
-  // UNESH (U): horseshoe shape — two verticals + bottom bar
+  // UNESH (U): Classic U-shape — two verticals + bottom horizontal bar
   U: [
-    { pos: [-0.15, 0.05, 0.06], size: [0.06, 0.35, 0.02] },
-    { pos: [0.15, 0.05, 0.06], size: [0.06, 0.35, 0.02] },
-    { pos: [0, -0.15, 0.06], size: [0.3, 0.06, 0.02] },
+    { pos: [-0.15, 0.08, 0.06], size: [0.06, 0.32, 0.02] }, // left vertical
+    { pos: [0.15, 0.08, 0.06], size: [0.06, 0.32, 0.02] },  // right vertical
+    { pos: [0, -0.15, 0.06], size: [0.3, 0.06, 0.02] },     // bottom horizontal
   ],
-  // RESH (R): P-like form — left vertical + top bar + middle bar + lower-right leg
+  // RESH (R): Angular form (like "7") — top horizontal + left vertical + lower-right bar
   R: [
-    { pos: [-0.15, 0, 0.06], size: [0.06, 0.4, 0.02] },
-    { pos: [0.05, 0.18, 0.06], size: [0.25, 0.06, 0.02] },
-    { pos: [0.05, 0.02, 0.06], size: [0.2, 0.06, 0.02] },
-    { pos: [0.15, -0.12, 0.06], size: [0.2, 0.06, 0.02] },
+    { pos: [0.05, 0.2, 0.06], size: [0.2, 0.06, 0.02] },    // top horizontal
+    { pos: [-0.1, 0.05, 0.06], size: [0.06, 0.3, 0.02] },   // left vertical
+    { pos: [0.1, -0.08, 0.06], size: [0.18, 0.06, 0.02] },  // lower-right bar
   ],
-  // ESH (E): vertical with three horizontal extensions (top, middle, bottom)
+  // ESH (E): V-shape with top bar — left diagonal + right diagonal + top horizontal
   E: [
-    { pos: [-0.15, 0, 0.06], size: [0.06, 0.4, 0.02] },
-    { pos: [0.08, 0.18, 0.06], size: [0.28, 0.06, 0.02] },
-    { pos: [0.08, 0, 0.06], size: [0.22, 0.06, 0.02] },
-    { pos: [0.08, -0.18, 0.06], size: [0.28, 0.06, 0.02] },
+    { pos: [0, 0.2, 0.06], size: [0.2, 0.06, 0.02] },       // top horizontal bar
+    { pos: [-0.08, 0.05, 0.06], size: [0.1, 0.32, 0.02] },  // left diagonal stroke
+    { pos: [0.08, 0.05, 0.06], size: [0.1, 0.32, 0.02] },   // right diagonal stroke
   ],
 };
 
