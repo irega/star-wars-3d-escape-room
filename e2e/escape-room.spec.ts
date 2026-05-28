@@ -1,4 +1,17 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+/** Dismiss dialogue or schematic overlays so canvas clicks are not blocked. */
+async function dismissOverlays(page: Page) {
+  const close = page.getByRole('button', { name: /close/i });
+  while (await close.isVisible().catch(() => false)) {
+    await close.click();
+    await page.waitForTimeout(150);
+  }
+}
+
+async function clickCanvas(page: Page, position: { x: number; y: number }) {
+  await page.locator('canvas').click({ position, force: true });
+}
 
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
 // Camera: position [0, 1.6, 5], fov=75, lookAt [0,0,0] (R3F default).
@@ -75,7 +88,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   // ── Scene 1: Detention Cell ───────────────────────────────────────────────
 
   // Find the hidden keycard behind the loose wall panel
-  await page.locator('canvas').click({ position: SCENE1.panel });
+  await clickCanvas(page, SCENE1.panel);
   await expect(
     page.getByText('A hidden maintenance keycard! This must open the cell door.'),
   ).toBeVisible();
@@ -83,7 +96,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.getByRole('button', { name: /close/i }).click();
 
   // Exit the detention cell — door now unlocked
-  await page.locator('canvas').click({ position: SCENE1.door });
+  await clickCanvas(page, SCENE1.door);
 
   // ── Scene 2: Control Room ─────────────────────────────────────────────────
 
@@ -92,7 +105,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.waitForTimeout(500);
 
   // Solve the Imperial Override puzzle at the terminal
-  await page.locator('canvas').click({ position: SCENE2.terminal });
+  await clickCanvas(page, SCENE2.terminal);
   await expect(page.getByText('IMPERIAL OVERRIDE SYSTEM v4.2')).toBeVisible();
 
   for (const letter of CORRECT_SEQUENCE) {
@@ -107,7 +120,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.getByRole('button', { name: /close/i }).click();
 
   // Exit through the blast door to the corridor
-  await page.locator('canvas').click({ position: SCENE2.door });
+  await clickCanvas(page, SCENE2.door);
   await page.waitForTimeout(300);
   await expect(
     page.getByText('Blast door sealed. Complete the Imperial Override sequence first.'),
@@ -117,29 +130,30 @@ test('happy path: escape from detention cell through control room to corridor', 
 
   await page.locator('[data-testid="app"][data-room="corridor"]').waitFor({ state: 'attached' });
   await page.waitForTimeout(500);
+  await dismissOverlays(page);
 
   // Cell 0 starts at 0° — correct orientation for Slot 0 (no rotation needed)
-  await page.locator('canvas').click({ position: SCENE3.cell0 });
+  await clickCanvas(page, SCENE3.cell0);
   await page.waitForTimeout(200);
-  await page.locator('canvas').click({ position: SCENE3.slot0 });
+  await clickCanvas(page, SCENE3.slot0);
   await page.waitForTimeout(200);
 
   // Cell 1 starts at 0° — needs 90° for Slot 1 (one rotation)
-  await page.locator('canvas').click({ position: SCENE3.cell1 });
+  await clickCanvas(page, SCENE3.cell1);
   await page.waitForTimeout(200);
-  await page.locator('canvas').click({ position: SCENE3.cell1 }); // rotate to 90°
+  await clickCanvas(page, SCENE3.cell1); // rotate to 90°
   await page.waitForTimeout(200);
-  await page.locator('canvas').click({ position: SCENE3.slot1 });
+  await clickCanvas(page, SCENE3.slot1);
   await page.waitForTimeout(200);
 
   // Cell 2 starts at 0° — needs 180° for Slot 2 (two rotations)
-  await page.locator('canvas').click({ position: SCENE3.cell2 });
+  await clickCanvas(page, SCENE3.cell2);
   await page.waitForTimeout(200);
-  await page.locator('canvas').click({ position: SCENE3.cell2 }); // rotate to 90°
+  await clickCanvas(page, SCENE3.cell2); // rotate to 90°
   await page.waitForTimeout(200);
-  await page.locator('canvas').click({ position: SCENE3.cell2 }); // rotate to 180°
+  await clickCanvas(page, SCENE3.cell2); // rotate to 180°
   await page.waitForTimeout(200);
-  await page.locator('canvas').click({ position: SCENE3.slot2 });
+  await clickCanvas(page, SCENE3.slot2);
   await page.waitForTimeout(500);
 
   // All conduits powered — frequency in inventory, dialogue shown
@@ -150,7 +164,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.getByRole('button', { name: /close/i }).click();
 
   // Exit through the corridor blast door to the hangar bay
-  await page.locator('canvas').click({ position: SCENE3.door });
+  await clickCanvas(page, SCENE3.door);
   await page.waitForTimeout(300);
   await page
     .locator('[data-testid="app"][data-room="hangar-bay"]')
@@ -158,8 +172,9 @@ test('happy path: escape from detention cell through control room to corridor', 
 
   // ── Scene 4: Hangar Bay ───────────────────────────────────────────────────
 
+  await dismissOverlays(page);
   // Click the launch console to open the credential verification overlay
-  await page.locator('canvas').click({ position: SCENE4.console });
+  await clickCanvas(page, SCENE4.console);
   await expect(page.getByText('IMPERIAL LAUNCH CONTROL v7.1')).toBeVisible();
 
   // Verify all three credentials are present and slots show "filled" status

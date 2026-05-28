@@ -324,17 +324,17 @@ export function Corridor({ onDialogue }: CorridorProps) {
 
       <group position={DROID_GROUP_POSITION}>
         <DamagedAstromechDroid hintLevel={hintLevel} />
-      </group>
 
-      {/* Clickable droid schematic trigger — shows schematic overlay when hint level >= 1 */}
-      {hintLevel >= 1 && (
-        <InteractiveObject onClick={() => setSchematicOpen(true)}>
-          <mesh position={[1.5, 0.5, 1.2]}>
-            <boxGeometry args={[0.6, 0.8, 0.6]} />
-            <meshStandardMaterial color="#000000" transparent opacity={0} />
-          </mesh>
-        </InteractiveObject>
-      )}
+        {/* Schematic trigger — tight hit volume on droid torso only (avoids stealing cell clicks) */}
+        {hintLevel >= 1 && !schematicOpen && (
+          <InteractiveObject onClick={() => setSchematicOpen(true)}>
+            <mesh position={[0, 0.45, 0]}>
+              <boxGeometry args={[0.32, 0.55, 0.32]} />
+              <meshStandardMaterial color="#000000" transparent opacity={0} />
+            </mesh>
+          </InteractiveObject>
+        )}
+      </group>
 
       {/* Power cells — appear at their starting position when not placed */}
       {cells.map((cell, cellId) => {
