@@ -30,7 +30,12 @@ export function Intro({ onStart }: IntroProps) {
           maxLength={30}
           aria-label={t('intro.namePlaceholder')}
         />
-        <button className={styles.startBtn} onClick={handleStart}>
+        <button
+          type="button"
+          className={styles.startBtn}
+          data-testid="intro-start"
+          onClick={handleStart}
+        >
           {t('intro.startButton')}
         </button>
       </div>

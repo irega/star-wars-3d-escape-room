@@ -1,5 +1,12 @@
 import { test, expect, type Page } from '@playwright/test';
 
+/** Force English so intro button / copy match stable selectors (CI browsers may prefer es). */
+async function forceEnglishLocale(page: Page) {
+  await page.addInitScript(() => {
+    window.localStorage.setItem('i18nextLng', 'en');
+  });
+}
+
 /** Dismiss dialogue or schematic overlays so canvas clicks are not blocked. */
 async function dismissOverlays(page: Page) {
   const close = page.getByRole('button', { name: /close/i });
@@ -9,8 +16,19 @@ async function dismissOverlays(page: Page) {
   }
 }
 
+/** Canvas mounts only when phase === 'playing' (after intro). */
+async function startGameFromIntro(page: Page) {
+  await expect(page.getByTestId('intro')).toBeVisible();
+  await page.getByTestId('intro-start').click();
+  await expect(page.getByTestId('intro')).toBeHidden({ timeout: 15_000 });
+  await expect(page.getByTestId('game-canvas')).toBeVisible({ timeout: 15_000 });
+  await page.waitForTimeout(500);
+}
+
 async function clickCanvas(page: Page, position: { x: number; y: number }) {
-  await page.locator('canvas').click({ position, force: true });
+  const canvas = page.getByTestId('game-canvas').locator('canvas');
+  await expect(canvas).toBeVisible({ timeout: 10_000 });
+  await canvas.click({ position, force: true });
 }
 
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
@@ -73,17 +91,13 @@ const CORRECT_SEQUENCE = ['A', 'U', 'R', 'E'];
 test('happy path: escape from detention cell through control room to corridor', async ({
   page,
 }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(90_000);
+  await forceEnglishLocale(page);
   await page.goto('/');
   await expect(page.getByTestId('app')).toBeVisible();
 
   // ── Intro Screen ───────────────────────────────────────────────────────────
-
-  // Wait for intro screen and click "BEGIN MISSION" button
-  await expect(page.getByTestId('intro')).toBeVisible();
-  await page.getByRole('button', { name: /BEGIN MISSION/i }).click();
-  await page.locator('canvas').waitFor({ state: 'visible' });
-  await page.waitForTimeout(1000);
+  await startGameFromIntro(page);
 
   // ── Scene 1: Detention Cell ───────────────────────────────────────────────
 
