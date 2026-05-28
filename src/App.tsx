@@ -67,24 +67,29 @@ export default function App() {
     <div style={{ width: '100%', height: '100%' }} data-testid="app" data-room={currentRoom}>
       <HUD inventory={[...inventory]} hint={hintText} />
       {phase === 'playing' && (
-        <Canvas
+        <div
           data-testid="game-canvas"
-          gl={{ antialias: true }}
-          camera={{ position: [0, 1.6, 5], fov: 75 }}
-          onCreated={({ scene, gl }) => {
-            scene.background = new Color(imperialPalette.background);
-            gl.toneMapping = ACESFilmicToneMapping;
-            gl.toneMappingExposure = 1.2;
-          }}
+          style={{ position: 'fixed', inset: 0, width: '100%', height: '100%' }}
         >
-          <ImperialLighting />
-          <Suspense fallback={null}>
-            {currentRoom === 'detention-cell' && <DetentionCell onDialogue={setDialogue} />}
-            {currentRoom === 'control-room' && <ControlRoom onDialogue={setDialogue} />}
-            {currentRoom === 'corridor' && <Corridor onDialogue={setDialogue} />}
-            {currentRoom === 'hangar-bay' && <HangarBay onDialogue={setDialogue} />}
-          </Suspense>
-        </Canvas>
+          <Canvas
+            style={{ width: '100%', height: '100%', display: 'block' }}
+            gl={{ antialias: true }}
+            camera={{ position: [0, 1.6, 5], fov: 75 }}
+            onCreated={({ scene, gl }) => {
+              scene.background = new Color(imperialPalette.background);
+              gl.toneMapping = ACESFilmicToneMapping;
+              gl.toneMappingExposure = 1.2;
+            }}
+          >
+            <ImperialLighting />
+            <Suspense fallback={null}>
+              {currentRoom === 'detention-cell' && <DetentionCell onDialogue={setDialogue} />}
+              {currentRoom === 'control-room' && <ControlRoom onDialogue={setDialogue} />}
+              {currentRoom === 'corridor' && <Corridor onDialogue={setDialogue} />}
+              {currentRoom === 'hangar-bay' && <HangarBay onDialogue={setDialogue} />}
+            </Suspense>
+          </Canvas>
+        </div>
       )}
       {dialogue && <Dialogue text={dialogue} isOpen onClose={() => setDialogue(null)} />}
       {phase === 'intro' && <Intro onStart={handleStart} />}

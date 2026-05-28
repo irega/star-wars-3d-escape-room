@@ -16,19 +16,39 @@ async function dismissOverlays(page: Page) {
   }
 }
 
+function webglCanvas(page: Page) {
+  return page.locator('[data-testid="game-canvas"] canvas');
+}
+
+/** Wait until R3F has sized the WebGL canvas (headless CI can mount with 0×0 briefly). */
+async function waitForWebGLCanvas(page: Page) {
+  const canvas = webglCanvas(page);
+  await canvas.waitFor({ state: 'attached', timeout: 30_000 });
+  await expect(canvas).toBeVisible({ timeout: 30_000 });
+  await page.waitForFunction(
+    () => {
+      const el = document.querySelector<HTMLCanvasElement>(
+        '[data-testid="game-canvas"] canvas',
+      );
+      return Boolean(el && el.width > 0 && el.height > 0);
+    },
+    { timeout: 30_000 },
+  );
+}
+
 /** Canvas mounts only when phase === 'playing' (after intro). */
 async function startGameFromIntro(page: Page) {
   await expect(page.getByTestId('intro')).toBeVisible();
   await page.getByTestId('intro-start').click();
   await expect(page.getByTestId('intro')).toBeHidden({ timeout: 15_000 });
-  await expect(page.getByTestId('game-canvas')).toBeVisible({ timeout: 15_000 });
+  await waitForWebGLCanvas(page);
   await page.waitForTimeout(500);
 }
 
 async function clickCanvas(page: Page, position: { x: number; y: number }) {
-  const canvas = page.getByTestId('game-canvas').locator('canvas');
-  await expect(canvas).toBeVisible({ timeout: 10_000 });
-  await canvas.click({ position, force: true });
+  const canvas = webglCanvas(page);
+  await waitForWebGLCanvas(page);
+  await canvas.click({ position, force: true, timeout: 15_000 });
 }
 
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
