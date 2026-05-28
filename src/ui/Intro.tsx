@@ -111,7 +111,10 @@ export function Intro({ onStart }: IntroProps) {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            onKeyDown={unlockAudio}
+            onKeyDown={(e) => {
+              unlockAudio();
+              if (e.key === 'Enter') handleStart();
+            }}
             onPointerDown={unlockAudio}
             onPaste={unlockAudio}
             placeholder={t('intro.namePlaceholder')}
