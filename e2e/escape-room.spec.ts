@@ -84,6 +84,7 @@ const SCENE4 = {
 };
 
 const CORRECT_SEQUENCE = ['A', 'U', 'R', 'E'];
+const WRONG_SEQUENCE = ['W', 'X', 'Y', 'Z'];
 
 test('happy path: escape from detention cell through control room to corridor', async ({
   page,
@@ -110,7 +111,9 @@ test('happy path: escape from detention cell through control room to corridor', 
   // ── Scene 2: Control Room ─────────────────────────────────────────────────
 
   // Wait for scene transition: Zustand update → React re-render → R3F mesh mount + raycasting setup
-  await page.locator('[data-testid="app"][data-room="control-room"]').waitFor({ state: 'attached' });
+  await page
+    .locator('[data-testid="app"][data-room="control-room"]')
+    .waitFor({ state: 'attached' });
   await page.waitForTimeout(500);
 
   // Solve the Imperial Override puzzle at the terminal
@@ -167,9 +170,7 @@ test('happy path: escape from detention cell through control room to corridor', 
   await page.waitForTimeout(500);
 
   // All conduits powered — frequency in inventory, dialogue shown
-  await expect(
-    page.getByText(/All conduits powered! Frequency 1138 acquired/),
-  ).toBeVisible();
+  await expect(page.getByText(/All conduits powered! Frequency 1138 acquired/)).toBeVisible();
   await expect(page.getByRole('listitem').filter({ hasText: 'frequency' })).toBeVisible();
   await page.getByRole('button', { name: /close/i }).click();
 
@@ -199,4 +200,43 @@ test('happy path: escape from detention cell through control room to corridor', 
   // Verify victory screen appears
   await expect(page.getByText(/escaped Detention Block AA-23/)).toBeVisible();
   await expect(page.getByRole('button', { name: /Play Again/i })).toBeVisible();
+});
+
+test('edge case: wrong terminal input shows access denied and keeps terminal open', async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  await page.goto('/');
+  await expect(page.getByTestId('app')).toBeVisible();
+  await completeIntro(page);
+
+  // Fast-path through Scene 1 to reach the control room
+  await clickCanvas(page, SCENE1.panel);
+  await expect(
+    page.getByText('A hidden maintenance keycard! This must open the cell door.'),
+  ).toBeVisible();
+  await page.getByRole('button', { name: /close/i }).click();
+  await clickCanvas(page, SCENE1.door);
+
+  // Wait for Scene 2: Control Room
+  await page
+    .locator('[data-testid="app"][data-room="control-room"]')
+    .waitFor({ state: 'attached' });
+  await page.waitForTimeout(500);
+
+  // Open the terminal
+  await clickCanvas(page, SCENE2.terminal);
+  await expect(page.getByTestId('control-room-terminal')).toBeVisible();
+
+  // Type an incorrect 4-symbol sequence and submit
+  for (const letter of WRONG_SEQUENCE) {
+    await page.keyboard.press(letter);
+  }
+  await page.keyboard.press('Enter');
+
+  // ACCESS DENIED message should appear
+  await expect(page.getByText('ACCESS DENIED. Incorrect sequence. Try again.')).toBeVisible();
+
+  // Terminal must stay open — wrong input does not close the overlay
+  await expect(page.getByTestId('control-room-terminal')).toBeVisible();
 });
