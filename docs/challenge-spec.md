@@ -1,4 +1,4 @@
-# Challenge Spec — Crossmint Engineering Challenge
+# Challenge Spec — Company Engineering Challenge
 
 Source of truth for requirements. Consult before every design decision.
 
