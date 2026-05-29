@@ -10,15 +10,13 @@ import { test, expect, type Page, type BrowserContext } from '@playwright/test';
  * Uses Chrome DevTools Protocol (CDP) to apply CPU throttling and simulate low FPS conditions.
  */
 
-async function applyMemoryCpuThrottle(context: BrowserContext, rate: number) {
+async function applyCpuThrottle(context: BrowserContext, rate: number) {
   const pages = context.pages();
   if (pages.length === 0) throw new Error('No pages available for throttling');
 
   const client = await context.newCDPSession(pages[0]);
   // CPU throttle: 1 = normal, 6 = 6x slowdown
   await client.send('Emulation.setCPUThrottlingRate', { rate });
-  // Memory pressure: simulates memory constraints to further stress the renderer
-  await client.send('Emulation.setMemoryPressureLevel', { level: 'moderate' });
 }
 
 test.describe('PerformanceMonitor E2E', () => {
@@ -34,7 +32,7 @@ test.describe('PerformanceMonitor E2E', () => {
     await expect(appElement).toHaveAttribute('data-quality-tier', 'high');
 
     // Apply CPU throttling (6x slowdown) to trigger FPS decline
-    await applyMemoryCpuThrottle(context, 6);
+    await applyCpuThrottle(context, 6);
 
     // Wait for PerformanceMonitor to detect the decline and switch to low tier.
     // drei's PerformanceMonitor measures FPS over ~2-3 seconds before triggering onDecline.
@@ -42,7 +40,7 @@ test.describe('PerformanceMonitor E2E', () => {
     await expect(appElement).toHaveAttribute('data-quality-tier', 'low', { timeout: 8000 });
 
     // Remove throttling
-    await applyMemoryCpuThrottle(context, 1);
+    await applyCpuThrottle(context, 1);
 
     // Wait for PerformanceMonitor to detect recovery and switch back to high tier.
     // Recovery should take similar time (~2-3 seconds measurement window).
