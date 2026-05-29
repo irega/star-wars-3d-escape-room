@@ -27,6 +27,26 @@ test.describe('PerformanceMonitor E2E', () => {
     await page.goto('/');
     await expect(page.getByTestId('app')).toBeVisible();
 
+    // Skip the intro crawl to get to the name input screen faster
+    const skipCrawlButton = page.getByTestId('skip-crawl').first();
+    if (await skipCrawlButton.isVisible()) {
+      await skipCrawlButton.click();
+    }
+
+    // Wait for the name input to appear
+    const nameInput = page.locator('input[type="text"]');
+    await expect(nameInput).toBeVisible({ timeout: 5000 });
+
+    // Enter a player name and start the game
+    // This transitions from intro phase → playing phase
+    // Canvas only renders when phase === 'playing'
+    await nameInput.fill('TestPilot');
+    const startButton = page.locator('button').filter({ hasText: /start|comenzar/i }).first();
+    await startButton.click();
+
+    // Wait for Canvas to render and PerformanceMonitor to initialize
+    await page.waitForTimeout(2000);
+
     // Verify we start in high tier
     const appElement = page.locator('[data-testid="app"]');
     await expect(appElement).toHaveAttribute('data-quality-tier', 'high');
