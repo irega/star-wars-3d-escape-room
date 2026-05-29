@@ -203,8 +203,9 @@ Degrades automatically below ~30 fps. No manual settings menu needed. Current ti
 
 **SFX** — not implemented. Interaction feedback is visual only (glow, color change, animation). Kept out of scope to avoid managing audio asset licensing and volume mixing complexity.
 
-- All audio triggered by user interaction, not timers — avoids autoplay browser restrictions
-- Audio file (`public/audio/imperial-march.mp3`) is committed to the repository
+**Implementation details:**
+- Audio triggered only on first user interaction (compliance with browser autoplay policy)
+- Audio file lives in `public/audio/` and is not committed (see `public/audio/README.md` for copyright)
 
 ---
 
@@ -264,13 +265,16 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 - Zustand stores: state machine transitions, inventory add/remove/has, hint progression, terminal store
 - Extracted puzzle logic: sequence validation (puzzle 2), cell placement and orientation (puzzle 3), launch clearance (puzzle 4)
 - Audio module: start/stop/mute/reset behavior
-- Performance: PerformanceMonitor quality tier switching (high → low → high) via `App.performance.test.tsx`
 - Pure functions, zero 3D dependency
 
 **Integration tests (RTL)** — HTML overlays only:
 - HUD, Dialogue, Victory, Loading, ControlRoomTerminal — standard React components
 - No RTL for 3D scenes — WebGL doesn't render in jsdom
 - No `@react-three/test-renderer` — too immature to justify the cost
+
+**Performance tests (Vitest + Playwright):**
+- Unit: PerformanceMonitor quality tier switching (high → low tier on FPS decline, recovery on FPS incline)
+- E2E: PerformanceMonitor auto-degradation under CPU throttling (verifies `data-quality-tier` attribute changes)
 
 **E2E (Playwright)** — happy path:
 - One test: "the game is winnable from start to finish"
@@ -281,11 +285,17 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 
 ## CI/CD
 
-- **GitHub Actions** — single orchestrator: lint → format:check → test:ci → build on every PR
-- **Vercel** — deployment only (preview on PRs, production on `main`). Emits `deployment_status` for post-deploy E2E
+**Continuous Integration** — GitHub Actions + Vercel:
+- **GitHub Actions** — single orchestrator on every PR: lint → format:check → test:ci → build
+- **Vercel** — deployment (preview on PRs, production on `main`). Emits `deployment_status` for post-deploy E2E
 - **Post-deploy E2E** — Playwright against Vercel preview URL on `deployment_status` success
 
-**Dev agent iteration workflow:**
-- Dev agent picks up approved issues (`enhancement` / `bug` + `approved` label)
-- On PR feedback, comment with `@claude` to trigger agent iteration
-- See `AGENTS.md` for full workflow (branch naming, `no-agent` opt-out, approval requirements)
+**Dev agent workflow** — [claude-code-action](https://github.com/anthropics/claude-code-action) with Claude Pro:
+1. Create issue from template (enhancement, bug, or manual task)
+2. Add `approved` label (gates agent pickup)
+3. Dev agent creates a branch and opens PR with inline feedback
+4. PR runs full CI (lint, format:check, test:ci, build)
+5. Human review + green CI required before merge
+6. Never merge — agent creates PRs only; human merges on main branch
+
+See `AGENTS.md` for branch naming conventions, labels, and full agent setup.
