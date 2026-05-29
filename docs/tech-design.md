@@ -204,7 +204,7 @@ Degrades automatically below ~30 fps. No manual settings menu needed. Current ti
 **SFX** — not implemented. Interaction feedback is visual only (glow, color change, animation). Kept out of scope to avoid managing audio asset licensing and volume mixing complexity.
 
 - All audio triggered by user interaction, not timers — avoids autoplay browser restrictions
-- Audio file lives in `public/audio/` and is not committed (see `public/audio/README.md` for copyright)
+- Audio file (`public/audio/imperial-march.mp3`) is committed to the repository
 
 ---
 
@@ -264,6 +264,7 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 - Zustand stores: state machine transitions, inventory add/remove/has, hint progression, terminal store
 - Extracted puzzle logic: sequence validation (puzzle 2), cell placement and orientation (puzzle 3), launch clearance (puzzle 4)
 - Audio module: start/stop/mute/reset behavior
+- Performance: PerformanceMonitor quality tier switching (high → low → high) via `App.performance.test.tsx`
 - Pure functions, zero 3D dependency
 
 **Integration tests (RTL)** — HTML overlays only:
@@ -276,10 +277,6 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 - Edge cases: wrong terminal input, invalid sequences
 - Playwright clicks canvas coordinates for 3D interactions — brittle by nature; mitigated with `data-testid` on DOM overlays
 
-**Performance tests (Vitest + Playwright)** — automatic quality degradation:
-- Unit test (`App.performance.test.tsx`): mocks `PerformanceMonitor` from drei and verifies quality tier transitions — high tier by default, degradation to low tier on FPS decline, recovery to high tier on FPS recovery
-- E2E test (`e2e/performance-monitor.spec.ts`): applies CPU throttling via Chrome DevTools Protocol, verifies automatic degradation to low tier (dpr = 0.75, contact shadows disabled) within 12 seconds
-
 ---
 
 ## CI/CD
@@ -288,4 +285,7 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 - **Vercel** — deployment only (preview on PRs, production on `main`). Emits `deployment_status` for post-deploy E2E
 - **Post-deploy E2E** — Playwright against Vercel preview URL on `deployment_status` success
 
-See `AGENTS.md` for the full agent workflow (dev agent, QA agent, branch naming, `approved` gate).
+**Dev agent iteration workflow:**
+- Dev agent picks up approved issues (`enhancement` / `bug` + `approved` label)
+- On PR feedback, comment with `@claude` to trigger agent iteration
+- See `AGENTS.md` for full workflow (branch naming, `no-agent` opt-out, approval requirements)
