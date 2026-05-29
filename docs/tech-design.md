@@ -276,6 +276,10 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 - Edge cases: wrong terminal input, invalid sequences
 - Playwright clicks canvas coordinates for 3D interactions — brittle by nature; mitigated with `data-testid` on DOM overlays
 
+**Performance tests (Vitest + Playwright)** — automatic quality degradation:
+- Unit test (`App.performance.test.tsx`): mocks `PerformanceMonitor` from drei and verifies quality tier transitions — high tier by default, degradation to low tier on FPS decline, recovery to high tier on FPS recovery
+- E2E test (`e2e/performance-monitor.spec.ts`): applies CPU throttling via Chrome DevTools Protocol, verifies automatic degradation to low tier (dpr = 0.75, contact shadows disabled) within 12 seconds
+
 ---
 
 ## CI/CD
