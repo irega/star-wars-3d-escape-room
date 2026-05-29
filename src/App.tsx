@@ -1,4 +1,5 @@
 import { Canvas } from '@react-three/fiber';
+import { PerformanceMonitor } from '@react-three/drei';
 import { ACESFilmicToneMapping, Color } from 'three';
 import { Suspense, useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +29,7 @@ import { RoomHintTriggers } from './components/RoomHintTriggers';
 export default function App() {
   const { t } = useTranslation();
   const [dialogueEntry, setDialogueEntry] = useState<{ text: string; room: Room } | null>(null);
+  const [qualityTier, setQualityTier] = useState<'high' | 'low'>('high');
 
   const currentRoom = useGameStore((s) => s.currentRoom);
   const phase = useGameStore((s) => s.phase);
@@ -100,7 +102,12 @@ export default function App() {
   const showHudHint = !dialogue && !(currentRoom === 'control-room' && controlRoomTerminalActive);
 
   return (
-    <div style={{ width: '100%', height: '100%' }} data-testid="app" data-room={currentRoom}>
+    <div
+      style={{ width: '100%', height: '100%' }}
+      data-testid="app"
+      data-room={currentRoom}
+      data-quality-tier={qualityTier}
+    >
       <HUD
         inventory={[...inventory]}
         currentRoom={phase === 'playing' ? currentRoom : undefined}
@@ -116,6 +123,7 @@ export default function App() {
       )}
       {phase === 'playing' && (
         <Canvas
+          dpr={qualityTier === 'high' ? Math.min(window.devicePixelRatio, 2) : 0.75}
           gl={{ antialias: true }}
           camera={{ position: [0, 1.6, 5], fov: 75 }}
           onCreated={({ scene, gl }) => {
@@ -124,7 +132,11 @@ export default function App() {
             gl.toneMappingExposure = 1.5;
           }}
         >
-          <ImperialLighting />
+          <PerformanceMonitor
+            onDecline={() => setQualityTier('low')}
+            onIncline={() => setQualityTier('high')}
+          />
+          <ImperialLighting showContactShadows={qualityTier === 'high'} />
           <Suspense fallback={null}>
             {currentRoom === 'detention-cell' && <DetentionCell onDialogue={showDialogue} />}
             {currentRoom === 'control-room' && <ControlRoom onDialogue={showDialogue} />}
