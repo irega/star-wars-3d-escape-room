@@ -25,6 +25,7 @@ describe('HUD', () => {
     render(<HUD inventory={[]} hint="Check the loose panel" />);
     expect(screen.getByText('Hint')).toBeInTheDocument();
     expect(screen.getByText('Check the loose panel')).toBeInTheDocument();
+    expect(screen.getByTestId('hud-hint')).toBeVisible();
   });
 
   it('does not render hint section when hint is absent', () => {

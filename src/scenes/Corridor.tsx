@@ -7,7 +7,6 @@ import { useGameStore } from '../stores/useGameStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import { useHintStore } from '../stores/useHintStore';
 import { InteractiveObject } from '../components/InteractiveObject';
-import { HintTrigger } from '../components/HintTrigger';
 import {
   areAllSlotsCorrect,
   canExitCorridor,
@@ -16,7 +15,6 @@ import {
   shouldExtractFromSlot,
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
-  PUZZLE_3_HINT_DELAYS,
   type CellOrientation,
 } from './corridorPuzzle';
 import { LAUNCH_FREQUENCY } from './launchFrequency';
@@ -85,7 +83,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
   const moveToRoom = useGameStore((s) => s.moveToRoom);
   const solvedPuzzles = useGameStore((s) => s.solvedPuzzles);
   const puzzleSolved = solvedPuzzles.includes(PUZZLE_3_ID);
-  const hintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_3_ID));
+  const hintLevel = useHintStore((s) => s.hintLevels[PUZZLE_3_ID] ?? 0);
 
   // Build slot placements array for validation
   const slotPlacements = CELL_SOLUTIONS.map((_, slotIndex) => {
@@ -188,8 +186,6 @@ export function Corridor({ onDialogue }: CorridorProps) {
 
   return (
     <group>
-      <HintTrigger puzzleId={PUZZLE_3_ID} delays={PUZZLE_3_HINT_DELAYS} />
-
       <pointLight position={[-2, 2, -1]} intensity={0.6} color="#3366aa" distance={5} decay={2} />
       <pointLight position={[0, 3.2, 0]} intensity={0.55} color="#8899bb" distance={8} decay={2} />
 

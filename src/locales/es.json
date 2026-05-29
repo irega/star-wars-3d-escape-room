@@ -43,8 +43,8 @@
   },
   "puzzle2": {
     "hint": {
-      "1": "Una de las pantallas parece más brillante que las demás. Eso podría ser importante.",
-      "2": "Los terminales imperiales procesan secuencias de izquierda a derecha. Lee las pantallas en orden.",
+      "1": "Los símbolos en las pantallas son Aurebesh, el sistema de escritura de Star Wars. Busca 'alfabeto Aurebesh' para descifrar cada carácter.",
+      "2": "Cada símbolo Aurebesh tiene un nombre. Lee las pantallas de izquierda a derecha; la primera letra de cada nombre forma el código.",
       "3": "El código es _URE — solo el primer símbolo te escapa."
     },
     "terminal": {

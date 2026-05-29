@@ -23,6 +23,7 @@ import { PUZZLE_3_ID } from './scenes/corridorPuzzle';
 import { PUZZLE_4_ID } from './scenes/hangarBayPuzzle';
 import { resetAmbientMusic, stopAmbientMusic } from './audio/ambientMusic';
 import { AmbientMusicToggle } from './ui/AmbientMusicToggle';
+import { RoomHintTriggers } from './components/RoomHintTriggers';
 
 export default function App() {
   const { t } = useTranslation();
@@ -37,10 +38,10 @@ export default function App() {
   const resetInventory = useInventoryStore((s) => s.reset);
   const resetHints = useHintStore((s) => s.reset);
   const inventory = useInventoryStore((s) => s.items);
-  const puzzle1HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_1_ID));
-  const puzzle2HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_2_ID));
-  const puzzle3HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_3_ID));
-  const puzzle4HintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_4_ID));
+  const puzzle1HintLevel = useHintStore((s) => s.hintLevels[PUZZLE_1_ID] ?? 0);
+  const puzzle2HintLevel = useHintStore((s) => s.hintLevels[PUZZLE_2_ID] ?? 0);
+  const puzzle3HintLevel = useHintStore((s) => s.hintLevels[PUZZLE_3_ID] ?? 0);
+  const puzzle4HintLevel = useHintStore((s) => s.hintLevels[PUZZLE_4_ID] ?? 0);
   const controlRoomTerminalActive = useControlRoomTerminalStore((s) => s.active);
   const controlRoomInputBuffer = useControlRoomTerminalStore((s) => s.inputBuffer);
   const controlRoomInputFeedback = useControlRoomTerminalStore((s) => s.inputFeedback);
@@ -96,13 +97,16 @@ export default function App() {
     hintText = t(`puzzle4.hint.${puzzle4HintLevel}`);
   }
 
+  const showHudHint = !dialogue && !(currentRoom === 'control-room' && controlRoomTerminalActive);
+
   return (
     <div style={{ width: '100%', height: '100%' }} data-testid="app" data-room={currentRoom}>
       <HUD
         inventory={[...inventory]}
         currentRoom={phase === 'playing' ? currentRoom : undefined}
-        hint={hintText}
+        hint={showHudHint ? hintText : undefined}
       />
+      {phase === 'playing' && <RoomHintTriggers />}
       {currentRoom === 'control-room' && controlRoomTerminalActive && (
         <ControlRoomTerminal
           inputBuffer={controlRoomInputBuffer}

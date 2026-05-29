@@ -43,8 +43,8 @@
   },
   "puzzle2": {
     "hint": {
-      "1": "One of the screens seems brighter than the others. That might be important.",
-      "2": "Imperial terminals process sequences left to right. Read the screens in order.",
+      "1": "The symbols on the screens are Aurebesh — the Star Wars writing system. Search 'Aurebesh alphabet' to decode each character.",
+      "2": "Each Aurebesh symbol has a name. Read the screens left to right; the first letter of each name spells the code.",
       "3": "The code is _URE — only the first symbol eludes you."
     },
     "terminal": {

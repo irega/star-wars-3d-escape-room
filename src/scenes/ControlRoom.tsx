@@ -5,7 +5,6 @@ import { useInventoryStore } from '../stores/useInventoryStore';
 import { useHintStore } from '../stores/useHintStore';
 import { useControlRoomTerminalStore } from '../stores/useControlRoomTerminalStore';
 import { InteractiveObject } from '../components/InteractiveObject';
-import { HintTrigger } from '../components/HintTrigger';
 import {
   BlastDoor,
   HologramScreen,
@@ -17,7 +16,6 @@ import {
   validateSequence,
   canExitControlRoom,
   PUZZLE_2_ID,
-  PUZZLE_2_HINT_DELAYS,
   SEQUENCE_HIGHLIGHT_MS,
 } from './controlRoomPuzzle';
 
@@ -103,7 +101,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
   const moveToRoom = useGameStore((s) => s.moveToRoom);
   const solvedPuzzles = useGameStore((s) => s.solvedPuzzles);
   const puzzleSolved = solvedPuzzles.includes(PUZZLE_2_ID);
-  const hintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_2_ID));
+  const hintLevel = useHintStore((s) => s.hintLevels[PUZZLE_2_ID] ?? 0);
   const [highlightPulse, setHighlightPulse] = useState(true);
   const sequenceHighlight = terminalActive && highlightPulse;
 
@@ -203,8 +201,6 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
 
   return (
     <group>
-      <HintTrigger puzzleId={PUZZLE_2_ID} delays={PUZZLE_2_HINT_DELAYS} />
-
       <pointLight position={[0, 2, -3]} intensity={0.7} color="#4466bb" distance={5} decay={2} />
       <pointLight
         position={[-2.5, 2, -1]}
