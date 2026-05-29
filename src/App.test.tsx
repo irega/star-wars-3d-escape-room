@@ -12,6 +12,7 @@ vi.mock('@react-three/fiber', () => ({
 }));
 
 vi.mock('@react-three/drei', () => ({
+  PerformanceMonitor: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   Environment: () => null,
   ContactShadows: () => null,
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,

@@ -1,7 +1,11 @@
 import { ContactShadows } from '@react-three/drei';
 
+interface ImperialLightingProps {
+  showContactShadows?: boolean;
+}
+
 /** Shared scene lighting — mount once inside Canvas alongside the active room. */
-export function ImperialLighting() {
+export function ImperialLighting({ showContactShadows = true }: ImperialLightingProps) {
   return (
     <>
       <ambientLight intensity={0.9} />
@@ -17,7 +21,9 @@ export function ImperialLighting() {
         decay={1.5}
       />
       <pointLight position={[0, 2.5, -2]} intensity={0.5} color="#6688bb" distance={10} decay={2} />
-      <ContactShadows position={[0, 0.01, 0]} opacity={0.28} scale={14} blur={2} far={4} />
+      {showContactShadows && (
+        <ContactShadows position={[0, 0.01, 0]} opacity={0.28} scale={14} blur={2} far={4} />
+      )}
     </>
   );
 }
