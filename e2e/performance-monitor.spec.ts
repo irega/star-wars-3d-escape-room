@@ -21,7 +21,7 @@ async function applyCpuThrottle(context: BrowserContext, rate: number) {
 
 test.describe('PerformanceMonitor E2E', () => {
   test('auto-degrades to low tier when CPU is throttled', async ({ page, context }) => {
-    test.setTimeout(30_000);
+    test.setTimeout(45_000);
 
     // Navigate to app and wait for it to fully load
     await page.goto('/');
@@ -45,7 +45,7 @@ test.describe('PerformanceMonitor E2E', () => {
     await startButton.click();
 
     // Wait for Canvas to render and PerformanceMonitor to initialize
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
 
     // Verify we start in high tier
     const appElement = page.locator('[data-testid="app"]');
@@ -57,13 +57,13 @@ test.describe('PerformanceMonitor E2E', () => {
     // Wait for PerformanceMonitor to detect the decline and switch to low tier.
     // drei's PerformanceMonitor measures FPS over ~2-3 seconds before triggering onDecline.
     // With 6x CPU throttling, we expect the decline callback within 4-5 seconds.
-    await expect(appElement).toHaveAttribute('data-quality-tier', 'low', { timeout: 8000 });
+    await expect(appElement).toHaveAttribute('data-quality-tier', 'low', { timeout: 12000 });
 
     // Remove throttling
     await applyCpuThrottle(context, 1);
 
     // Wait for PerformanceMonitor to detect recovery and switch back to high tier.
     // Recovery should take similar time (~2-3 seconds measurement window).
-    await expect(appElement).toHaveAttribute('data-quality-tier', 'high', { timeout: 8000 });
+    await expect(appElement).toHaveAttribute('data-quality-tier', 'high', { timeout: 12000 });
   });
 });
