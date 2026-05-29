@@ -45,6 +45,8 @@ Browser-based 3D escape room — 4 puzzles, playable to completion, in-world hin
 
 The player wakes up in an Imperial detention cell aboard the Death Star. A partial power failure forces them to solve 4 puzzles to escape before the station is destroyed.
 
+**Intro experience** — a Star Wars opening crawl plays before the game. The player enters an optional name (default: "Rebel") during the intro, and ambient music (Imperial March) starts on first interaction. A mute toggle is always visible.
+
 **Optional player name** — entered at game start (default: "Rebel"). Used only on the victory screen. One string in `useGameStore`.
 
 **Setting progression:**
@@ -60,21 +62,21 @@ The player wakes up in an Imperial detention cell aboard the Death Star. A parti
 ### Puzzle 1 — "The Loose Panel" (Observation)
 - **Where:** Detention Cell
 - **What:** A wall panel is visually displaced. Clicking it reveals a hidden maintenance keycard.
-- **Hint escalation:** Flickering light draws attention. After 30 s, light flickers more aggressively. After 60 s, a subtle audio cue (beep) plays.
+- **Hint escalation:** Flickering light draws attention. After 30 s, light flickers more aggressively. After 60 s, a text hint appears in the HUD.
 - **Gate:** Keycard opens cell door → Control Room.
 
 ### Puzzle 2 — "Imperial Override" (Logic)
 - **Where:** Control Room
-- **What:** A terminal shows an Aurebesh sequence puzzle. Clues on surrounding screens define the 4-symbol pattern. Input the correct sequence to unlock corridor access.
-- **Hint escalation:** One screen highlights the first symbol. After a delay, terminal shows "HINT: read screens left to right." After ~90 s, terminal reveals 3 of 4 symbols.
+- **What:** A terminal shows an Aurebesh sequence puzzle. Clues on surrounding holographic screens define the 4-symbol pattern (A-U-R-E). Click the terminal to open an on-screen input UI and type the correct sequence.
+- **Hint escalation:** One screen highlights the first symbol. After a delay, HUD shows "read screens left to right." After ~90 s, HUD reveals the full answer.
 - **Gate:** Correct sequence opens blast door → Corridor.
 
 ### Puzzle 3 — "Power the Conduit" (Interaction)
 - **Where:** Corridor
-- **What:** Three power cells (draggable) are scattered near a destroyed droid. Drag them into three conduit slots in the correct orientation (rotate + place). Conduits glow when a cell is correctly placed.
-- **Complexity fallback:** If 3D drag-and-drop with orientation proves too costly, fall back to click-to-select + click-to-place.
-- **Hint escalation:** A damaged droid nearby shows a holographic schematic of cell orientations. After a delay, cells glow faintly near their correct slot.
-- **Gate:** All three cells placed → blast door opens → Hangar Bay.
+- **What:** Three power cells (click-to-select, click-to-rotate, click-slot-to-place) are scattered near a destroyed droid. Place them into three conduit slots in the correct orientation. Conduits glow when a cell is correctly placed.
+- **Implementation note:** The 3D drag-and-drop approach was assessed as too costly in UX complexity; the click-to-select + click-to-place fallback was chosen instead.
+- **Hint escalation:** A damaged astromech droid nearby shows a holographic schematic of cell orientations (click to open). After a delay, glowing lights near the correct slots appear.
+- **Gate:** All three cells placed correctly → blast door opens → Hangar Bay.
 
 ### Puzzle 4 — "Launch Clearance" (Combination)
 - **Where:** Hangar Bay
@@ -82,44 +84,32 @@ The player wakes up in an Imperial detention cell aboard the Death Star. A parti
   - Keycard from Puzzle 1 — insert into console
   - Override code from Puzzle 2 — enter on a keypad
   - Frequency number from Puzzle 3 — visible on the droid schematic
-- **Hint:** Console shows 3 slots, two are obvious. Third says "FREQ: ???". A repeating hangar announcement mentions the frequency if the player is stuck.
+- **Hint:** Console shows 3 slots with status indicators. After a delay, HUD text prompts the player to check the droid schematic for the frequency.
 - **Gate:** All three inputs → force field drops → player clicks shuttle → victory.
 
-**Victory screen:** Hyperspace jump animation (star field stretch + ship departure) → overlay with player name, total time, and replay button.
+**Victory screen:** Overlay with player name, total time, and replay button.
 
 ---
 
 ## Architecture
 
-```
-src/
-  main.tsx                — entry point, React root
-  App.tsx                 — Canvas + scene routing
-  stores/
-    useGameStore.ts       — progression state machine, current room, puzzle completion
-    useInventoryStore.ts  — collected items across scenes
-    useHintStore.ts       — hint state per puzzle (shown, timers)
-  scenes/
-    DetentionCell.tsx     — room 1 geometry + puzzle 1
-    ControlRoom.tsx       — room 2 geometry + puzzle 2
-    Corridor.tsx          — room 3 geometry + puzzle 3
-    HangarBay.tsx         — room 4 geometry + puzzle 4
-  components/
-    InteractiveObject.tsx — clickable/hoverable 3D object wrapper
-    DraggableObject.tsx   — drag-and-drop 3D object
-    HintTrigger.tsx       — timed hint display component
-  ui/
-    HUD.tsx               — inventory display, hint text overlay (HTML)
-    Dialogue.tsx          — in-world text popups
-    Victory.tsx           — end screen
-    Loading.tsx           — loading screen
-  assets/                 — textures, models (minimal), audio files
-index.html
-```
+| File/Folder | Purpose |
+|--------|---------|
+| `main.tsx` | Entry point, React root |
+| `App.tsx` | Canvas + scene routing, phase management (intro/playing/won) |
+| `stores/` | Cross-scene global state (progression, inventory, hints, terminal). Zustand; no backend or persistence. |
+| `scenes/` | One component per game room: 3D layout, puzzle wiring, local animation/drag state. Renders inside `<Canvas>`. |
+| `scenes/*Puzzle.ts` | Pure puzzle logic colocated with each room: validation, gates, hint delays. No Three.js; unit-testable. |
+| `components/` | Reusable 3D interaction wrappers (InteractiveObject, DraggableObject) and DOM hint timers (HintTrigger, RoomHintTriggers). Not HTML UI. |
+| `three/` | Reusable 3D visuals shared across rooms: room shell, doors, consoles, lighting, palette. |
+| `ui/` | HTML overlays on top of the canvas: HUD, dialogue, intro/victory, terminal input. CSS Modules; RTL-testable. |
+| `audio/` | Audio lifecycle (start/stop/reset, autoplay constraints). |
+| `locales/` | i18n JSON translation files (EN/ES). |
 
 **Key patterns:**
 - Each scene is a React component rendered inside R3F `<Canvas>`
 - Interaction via R3F's built-in event system (`onClick`, `onPointerOver`) and drei helpers
+- Puzzle logic is extracted into pure `.ts` files (e.g. `controlRoomPuzzle.ts`) — scene components are rendering + event wiring only
 
 ---
 
@@ -131,15 +121,16 @@ index.html
 
 | Store | Responsibility |
 |-------|---------------|
-| `useGameStore` | Progression state machine: current room, which puzzles are solved, game phase (playing / won) |
+| `useGameStore` | Progression state machine: current room, which puzzles are solved, game phase (intro / playing / won), player name |
 | `useInventoryStore` | Collected items (keycard, override code, frequency). Puzzle 4 reads items from rooms 1–3 |
-| `useHintStore` | Hint state per puzzle (which hints shown, timer progress). Centralized so hints don't reset if the player revisits a scene |
+| `useHintStore` | Hint level per puzzle (0–3). Centralized so hints don't reset if the player revisits a scene |
+| `useControlRoomTerminalStore` | Terminal UI state for puzzle 2: active, input buffer, input feedback, sequence revealed flag |
 
 **Local state (scene-internal):**
 - Animation state (panel opening, conduit powering up)
-- Drag state (power cell position while dragging)
+- Power cell selection and rotation state (puzzle 3)
 - Hover / highlight effects
-- Terminal input (what the player has typed)
+- Dialogue text (stored in App state, scoped to current room)
 
 No server state → no react-query or similar.
 
@@ -150,38 +141,52 @@ No server state → no react-query or similar.
 R3F adds no overhead over raw Three.js — the bottleneck is what we put in the scene.
 
 **Baseline rules:**
-- Simple geometry (boxes, cylinders, planes) — no heavy models
-- 1–2 real-time point lights + ambient. Shadow maps limited or off
-- Minimize draw calls; instancing for repeated objects
+- Simple procedural geometry (boxes, cylinders, planes via `ImperialRoomShell`) — no external models
+- 1–2 real-time point lights + ambient. Shadow maps via contact shadows (high tier only)
 - Delta-time animations via `useFrame` — frame-rate independent
+- ACESFilmicToneMapping with 1.5× exposure for cinematic look
 
-**Automatic quality degradation** via drei's `<PerformanceMonitor>`:
+**Automatic quality degradation** via drei's `<PerformanceMonitor>` (implemented in `App.tsx`):
 
 | Tier | Features |
 |------|---------|
-| High | Bloom/glow post-processing, shadows, full device pixel ratio |
-| Low | No post-processing, no shadows, reduced dpr |
+| High | Contact shadows, full device pixel ratio (`min(dpr, 2)`) |
+| Low | No contact shadows, reduced dpr (`0.75`) |
 
-Degrades automatically below ~30 fps. No manual settings menu needed.
+Degrades automatically below ~30 fps. No manual settings menu needed. Current tier exposed as `data-quality-tier` attribute on the root element (used in tests).
 
 ---
 
 ## Audio
 
-**SFX only** — no ambient music (keeps scope minimal while adding essential feedback).
+**Ambient music** — Imperial March (looped `HTMLAudioElement`) starts on first user interaction to comply with browser autoplay policy. A persistent mute toggle (`AmbientMusicToggle`) lets the player silence it at any time.
 
-- Interaction sounds: click, door open/close, panel slide, keycard pickup
-- Puzzle feedback: correct placement glow, wrong input buzz, conduit power-up hum
-- Victory: hyperspace jump whoosh
-- Implementation: drei's `useAudioListener` + `PositionalAudio` for 3D-positioned sounds, or plain `HTMLAudioElement` for UI-layer SFX — prefer whichever is simpler
-- All audio triggered by game events, not ambient loops — avoids autoplay browser restrictions
+**SFX** — not implemented. Interaction feedback is visual only (glow, color change, animation). Kept out of scope to avoid managing audio asset licensing and volume mixing complexity.
+
+- All audio triggered by user interaction, not timers — avoids autoplay browser restrictions
+- Audio file lives in `public/audio/` and is committed to the repository
+
+---
+
+## Security
+
+Security headers are configured in `vercel.json` (applied by Vercel at the CDN edge):
+
+| Header | Value |
+|--------|-------|
+| `Content-Security-Policy` | `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'none'` |
+| `X-Frame-Options` | `DENY` |
+| `X-Content-Type-Options` | `nosniff` |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` |
+
+No external API calls, no user-generated content, no auth — attack surface is minimal. `unsafe-inline` for styles is required by CSS-in-JS from R3F/drei (no user-controlled style strings).
 
 ---
 
 ## Loading & Error States
 
-- **Loading:** R3F `<Suspense>` wrapping scene content + drei `<Loader>` for a visible progress bar. Defined once in `App.tsx`.
-- **Asset failure:** Degrade gracefully (fallback color/material, silent SFX) rather than crashing. No retry logic — assets are static and bundled.
+- **Loading:** R3F `<Suspense>` wrapping scene content with `null` fallback. Rooms are small enough that the loading gap is imperceptible.
+- **Asset failure:** Audio degrades gracefully (`.play()` errors are caught and swallowed). Geometry is fully procedural — no external asset loading to fail.
 
 ---
 
@@ -190,10 +195,11 @@ Degrades automatically below ~30 fps. No manual settings menu needed.
 WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience is not realistic.
 
 **In scope:**
-- **Keyboard navigation** — Tab to cycle interactive objects, Enter/Space to interact, Escape to cancel
-- **Color-blind safe** — puzzles never rely on color alone (color + shape + icon/pattern)
+- **Keyboard navigation** — Tab to cycle interactive objects, Enter/Space to interact, Escape to cancel/close overlays
+- **Color-blind safe** — puzzles never rely on color alone (color + shape + label for power cells; letter sequence for puzzle 2)
 - **WCAG contrast** — HUD, dialogue, and overlay text meet contrast ratios
-- **`aria-live` region** — hidden div narrates key events for screen readers
+- **`aria-live` region** — hidden div in HUD narrates key events for screen readers
+- **Reduced motion** — `prefers-reduced-motion` respected in the intro crawl animation
 
 **Out of scope (with rationale):**
 - Full screen reader navigation inside 3D canvas — it's a bitmap, no DOM to parse
@@ -207,27 +213,30 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 - **Library:** react-i18next
 - **Locales:** `en` (default/fallback) + `es`
 - **Auto-detection** of browser locale, fallback to `en`
-- **Scope:** hints, dialogue text, HUD labels, victory screen
-- **Structure:** `i18n.ts` config + JSON translation files (`locales/en.json`, `locales/es.json`), `useTranslation()` in components
+- **Scope:** hints, dialogue text, HUD labels, victory screen, intro crawl
+- **Structure:** `i18n.ts` config + JSON translation files (`src/locales/en.json`, `src/locales/es.json`), `useTranslation()` in components
 
 ---
 
 ## Testing Strategy
 
 **Unit tests (Vitest)** — carry the weight:
-- Zustand stores: state machine transitions, inventory add/remove/has, hint progression
-- Extracted puzzle logic: sequence validation (puzzle 2), combination check (puzzle 4), power cell orientation (puzzle 3)
+- Zustand stores: state machine transitions, inventory add/remove/has, hint progression, terminal store
+- Extracted puzzle logic: sequence validation (puzzle 2), cell placement and orientation (puzzle 3), launch clearance (puzzle 4)
+- Audio module: start/stop/mute/reset behavior
+- Performance monitor: quality tier switching, attribute exposure
 - Pure functions, zero 3D dependency
 
 **Integration tests (RTL)** — HTML overlays only:
-- HUD, Dialogue, Victory, Loading — standard React components
+- HUD, Dialogue, Victory, Loading, ControlRoomTerminal — standard React components
 - No RTL for 3D scenes — WebGL doesn't render in jsdom
 - No `@react-three/test-renderer` — too immature to justify the cost
 
 **E2E (Playwright)** — happy path:
 - One test: "the game is winnable from start to finish"
-- A few edge cases: wrong clicks, invalid inputs
-- Playwright clicks canvas coordinates for 3D interactions — brittle by nature; mitigate with named 3D objects via accessibility tree where possible
+- Edge cases: wrong terminal input, invalid sequences
+- Performance monitor: verifies quality-tier degradation (high/low) and frame rate impact
+- Playwright clicks canvas coordinates for 3D interactions — brittle by nature; mitigated with `data-testid` on DOM overlays
 
 ---
 
@@ -237,4 +246,10 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 - **Vercel** — deployment only (preview on PRs, production on `main`). Emits `deployment_status` for post-deploy E2E
 - **Post-deploy E2E** — Playwright against Vercel preview URL on `deployment_status` success
 
-See `AGENTS.md` for the full agent workflow (dev agent, QA agent, branch naming, `approved` gate).
+**Dev agent workflow:**
+- Start work: Create issue with `enhancement` or `bug` label + `approved` label → agent picks it up automatically
+- Iterate on PR: Comment `@claude` on the PR for feedback/refinements
+- Branch naming: `feat/issue-<n>-…` for tasks, `fix/issue-<n>-…` for bugs
+- Rules: Read `docs/tech-design.md` and `docs/challenge-spec.md`; TDD via `.claude/skills/tdd/`; conventional commits; never merge
+
+See `AGENTS.md` for the full dev/QA agent specification and rules.

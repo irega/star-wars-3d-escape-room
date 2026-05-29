@@ -40,7 +40,3 @@ Comment or review on the PR with **`@claude`** (see `.github/workflows/dev-agent
 3. Conventional commits: `type(scope): description` (see `CLAUDE.md` / irega skill).
 4. **Never merge** — human PR review + green CI required.
 5. Keep PRs small; max ~2 agent branches in parallel (Pro limits).
-
-## QA agent (later)
-
-Exploratory QA opens **`bug`** issues only — no fixes. Human adds `approved` before the dev agent runs.
