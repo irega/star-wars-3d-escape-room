@@ -93,10 +93,10 @@ The player wakes up in an Imperial detention cell aboard the Death Star. A parti
 
 ## Architecture
 
-### Folder Structure Overview
-
-| Folder | Purpose |
+| File/Folder | Purpose |
 |--------|---------|
+| `main.tsx` | Entry point, React root |
+| `App.tsx` | Canvas + scene routing, phase management (intro/playing/won) |
 | `stores/` | Cross-scene global state (progression, inventory, hints, terminal). Zustand; no backend or persistence. |
 | `scenes/` | One component per game room: 3D layout, puzzle wiring, local animation/drag state. Renders inside `<Canvas>`. |
 | `scenes/*Puzzle.ts` | Pure puzzle logic colocated with each room: validation, gates, hint delays. No Three.js; unit-testable. |
@@ -105,8 +105,6 @@ The player wakes up in an Imperial detention cell aboard the Death Star. A parti
 | `ui/` | HTML overlays on top of the canvas: HUD, dialogue, intro/victory, terminal input. CSS Modules; RTL-testable. |
 | `audio/` | Audio lifecycle (start/stop/reset, autoplay constraints). |
 | `locales/` | i18n JSON translation files (EN/ES). |
-
-### File Listing
 
 ```
 src/
@@ -164,7 +162,6 @@ public/
 - Each scene is a React component rendered inside R3F `<Canvas>`
 - Interaction via R3F's built-in event system (`onClick`, `onPointerOver`) and drei helpers
 - Puzzle logic is extracted into pure `.ts` files (e.g. `controlRoomPuzzle.ts`) — scene components are rendering + event wiring only
-- Shared 3D primitives live in `src/three/` — scenes import from there, not directly from R3F/drei
 
 ---
 
