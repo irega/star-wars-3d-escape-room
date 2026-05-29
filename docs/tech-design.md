@@ -142,7 +142,7 @@ src/
     ambientMusic.ts               — ambient music (Imperial March) via HTMLAudioElement; starts on first interaction
 index.html
 public/
-  audio/                          — audio files (not committed; see public/audio/README.md for copyright)
+  audio/                          — audio files (committed to repository)
 ```
 
 **Key patterns:**
