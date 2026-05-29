@@ -93,6 +93,21 @@ The player wakes up in an Imperial detention cell aboard the Death Star. A parti
 
 ## Architecture
 
+### Folder Structure Overview
+
+| Folder | Purpose |
+|--------|---------|
+| `stores/` | Cross-scene global state (progression, inventory, hints, terminal). Zustand; no backend or persistence. |
+| `scenes/` | One component per game room: 3D layout, puzzle wiring, local animation/drag state. Renders inside `<Canvas>`. |
+| `scenes/*Puzzle.ts` | Pure puzzle logic colocated with each room: validation, gates, hint delays. No Three.js; unit-testable. |
+| `components/` | Reusable 3D interaction wrappers (InteractiveObject, DraggableObject) and DOM hint timers (HintTrigger, RoomHintTriggers). Not HTML UI. |
+| `three/` | Reusable 3D visuals shared across rooms: room shell, doors, consoles, lighting, palette. |
+| `ui/` | HTML overlays on top of the canvas: HUD, dialogue, intro/victory, terminal input. CSS Modules; RTL-testable. |
+| `audio/` | Audio lifecycle (start/stop/reset, autoplay constraints). |
+| `locales/` | i18n JSON translation files (EN/ES). |
+
+### File Listing
+
 ```
 src/
   main.tsx                        — entry point, React root
