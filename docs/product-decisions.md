@@ -70,7 +70,7 @@
 
 ### Star Wars Opening Crawl + Music
 
-**Decision:** Star Wars-style intro sequence (starfield, opening card, perspective crawl). Imperial March loops during gameplay (gitignored MP3 due to copyright).
+**Decision:** Star Wars-style intro sequence (starfield, opening card, perspective crawl). Imperial March loops during gameplay via `public/audio/imperial-march.mp3`.
 
 **Tradeoff:** The crawl immediately establishes tone and gives players time to orient before 3D scene loads. Music respects browser autoplay restrictions (starts only on explicit gesture).
 
@@ -260,14 +260,6 @@
 
 ---
 
-### `window.__stores` for E2E State Seeding (DEV Only)
-
-**Decision:** In development builds, Zustand stores are exposed on `window.__stores`, allowing Playwright to seed game state without traversing earlier puzzles.
-
-**Rationale:** Happy-path E2E needs to reach Hangar Bay (scene 4), but playing through all three earlier puzzles makes the suite fragile and slow. State seeding lets tests enter any room directly. Exposure is guarded by `import.meta.env.DEV` so it never ships to production.
-
----
-
 ## Security & Compliance
 
 ### HTTP Security Headers
@@ -288,11 +280,11 @@
 
 ---
 
-### Audio File Not Committed
+### Imperial March Audio File (Copyrighted)
 
-**Decision:** `public/audio/imperial-march.mp3` is gitignored. Deploy is silent without it; developers add locally.
+**Decision:** `public/audio/imperial-march.mp3` is committed to the repo despite copyright concerns (Lucasfilm owns Imperial March composition).
 
-**Rationale:** Imperial March is copyrighted material. Including it in a public repository would be an IP violation. Audio system functions correctly without the file (looped `HTMLAudioElement` with try/catch guard); UX degrades gracefully to silence.
+**Tradeoff Accepted:** Audio enhances immersion and establishes tone immediately. The audio system gracefully handles file absence (try/catch guard in `startAmbientMusic()`), but with the file included, music plays during intro and gameplay. Inclusion acknowledges copyright but prioritizes player experience.
 
 ---
 
