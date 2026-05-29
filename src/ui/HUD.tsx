@@ -35,7 +35,7 @@ export function HUD({ inventory, currentRoom, hint, announcement }: HUDProps) {
       </div>
 
       {hint && (
-        <div className={styles.hint}>
+        <div className={styles.hint} data-testid="hud-hint">
           <div className={styles.hintLabel}>{t('hud.hint')}</div>
           <div className={styles.hintText}>{hint}</div>
         </div>

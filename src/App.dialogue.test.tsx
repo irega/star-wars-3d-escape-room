@@ -3,6 +3,8 @@ import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 import { useGameStore } from './stores/useGameStore';
+import { useHintStore } from './stores/useHintStore';
+import { PUZZLE_1_ID } from './scenes/detentionCellPuzzle';
 import './i18n';
 
 vi.mock('@react-three/fiber', () => ({
@@ -31,6 +33,7 @@ vi.mock('./scenes/HangarBay', () => ({ HangarBay: () => null }));
 describe('App — dialogue clearing on scene change', () => {
   beforeEach(() => {
     useGameStore.getState().reset();
+    useHintStore.getState().reset();
   });
 
   it('clears an open dialogue when the player moves to a new scene', async () => {
@@ -45,5 +48,16 @@ describe('App — dialogue clearing on scene change', () => {
     });
 
     expect(screen.queryByText('Test message')).not.toBeInTheDocument();
+  });
+
+  it('hides the HUD hint while dialogue is open', async () => {
+    useGameStore.setState({ phase: 'playing', playerName: 'Test', currentRoom: 'detention-cell' });
+    render(<App />);
+
+    act(() => useHintStore.getState().advanceHint(PUZZLE_1_ID));
+    expect(screen.getByTestId('hud-hint')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByText('Trigger Dialogue'));
+    expect(screen.queryByTestId('hud-hint')).not.toBeInTheDocument();
   });
 });

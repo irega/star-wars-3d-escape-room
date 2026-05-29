@@ -4,14 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../stores/useGameStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import { InteractiveObject } from '../components/InteractiveObject';
-import { HintTrigger } from '../components/HintTrigger';
 import { ImperialRoomShell, TerminalConsole, imperialPalette } from '../three';
-import {
-  validateLaunchClearance,
-  PUZZLE_4_ID,
-  PUZZLE_4_HINT_DELAYS,
-  LAUNCH_FREQUENCY,
-} from './hangarBayPuzzle';
+import { validateLaunchClearance, PUZZLE_4_ID, LAUNCH_FREQUENCY } from './hangarBayPuzzle';
 
 export interface HangarBayProps {
   onDialogue?: (text: string | null) => void;
@@ -73,8 +67,6 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
 
   return (
     <group>
-      <HintTrigger puzzleId={PUZZLE_4_ID} delays={PUZZLE_4_HINT_DELAYS} />
-
       <pointLight position={[0, 3, -4]} intensity={0.75} color="#4466bb" distance={8} decay={2} />
       <pointLight position={[-4, 2.5, 0]} intensity={0.65} color="#aa4444" distance={6} decay={2} />
       <pointLight position={[4, 2.5, 0]} intensity={0.65} color="#aa4444" distance={6} decay={2} />

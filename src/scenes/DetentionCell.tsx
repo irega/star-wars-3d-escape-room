@@ -6,9 +6,8 @@ import { useGameStore } from '../stores/useGameStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import { useHintStore } from '../stores/useHintStore';
 import { InteractiveObject } from '../components/InteractiveObject';
-import { HintTrigger } from '../components/HintTrigger';
 import { BarredCellDoor, ImperialRoomShell } from '../three';
-import { canExitDetentionCell, PUZZLE_1_ID, PUZZLE_1_HINT_DELAYS } from './detentionCellPuzzle';
+import { canExitDetentionCell, PUZZLE_1_ID } from './detentionCellPuzzle';
 
 interface FlickerLightProps {
   hintLevel: number;
@@ -51,7 +50,7 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
   const hasKeycard = useInventoryStore((s) => s.hasItem('keycard'));
   const solvePuzzle = useGameStore((s) => s.solvePuzzle);
   const moveToRoom = useGameStore((s) => s.moveToRoom);
-  const hintLevel = useHintStore((s) => s.getHintLevel(PUZZLE_1_ID));
+  const hintLevel = useHintStore((s) => s.hintLevels[PUZZLE_1_ID] ?? 0);
 
   useEffect(() => {
     if (hintLevel < 2) return;
@@ -91,8 +90,6 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
 
   return (
     <group>
-      <HintTrigger puzzleId={PUZZLE_1_ID} delays={PUZZLE_1_HINT_DELAYS} />
-
       <ImperialRoomShell wallBackColor="#1e2d50" />
 
       {/* Ceiling panel — diegetic fill on back wall */}
