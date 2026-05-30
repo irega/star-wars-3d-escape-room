@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { SCENE1 } from './canvasCoords';
 
 /** Dismiss dialogue or schematic overlays so canvas clicks are not blocked. */
 async function dismissOverlays(page: Page) {
@@ -30,39 +31,22 @@ async function completeIntro(page: Page, playerName = 'Playwright') {
 }
 
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
-// Camera: position [0, 1.6, 5], fov=75, lookAt [0,0,0] (R3F default).
-// Camera is tilted ~17.7° downward (rotation.x = -atan(1.6/5) ≈ -0.310 rad).
+// Camera config and world→canvas projection live in e2e/canvasCoords.ts.
+// Scene 1 coords are computed there; scenes 2–4 remain hardcoded until migrated.
 //
-// Transform world → camera space (R = column vectors: right, up, camera-z):
-//   x_cam = wx
-//   y_cam = (wy−1.6)·0.9524 + (wz−5)·(−0.3048)
-//   depth = −[(wy−1.6)·0.3048 + (wz−5)·0.9524]
-//   ndcX = x_cam / (depth · halfFovX)   halfFovX = tan(37.5°)·(1280/720) ≈ 1.364
-//   ndcY = y_cam / (depth · halfFovY)   halfFovY = tan(37.5°) ≈ 0.767
-//   screenX = (ndcX + 1) / 2 · 1280
-//   screenY = (1 − ndcY) / 2 · 720
-//
-// Scene 1 — Detention Cell
-//   Loose panel  world [2.82, 1.5, −3.0]  → depth 7.65 → (813, 216)
-//   Cell door bar world [0.26, 1.4, 3.94] → depth 1.07 → (754, 302)
 // Scene 2 — Control Room
-//   Terminal body center world [-2.75, 1.4, -0.8] (left wall, near camera) → depth 5.59 → (403, 227)
-//   Blast door center   world [0, 1.4, -3.92] (back wall) → depth 8.56 → (640, 221)
+//   Terminal body center world [-2.75, 1.4, -0.8] → (403, 227)
+//   Blast door center   world [0, 1.4, -3.92]     → (640, 221)
 // Scene 3 — Corridor
-//   Cell 0  world [0.5,  0.3, 2.3]  → depth 2.97 → (719, 426)
-//   Cell 1  world [2.6,  0.3, 1.3]  → depth 3.92 → (951, 373)
-//   Cell 2  world [1.5,  0.3, 2.8]  → depth 2.49 → (922, 467)
-//   Slot 0  world [-2.85, 2.0, -2.0] → depth 6.55 → (429, 180)
-//   Slot 1  world [-2.85, 1.5, -2.0] → depth 6.70 → (433, 217)
-//   Slot 2  world [-2.85, 1.0, -2.0] → depth 6.85 → (438, 253)
-//   Blast door  world [0, 1.4, -3.92] → depth 8.56 → (640, 221)
+//   Cell 0  world [0.5,  0.3, 2.3]  → (719, 426)
+//   Cell 1  world [2.6,  0.3, 1.3]  → (951, 373)
+//   Cell 2  world [1.5,  0.3, 2.8]  → (922, 467)
+//   Slot 0  world [-2.85, 2.0, -2.0] → (429, 180)
+//   Slot 1  world [-2.85, 1.5, -2.0] → (433, 217)
+//   Slot 2  world [-2.85, 1.0, -2.0] → (438, 253)
+//   Blast door  world [0, 1.4, -3.92] → (640, 221)
 // Scene 4 — Hangar Bay
-//   Launch console world [0, 0.5, -0.5] → depth 5.57 → (640, 307)
-
-const SCENE1 = {
-  panel: { x: 813, y: 216 },
-  door: { x: 754, y: 302 },
-};
+//   Launch console world [0, 0.5, -0.5] → (640, 307)
 
 const SCENE2 = {
   terminal: { x: 403, y: 227 },
