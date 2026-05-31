@@ -134,7 +134,7 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       ))}
 
       <InteractiveObject onClick={handlePanelClick} isDisabled={panelFound}>
-        <group position={[2.82, 1.5, -3.0]}>
+        <group position={SCENE1_WORLD.panel}>
           <mesh rotation={[0, Math.PI / 2, 0]}>
             <boxGeometry args={[0.7, 0.9, 0.06]} />
             <meshStandardMaterial
@@ -153,7 +153,7 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       </InteractiveObject>
 
       <InteractiveObject onClick={handleDoorClick}>
-        <group position={[0, 1.4, 3.92]}>
+        <group position={SCENE1_WORLD.door}>
           <BarredCellDoor unlocked={hasKeycard} />
         </group>
       </InteractiveObject>
