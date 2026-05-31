@@ -1,4 +1,10 @@
-import { CAMERA } from '../src/App';
+import { SCENE1_WORLD } from '../src/scenes/DetentionCell';
+
+// Camera config — must match App.tsx <Canvas camera={{ position, fov }}>
+export const CAMERA = {
+  position: [0, 1.6, 5] as [number, number, number],
+  fov: 75,
+};
 
 // Playwright Desktop Chrome default viewport
 export const VIEWPORT = { width: 1280, height: 720 };
@@ -49,15 +55,8 @@ export function worldToCanvas(
   };
 }
 
-// Scene 1 — Detention Cell
-// World positions mirror DetentionCell.tsx:
-//   panel group at [2.82, 1.5, −3.0]
-//   door group at [0, 1.4, 3.92], clickable bar at relative x=0.26 with z-offset 0.02 → [0.26, 1.4, 3.94]
-const SCENE1_WORLD = {
-  panel: [2.82, 1.5, -3.0] as Vec3,
-  door: [0.26, 1.4, 3.94] as Vec3,
-};
-
+// Scene 1 — Detention Cell canvas coordinates
+// World positions are defined in DetentionCell.tsx
 export const SCENE1 = {
   panel: worldToCanvas(SCENE1_WORLD.panel, CAMERA, VIEWPORT),
   door: worldToCanvas(SCENE1_WORLD.door, CAMERA, VIEWPORT),

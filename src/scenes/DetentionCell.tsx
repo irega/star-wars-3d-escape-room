@@ -9,6 +9,13 @@ import { InteractiveObject } from '../components/InteractiveObject';
 import { BarredCellDoor, ImperialRoomShell } from '../three';
 import { canExitDetentionCell, PUZZLE_1_ID } from './detentionCellPuzzle';
 
+// World coordinates for interactive objects in this scene
+// Used by E2E tests to verify canvas projection math
+export const SCENE1_WORLD = {
+  panel: [2.82, 1.5, -3.0] as [number, number, number],
+  door: [0.26, 1.4, 3.94] as [number, number, number],
+};
+
 interface FlickerLightProps {
   hintLevel: number;
   position: [number, number, number];
