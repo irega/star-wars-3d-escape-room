@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
 import { ImperialRoomShell } from './ImperialRoomShell';
 import { BlastDoor } from './BlastDoor';
 import { BarredCellDoor } from './BarredCellDoor';
 import { TerminalConsole } from './TerminalConsole';
 import { HologramScreen } from './HologramScreen';
 import { ImperialLighting } from './ImperialLighting';
+import { renderThree } from '../test/renderThree';
 
 vi.mock('@react-three/drei', () => ({
   Environment: () => null,
@@ -13,37 +13,50 @@ vi.mock('@react-three/drei', () => ({
 }));
 
 describe('shared three components', () => {
-  it('ImperialRoomShell renders without crashing', () => {
-    expect(() => render(<ImperialRoomShell />)).not.toThrow();
+  it('ImperialRoomShell renders without crashing', async () => {
+    const renderer = await renderThree(<ImperialRoomShell />);
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 
-  it('BlastDoor renders locked and unlocked', () => {
-    expect(() => render(<BlastDoor />)).not.toThrow();
-    expect(() => render(<BlastDoor unlocked />)).not.toThrow();
+  it('BlastDoor renders locked and unlocked', async () => {
+    const locked = await renderThree(<BlastDoor />);
+    expect(locked.scene.children.length).toBeGreaterThan(0);
+    await locked.unmount();
+
+    const unlocked = await renderThree(<BlastDoor unlocked />);
+    expect(unlocked.scene.children.length).toBeGreaterThan(0);
+    await unlocked.unmount();
   });
 
-  it('BarredCellDoor renders without crashing', () => {
-    expect(() => render(<BarredCellDoor />)).not.toThrow();
+  it('BarredCellDoor renders without crashing', async () => {
+    const renderer = await renderThree(<BarredCellDoor />);
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 
-  it('TerminalConsole renders without crashing', () => {
-    expect(() =>
-      render(
-        <TerminalConsole
-          screenColor="#001133"
-          screenEmissive="#0044cc"
-          indicatorColor="#ff4444"
-          indicatorEmissive="#440000"
-        />,
-      ),
-    ).not.toThrow();
+  it('TerminalConsole renders without crashing', async () => {
+    const renderer = await renderThree(
+      <TerminalConsole
+        screenColor="#001133"
+        screenEmissive="#0044cc"
+        indicatorColor="#ff4444"
+        indicatorEmissive="#440000"
+      />,
+    );
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 
-  it('HologramScreen renders without crashing', () => {
-    expect(() => render(<HologramScreen emissive="#0044cc" />)).not.toThrow();
+  it('HologramScreen renders without crashing', async () => {
+    const renderer = await renderThree(<HologramScreen emissive="#0044cc" />);
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 
-  it('ImperialLighting renders without crashing', () => {
-    expect(() => render(<ImperialLighting />)).not.toThrow();
+  it('ImperialLighting renders without crashing', async () => {
+    const renderer = await renderThree(<ImperialLighting />);
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 });

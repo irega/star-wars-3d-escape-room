@@ -1,13 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
 import { DamagedAstromechDroid } from './DamagedAstromechDroid';
+import { renderThree } from '../test/renderThree';
 
 describe('DamagedAstromechDroid', () => {
-  it('renders without crashing', () => {
-    expect(() => render(<DamagedAstromechDroid hintLevel={0} />)).not.toThrow();
+  it('renders without crashing', async () => {
+    const renderer = await renderThree(<DamagedAstromechDroid hintLevel={0} />);
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 
-  it('renders with holoprojector at hint level 1+', () => {
-    expect(() => render(<DamagedAstromechDroid hintLevel={1} />)).not.toThrow();
+  it('renders with holoprojector at hint level 1+', async () => {
+    const renderer = await renderThree(<DamagedAstromechDroid hintLevel={1} />);
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 });
