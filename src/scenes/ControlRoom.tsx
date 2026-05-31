@@ -19,6 +19,12 @@ import {
   SEQUENCE_HIGHLIGHT_MS,
 } from './controlRoomPuzzle';
 
+// World coordinates for interactive objects in this scene
+export const SCENE2_WORLD = {
+  terminal: [-2.75, 1.4, -0.8] as [number, number, number],
+  door: [0, 1.4, -3.92] as [number, number, number],
+};
+
 const SYMBOL_COLOR = '#f4f8ff';
 
 export const SCREENS = [
@@ -245,7 +251,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
         })}
 
       <InteractiveObject onClick={handleTerminalClick} isDisabled={puzzleSolved || terminalActive}>
-        <group position={[-2.75, 0.9, -0.8]} rotation={[0, Math.PI / 2, 0]}>
+        <group position={SCENE2_WORLD.terminal} rotation={[0, Math.PI / 2, 0]}>
           <TerminalConsole
             screenColor={terminalScreenColor}
             screenEmissive={terminalScreenEmissive}
@@ -256,7 +262,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
       </InteractiveObject>
 
       <InteractiveObject onClick={handleDoorClick}>
-        <group position={[0, 1.4, -3.92]}>
+        <group position={SCENE2_WORLD.door}>
           <BlastDoor unlocked={puzzleSolved} />
         </group>
       </InteractiveObject>

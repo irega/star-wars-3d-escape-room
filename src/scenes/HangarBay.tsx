@@ -7,6 +7,11 @@ import { InteractiveObject } from '../components/InteractiveObject';
 import { ImperialRoomShell, TerminalConsole, imperialPalette } from '../three';
 import { validateLaunchClearance, PUZZLE_4_ID, LAUNCH_FREQUENCY } from './hangarBayPuzzle';
 
+// World coordinates for interactive objects in this scene
+export const SCENE4_WORLD = {
+  console: [0, 0.5, -0.5] as [number, number, number],
+};
+
 export interface HangarBayProps {
   onDialogue?: (text: string | null) => void;
 }
@@ -206,7 +211,7 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
       )}
 
       <InteractiveObject onClick={handleConsoleClick} isDisabled={puzzleSolved || consoleActive}>
-        <group position={[0, 0, -0.5]}>
+        <group position={SCENE4_WORLD.console}>
           <TerminalConsole
             bodyWidth={1.6}
             screenColor={puzzleSolved ? '#003300' : '#001133'}

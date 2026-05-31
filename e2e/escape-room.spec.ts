@@ -1,5 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 import { SCENE1_WORLD } from '../src/scenes/DetentionCell';
+import { SCENE2_WORLD } from '../src/scenes/ControlRoom';
+import { SCENE3_WORLD } from '../src/scenes/Corridor';
+import { SCENE4_WORLD } from '../src/scenes/HangarBay';
 import { CAMERA } from '../src/App';
 import { worldToCanvas } from '../src/utils/canvasCoords';
 
@@ -34,48 +37,37 @@ async function completeIntro(page: Page, playerName = 'Playwright') {
 
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
 // Camera config (CAMERA in src/App.tsx) and world→canvas projection (src/utils/canvasCoords.ts).
-// Scene 1 coords are computed at runtime via worldToCanvas; scenes 2–4 remain hardcoded until migrated.
-//
-// Scene 2 — Control Room
-//   Terminal body center world [-2.75, 1.4, -0.8] → (403, 227)
-//   Blast door center   world [0, 1.4, -3.92]     → (640, 221)
-// Scene 3 — Corridor
-//   Cell 0  world [0.5,  0.3, 2.3]  → (719, 426)
-//   Cell 1  world [2.6,  0.3, 1.3]  → (951, 373)
-//   Cell 2  world [1.5,  0.3, 2.8]  → (922, 467)
-//   Slot 0  world [-2.85, 2.0, -2.0] → (429, 180)
-//   Slot 1  world [-2.85, 1.5, -2.0] → (433, 217)
-//   Slot 2  world [-2.85, 1.0, -2.0] → (438, 253)
-//   Blast door  world [0, 1.4, -3.92] → (640, 221)
-// Scene 4 — Hangar Bay
-//   Launch console world [0, 0.5, -0.5] → (640, 307)
+// All scene coords are computed at runtime via worldToCanvas from world positions in scene components.
 
 // Playwright Desktop Chrome default viewport
 const VIEWPORT = { width: 1280, height: 720 };
 
 // Scene 1 — Detention Cell canvas coordinates
- const SCENE1 = {
+const SCENE1 = {
   panel: worldToCanvas(SCENE1_WORLD.panel, CAMERA, VIEWPORT),
   door: worldToCanvas(SCENE1_WORLD.door, CAMERA, VIEWPORT),
 };
 
+// Scene 2 — Control Room canvas coordinates
 const SCENE2 = {
-  terminal: { x: 403, y: 227 },
-  door: { x: 640, y: 221 },
+  terminal: worldToCanvas(SCENE2_WORLD.terminal, CAMERA, VIEWPORT),
+  door: worldToCanvas(SCENE2_WORLD.door, CAMERA, VIEWPORT),
 };
 
+// Scene 3 — Corridor canvas coordinates
 const SCENE3 = {
-  cell0: { x: 719, y: 426 },
-  cell1: { x: 951, y: 373 },
-  cell2: { x: 922, y: 467 },
-  slot0: { x: 429, y: 180 },
-  slot1: { x: 433, y: 217 },
-  slot2: { x: 438, y: 253 },
-  door: { x: 640, y: 221 },
+  cell0: worldToCanvas(SCENE3_WORLD.cell0, CAMERA, VIEWPORT),
+  cell1: worldToCanvas(SCENE3_WORLD.cell1, CAMERA, VIEWPORT),
+  cell2: worldToCanvas(SCENE3_WORLD.cell2, CAMERA, VIEWPORT),
+  slot0: worldToCanvas(SCENE3_WORLD.slot0, CAMERA, VIEWPORT),
+  slot1: worldToCanvas(SCENE3_WORLD.slot1, CAMERA, VIEWPORT),
+  slot2: worldToCanvas(SCENE3_WORLD.slot2, CAMERA, VIEWPORT),
+  door: worldToCanvas(SCENE3_WORLD.door, CAMERA, VIEWPORT),
 };
 
+// Scene 4 — Hangar Bay canvas coordinates
 const SCENE4 = {
-  console: { x: 640, y: 307 },
+  console: worldToCanvas(SCENE4_WORLD.console, CAMERA, VIEWPORT),
 };
 
 const CORRECT_SEQUENCE = ['A', 'U', 'R', 'E'];

@@ -38,6 +38,17 @@ const SLOT_POSITIONS: [number, number, number][] = [
   [-2.85, 1.0, -2.0], // Slot 2 (bottom)
 ];
 
+// World coordinates for interactive objects in this scene
+export const SCENE3_WORLD = {
+  cell0: CELL_POSITIONS[0],
+  cell1: CELL_POSITIONS[1],
+  cell2: CELL_POSITIONS[2],
+  slot0: SLOT_POSITIONS[0],
+  slot1: SLOT_POSITIONS[1],
+  slot2: SLOT_POSITIONS[2],
+  door: [0, 1.4, -3.92] as [number, number, number],
+};
+
 // Distinct color per cell — used together with shape labels for color-blind safety
 const CELL_COLORS = ['#4488ff', '#ff8833', '#44cc66'] as const;
 // Greek letter labels rendered as notch shapes (one short + one tall bar per cell)
@@ -377,7 +388,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
       })}
 
       <InteractiveObject onClick={handleDoorClick}>
-        <group position={[0, 1.4, -3.92]}>
+        <group position={SCENE3_WORLD.door}>
           <BlastDoor unlocked={puzzleSolved} />
         </group>
       </InteractiveObject>
