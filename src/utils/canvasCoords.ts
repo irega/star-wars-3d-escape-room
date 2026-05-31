@@ -1,16 +1,3 @@
-import { SCENE1_WORLD } from '../src/scenes/DetentionCell';
-
-// Camera config — must match App.tsx <Canvas camera={{ position, fov }}>
-export const CAMERA = {
-  position: [0, 1.6, 5] as [number, number, number],
-  fov: 75,
-};
-
-// Playwright Desktop Chrome default viewport
-export const VIEWPORT = { width: 1280, height: 720 };
-
-type Vec3 = [number, number, number];
-
 /**
  * Projects a 3D world position to a 2D canvas pixel coordinate.
  * Assumes the camera looks at the world origin [0,0,0] (R3F default lookAt).
@@ -20,8 +7,8 @@ type Vec3 = [number, number, number];
  *   Camera-space projection → NDC → screen pixel via standard perspective formula.
  */
 export function worldToCanvas(
-  world: Vec3,
-  camera: { position: Vec3; fov: number },
+  world: [number, number, number],
+  camera: { position: [number, number, number]; fov: number },
   viewport: { width: number; height: number },
 ): { x: number; y: number } {
   const [cx, cy, cz] = camera.position;
@@ -29,18 +16,24 @@ export function worldToCanvas(
 
   // z-axis: normalize(cameraPos − lookAt) = normalize(cameraPos)
   const camDist = Math.sqrt(cx * cx + cy * cy + cz * cz);
-  const zx = cx / camDist, zy = cy / camDist, zz = cz / camDist;
+  const zx = cx / camDist,
+    zy = cy / camDist,
+    zz = cz / camDist;
 
   // x-axis: normalize(cross([0,1,0], zCam)); cross = [zz, 0, −zx]
   const xMag = Math.sqrt(zz * zz + zx * zx);
-  const xx = zz / xMag, xy = 0, xz = -zx / xMag;
+  const xx = zz / xMag,
+    xy = 0,
+    xz = -zx / xMag;
 
   // y-axis: cross(zCam, xCam)
   const yx = zy * xz - zz * xy;
   const yy = zz * xx - zx * xz;
   const yz = zx * xy - zy * xx;
 
-  const dx = wx - cx, dy = wy - cy, dz = wz - cz;
+  const dx = wx - cx,
+    dy = wy - cy,
+    dz = wz - cz;
   const xView = dx * xx + dy * xy + dz * xz;
   const yView = dx * yx + dy * yy + dz * yz;
   const zView = dx * zx + dy * zy + dz * zz;
@@ -54,10 +47,3 @@ export function worldToCanvas(
     y: Math.round(((1 - yView / (depth * halfFovY)) / 2) * viewport.height),
   };
 }
-
-// Scene 1 — Detention Cell canvas coordinates
-// World positions are defined in DetentionCell.tsx
-export const SCENE1 = {
-  panel: worldToCanvas(SCENE1_WORLD.panel, CAMERA, VIEWPORT),
-  door: worldToCanvas(SCENE1_WORLD.door, CAMERA, VIEWPORT),
-};

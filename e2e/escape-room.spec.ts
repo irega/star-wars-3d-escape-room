@@ -1,5 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
-import { SCENE1 } from './canvasCoords';
+import { SCENE1_WORLD } from '../src/scenes/DetentionCell';
+import { CAMERA } from '../src/App';
+import { worldToCanvas } from '../src/utils/canvasCoords';
 
 /** Dismiss dialogue or schematic overlays so canvas clicks are not blocked. */
 async function dismissOverlays(page: Page) {
@@ -47,6 +49,15 @@ async function completeIntro(page: Page, playerName = 'Playwright') {
 //   Blast door  world [0, 1.4, -3.92] → (640, 221)
 // Scene 4 — Hangar Bay
 //   Launch console world [0, 0.5, -0.5] → (640, 307)
+
+// Playwright Desktop Chrome default viewport
+export const VIEWPORT = { width: 1280, height: 720 };
+
+// Scene 1 — Detention Cell canvas coordinates
+ const SCENE1 = {
+  panel: worldToCanvas(SCENE1_WORLD.panel, CAMERA, VIEWPORT),
+  door: worldToCanvas(SCENE1_WORLD.door, CAMERA, VIEWPORT),
+};
 
 const SCENE2 = {
   terminal: { x: 403, y: 227 },

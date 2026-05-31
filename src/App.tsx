@@ -27,7 +27,7 @@ import { AmbientMusicToggle } from './ui/AmbientMusicToggle';
 import { RoomHintTriggers } from './components/RoomHintTriggers';
 
 export const CAMERA = {
-  position: [0, 1.6, 5] as const,
+  position: [0, 1.6, 5] as [number, number, number],
   fov: 75,
 };
 

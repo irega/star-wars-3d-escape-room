@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { worldToCanvas, CAMERA, VIEWPORT } from './canvasCoords';
+import { worldToCanvas, VIEWPORT } from './canvasCoords';
+import { CAMERA } from '../App';
 
 test.describe('worldToCanvas', () => {
   test('projects a point on the camera look axis to the canvas center', () => {
