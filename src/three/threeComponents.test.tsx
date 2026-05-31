@@ -59,4 +59,18 @@ describe('shared three components', () => {
     expect(renderer.scene.children.length).toBeGreaterThan(0);
     await renderer.unmount();
   });
+
+  it('primitives render without crashing', async () => {
+    const { PropBox, CeilingPanelLight, CotFrame, FloorGrid } = await import('./primitives');
+    const renderer = await renderThree(
+      <group>
+        <PropBox size={[1, 1, 1]} color="#fff" />
+        <CeilingPanelLight />
+        <CotFrame />
+        <FloorGrid width={8} depth={8} />
+      </group>,
+    );
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
+  });
 });
