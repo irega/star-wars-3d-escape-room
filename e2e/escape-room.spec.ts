@@ -33,8 +33,8 @@ async function completeIntro(page: Page, playerName = 'Playwright') {
 }
 
 // Canvas click coordinates for Playwright Desktop Chrome (viewport 1280×720).
-// Camera config and world→canvas projection live in e2e/canvasCoords.ts.
-// Scene 1 coords are computed there; scenes 2–4 remain hardcoded until migrated.
+// Camera config (CAMERA in src/App.tsx) and world→canvas projection (src/utils/canvasCoords.ts).
+// Scene 1 coords are computed at runtime via worldToCanvas; scenes 2–4 remain hardcoded until migrated.
 //
 // Scene 2 — Control Room
 //   Terminal body center world [-2.75, 1.4, -0.8] → (403, 227)
