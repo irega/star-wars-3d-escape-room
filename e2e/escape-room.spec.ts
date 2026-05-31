@@ -1,8 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
-import { SCENE1_WORLD } from '../src/scenes/DetentionCell';
-import { SCENE2_WORLD } from '../src/scenes/ControlRoom';
-import { SCENE3_WORLD } from '../src/scenes/Corridor';
-import { SCENE4_WORLD } from '../src/scenes/HangarBay';
+import { SCENE1_WORLD } from '../src/scenes/detentionCell';
+import { SCENE2_WORLD } from '../src/scenes/controlRoom';
+import { SCENE3_WORLD } from '../src/scenes/corridor';
+import { SCENE4_WORLD } from '../src/scenes/hangarBay';
 import { worldToCanvas } from '../src/utils/canvasCoords';
 
 const CAMERA = {

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import App from './App';
 import { useGameStore } from './stores/useGameStore';
 import { useHintStore } from './stores/useHintStore';
-import { PUZZLE_1_ID } from './scenes/detentionCellPuzzle';
+import { PUZZLE_1_ID } from './scenes/detentionCell/detentionCellPuzzle';
 import './i18n';
 
 vi.mock('@react-three/fiber', () => ({
@@ -25,15 +25,15 @@ vi.mock('@react-three/drei', () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('./scenes/DetentionCell', () => ({
+vi.mock('./scenes/detentionCell/DetentionCell', () => ({
   DetentionCell: ({ onDialogue }: { onDialogue: (msg: string) => void }) => (
     <button onClick={() => onDialogue('Test message')}>Trigger Dialogue</button>
   ),
 }));
 
-vi.mock('./scenes/ControlRoom', () => ({ ControlRoom: () => null }));
-vi.mock('./scenes/Corridor', () => ({ Corridor: () => null }));
-vi.mock('./scenes/HangarBay', () => ({ HangarBay: () => null }));
+vi.mock('./scenes/controlRoom/ControlRoom', () => ({ ControlRoom: () => null }));
+vi.mock('./scenes/corridor/Corridor', () => ({ Corridor: () => null }));
+vi.mock('./scenes/hangarBay/HangarBay', () => ({ HangarBay: () => null }));
 
 describe('App — dialogue clearing on scene change', () => {
   beforeEach(() => {

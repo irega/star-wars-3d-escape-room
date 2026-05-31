@@ -7,8 +7,8 @@ import {
   SEQUENCE_HIGHLIGHT_MS,
   CORRECT_SEQUENCE,
 } from './controlRoomPuzzle';
-import { useInventoryStore } from '../stores/useInventoryStore';
-import { useGameStore } from '../stores/useGameStore';
+import { useInventoryStore } from '../../stores/useInventoryStore';
+import { useGameStore } from '../../stores/useGameStore';
 
 beforeEach(() => {
   useInventoryStore.getState().reset();

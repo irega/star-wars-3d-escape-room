@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import App from './App';
 import { useGameStore } from './stores/useGameStore';
 import { useHintStore } from './stores/useHintStore';
-import { PUZZLE_2_ID } from './scenes/controlRoomPuzzle';
+import { PUZZLE_2_ID } from './scenes/controlRoom/controlRoomPuzzle';
 import './i18n';
 
 vi.mock('@react-three/fiber', () => ({
@@ -21,10 +21,10 @@ vi.mock('@react-three/drei', () => ({
 vi.mock('./three/ImperialLighting', () => ({
   ImperialLighting: () => null,
 }));
-vi.mock('./scenes/DetentionCell', () => ({ DetentionCell: () => null }));
-vi.mock('./scenes/ControlRoom', () => ({ ControlRoom: () => null }));
-vi.mock('./scenes/Corridor', () => ({ Corridor: () => null }));
-vi.mock('./scenes/HangarBay', () => ({ HangarBay: () => null }));
+vi.mock('./scenes/detentionCell/DetentionCell', () => ({ DetentionCell: () => null }));
+vi.mock('./scenes/controlRoom/ControlRoom', () => ({ ControlRoom: () => null }));
+vi.mock('./scenes/corridor/Corridor', () => ({ Corridor: () => null }));
+vi.mock('./scenes/hangarBay/HangarBay', () => ({ HangarBay: () => null }));
 
 describe('App — puzzle 2 hints (Aurebesh guidance)', () => {
   beforeEach(() => {

@@ -1,4 +1,4 @@
-import { NonInteractive } from '../components/NonInteractive';
+import { NonInteractive } from '../../components/NonInteractive';
 
 /** Wrecked maintenance astromech (R2-style) — cylindrical body, domed head, three-leg stance. */
 export interface DamagedAstromechDroidProps {

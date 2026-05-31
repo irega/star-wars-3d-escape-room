@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { ControlRoom, AUREBESH_SYMBOL_BARS, SCREENS } from './ControlRoom';
-import { renderThree } from '../test/renderThree';
-import '../i18n';
+import { renderThree } from '../../test/renderThree';
+import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,

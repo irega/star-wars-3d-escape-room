@@ -1,18 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useGameStore } from '../stores/useGameStore';
-import { useInventoryStore } from '../stores/useInventoryStore';
-import { useHintStore } from '../stores/useHintStore';
-import { useControlRoomTerminalStore } from '../stores/useControlRoomTerminalStore';
-import { InteractiveObject } from '../components/InteractiveObject';
+import { useGameStore } from '../../stores/useGameStore';
+import { useInventoryStore } from '../../stores/useInventoryStore';
+import { useHintStore } from '../../stores/useHintStore';
+import { useControlRoomTerminalStore } from '../../stores/useControlRoomTerminalStore';
+import { InteractiveObject } from '../../components/InteractiveObject';
 import {
   BlastDoor,
   HologramScreen,
   ImperialRoomShell,
   TerminalConsole,
   imperialPalette,
-} from '../three';
-import { useRoomExit, usePuzzleSolved } from '../levels';
+} from '../../three';
+import { useRoomExit, usePuzzleSolved } from '../../levels';
 import { validateSequence, PUZZLE_2_ID, SEQUENCE_HIGHLIGHT_MS } from './controlRoomPuzzle';
 
 // World coordinates for interactive objects in this scene

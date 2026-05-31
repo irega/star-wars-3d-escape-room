@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { RoomHintTriggers } from './RoomHintTriggers';
 import { useGameStore } from '../stores/useGameStore';
 import { useHintStore } from '../stores/useHintStore';
-import { PUZZLE_1_HINT_DELAYS } from '../scenes/detentionCellPuzzle';
+import { PUZZLE_1_HINT_DELAYS } from '../scenes/detentionCell/detentionCellPuzzle';
 
 describe('RoomHintTriggers', () => {
   beforeEach(() => {

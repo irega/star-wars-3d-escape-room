@@ -1,4 +1,3 @@
-/** Bundled via `public/audio/` — see public/audio/README.md (not committed; copyright). */
 export const IMPERIAL_MARCH_SRC = '/audio/imperial-march.mp3';
 
 const DEFAULT_VOLUME = 0.35;
