@@ -233,14 +233,15 @@
 
 ## Quality Assurance & Testing
 
-### Testing Strategy: Three Layers
+### Testing Strategy: Layered Pyramid
 
 **Decision:**
-- **Vitest** for pure logic (Zustand stores, puzzle validation) — no 3D dependency.
-- **React Testing Library** for HTML overlays (HUD, Dialogue, Victory, Loading).
+- **Vitest unit tests** for pure logic (Zustand stores, `*Puzzle.ts` validation, audio utils).
+- **Scene integration** via `@react-three/test-renderer` — `renderThree` + `fireEvent` on scene `testId`s; assert stores and callbacks without WebGL.
+- **React Testing Library** for App wiring (HUD, hints, dialogue, terminal, phases) and UI component gaps (a11y, keyboard).
 - **Playwright** for E2E happy-path — clicks canvas coordinates since WebGL has no DOM.
 
-**Rationale:** WebGL does not render in jsdom, so RTL cannot test 3D scenes. `@react-three/test-renderer` evaluated and rejected as too immature. Extracting pure puzzle logic into plain TypeScript functions (e.g., `validateSequence`, `canExitDetentionCell`) makes business rules fully testable without 3D dependency.
+**Rationale:** WebGL does not render in jsdom, so RTL cannot drive 3D interactables. `@react-three/test-renderer` mounts a real R3F scene graph headlessly — enough to test scene ↔ store orchestration. Pure puzzle functions remain unit-tested without 3D dependency; App tests stub scenes to avoid duplicating puzzle flows.
 
 ---
 

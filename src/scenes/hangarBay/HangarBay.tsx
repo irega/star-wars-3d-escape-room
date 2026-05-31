@@ -50,13 +50,14 @@ export function HangarBay({ onDialogue }: HangarBayProps) {
     <group>
       <HangarBayEnvironment />
 
-      <InteractiveObject onClick={handleShuttleClick}>
+      <InteractiveObject testId="shuttle" onClick={handleShuttleClick}>
         <ImperialShuttle cleared={puzzleSolved} />
       </InteractiveObject>
 
       <ForceFieldBarrier active={!puzzleSolved} />
 
       <LaunchConsole
+        testId="console"
         position={SCENE4_WORLD.console}
         active={consoleActive}
         disabled={puzzleSolved || consoleActive}

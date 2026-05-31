@@ -5,12 +5,15 @@ export interface InteractiveObjectProps {
   children: React.ReactNode;
   onClick?: () => void;
   isDisabled?: boolean;
+  /** Sets Three.js Object3D.name for scene integration tests (renderThree findByTestId). */
+  testId?: string;
 }
 
 export function InteractiveObject({
   children,
   onClick,
   isDisabled = false,
+  testId,
 }: InteractiveObjectProps) {
   const handleClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
@@ -33,7 +36,12 @@ export function InteractiveObject({
   }, []);
 
   return (
-    <group onClick={handleClick} onPointerOver={handlePointerOver} onPointerOut={handlePointerOut}>
+    <group
+      name={testId}
+      onClick={handleClick}
+      onPointerOver={handlePointerOver}
+      onPointerOut={handlePointerOut}
+    >
       {children}
     </group>
   );

@@ -227,7 +227,11 @@ export function Corridor({ onDialogue }: CorridorProps) {
         const slotColor = isCorrect ? '#1a3a1a' : '#1a1a33';
 
         return (
-          <InteractiveObject key={slotIndex} onClick={() => handleSlotClick(slotIndex)}>
+          <InteractiveObject
+            key={slotIndex}
+            testId={`slot-${slotIndex}`}
+            onClick={() => handleSlotClick(slotIndex)}
+          >
             <group position={pos}>
               {/* Slot housing */}
               <mesh>
@@ -307,7 +311,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
 
         {/* Schematic trigger — tight hit volume on droid torso only (avoids stealing cell clicks) */}
         {hintLevel >= 1 && !schematicOpen && (
-          <InteractiveObject onClick={() => setSchematicOpen(true)}>
+          <InteractiveObject testId="droid" onClick={() => setSchematicOpen(true)}>
             <mesh position={[0, 0.45, 0]}>
               <boxGeometry args={[0.32, 0.55, 0.32]} />
               <meshStandardMaterial color="#000000" transparent opacity={0} />
@@ -327,6 +331,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
         return (
           <InteractiveObject
             key={cellId}
+            testId={`cell-${cellId}`}
             onClick={() => handleCellClick(cellId)}
             isDisabled={puzzleSolved}
           >
@@ -378,7 +383,7 @@ export function Corridor({ onDialogue }: CorridorProps) {
         );
       })}
 
-      <InteractiveObject onClick={handleDoorClick}>
+      <InteractiveObject testId="door" onClick={handleDoorClick}>
         <group position={SCENE3_WORLD.door}>
           <BlastDoor unlocked={puzzleSolved} />
         </group>

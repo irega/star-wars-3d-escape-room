@@ -10,6 +10,7 @@ import {
   PUZZLE_3_HINT_DELAYS,
   type CellOrientation,
 } from './corridorPuzzle';
+import { CELL_POSITIONS, DROID_GROUP_POSITION } from './Corridor';
 import { LAUNCH_FREQUENCY } from './launchFrequency';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { useGameStore } from '../../stores/useGameStore';
@@ -207,5 +208,37 @@ describe('puzzle 3 constants', () => {
 
   it('second hint fires at 60 seconds', () => {
     expect(PUZZLE_3_HINT_DELAYS[1]).toBe(60_000);
+  });
+});
+
+describe('CELL_POSITIONS layout', () => {
+  it('power cell positions do not overlap droid wreckage footprint', () => {
+    const MIN_CLEARANCE_XZ = 0.8;
+
+    CELL_POSITIONS.forEach((pos, i) => {
+      const dx = pos[0] - DROID_GROUP_POSITION[0];
+      const dz = pos[2] - DROID_GROUP_POSITION[2];
+      const distXZ = Math.sqrt(dx * dx + dz * dz);
+      expect(distXZ, `cell ${i} at [${pos}] is too close to droid`).toBeGreaterThanOrEqual(
+        MIN_CLEARANCE_XZ,
+      );
+    });
+  });
+
+  it('power cell positions do not overlap with each other', () => {
+    const MIN_CELL_SEPARATION = 0.6;
+
+    for (let i = 0; i < CELL_POSITIONS.length; i++) {
+      for (let j = i + 1; j < CELL_POSITIONS.length; j++) {
+        const pos1 = CELL_POSITIONS[i];
+        const pos2 = CELL_POSITIONS[j];
+        const dx = pos1[0] - pos2[0];
+        const dz = pos1[2] - pos2[2];
+        const distXZ = Math.sqrt(dx * dx + dz * dz);
+        expect(distXZ, `cell ${i} and ${j} are overlapping`).toBeGreaterThanOrEqual(
+          MIN_CELL_SEPARATION,
+        );
+      }
+    }
   });
 });
