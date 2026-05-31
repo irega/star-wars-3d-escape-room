@@ -6,14 +6,13 @@ import { useGameStore } from '../stores/useGameStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import { useHintStore } from '../stores/useHintStore';
 import { InteractiveObject } from '../components/InteractiveObject';
-import { BarredCellDoor, ImperialRoomShell } from '../three';
-import { canExitDetentionCell, PUZZLE_1_ID } from './detentionCellPuzzle';
+import { BarredCellDoor, ImperialRoomShell, CeilingPanelLight, CotFrame } from '../three';
+import { useRoomExit } from '../levels';
+import { PUZZLE_1_ID } from './detentionCellPuzzle';
 
-// World coordinates for interactive objects in this scene
 export const SCENE1_WORLD = {
   panel: [2.82, 1.5, -3.0] as [number, number, number],
   door: [0.26, 1.4, 3.94] as [number, number, number],
-  /** Center of a door bar (group origin sits in gaps between bars). */
   doorClick: [0.52, 1.4, 3.96] as [number, number, number],
 };
 
@@ -57,8 +56,8 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
   const addItem = useInventoryStore((s) => s.addItem);
   const hasKeycard = useInventoryStore((s) => s.hasItem('keycard'));
   const solvePuzzle = useGameStore((s) => s.solvePuzzle);
-  const moveToRoom = useGameStore((s) => s.moveToRoom);
   const hintLevel = useHintStore((s) => s.hintLevels[PUZZLE_1_ID] ?? 0);
+  const handleDoorClick = useRoomExit('detention-cell', onDialogue);
 
   useEffect(() => {
     if (hintLevel < 2) return;
@@ -86,53 +85,13 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
     onDialogue?.(t('puzzle1.panel.found'));
   }, [panelFound, addItem, solvePuzzle, t, onDialogue]);
 
-  const handleDoorClick = useCallback(() => {
-    if (canExitDetentionCell(hasKeycard)) {
-      moveToRoom('control-room');
-    } else {
-      onDialogue?.(t('puzzle1.door.locked'));
-    }
-  }, [hasKeycard, moveToRoom, t, onDialogue]);
-
-  const panelLightPos: [number, number, number] = [2.4, 2.2, -3.0];
-
   return (
     <group>
       <ImperialRoomShell wallBackColor="#1e2d50" />
 
-      {/* Ceiling panel — diegetic fill on back wall */}
-      <mesh position={[0, 3.35, -3.85]}>
-        <boxGeometry args={[1.4, 0.08, 0.12]} />
-        <meshStandardMaterial color="#445577" emissive="#334466" emissiveIntensity={0.55} />
-      </mesh>
-      <pointLight
-        position={[0, 3.2, -3.5]}
-        color="#88aaff"
-        intensity={0.65}
-        distance={3}
-        decay={2}
-      />
-
-      <FlickerLight hintLevel={hintLevel} position={panelLightPos} active={!panelFound} />
-
-      {/* Cot frame */}
-      <mesh position={[-1.5, 0.25, -2]}>
-        <boxGeometry args={[1.8, 0.1, 0.8]} />
-        <meshStandardMaterial color="#3a3a58" />
-      </mesh>
-      {(
-        [
-          [-2.3, 0.12, -1.65],
-          [-0.7, 0.12, -1.65],
-          [-2.3, 0.12, -2.35],
-          [-0.7, 0.12, -2.35],
-        ] as [number, number, number][]
-      ).map(([x, y, z]) => (
-        <mesh key={`${x},${z}`} position={[x, y, z]}>
-          <boxGeometry args={[0.08, 0.24, 0.08]} />
-          <meshStandardMaterial color="#252542" />
-        </mesh>
-      ))}
+      <CeilingPanelLight />
+      <FlickerLight hintLevel={hintLevel} position={[2.4, 2.2, -3.0]} active={!panelFound} />
+      <CotFrame />
 
       <InteractiveObject onClick={handlePanelClick} isDisabled={panelFound}>
         <group position={SCENE1_WORLD.panel}>

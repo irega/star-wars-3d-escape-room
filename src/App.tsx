@@ -18,10 +18,7 @@ import type { Room } from './stores/useGameStore';
 import { useInventoryStore } from './stores/useInventoryStore';
 import { useHintStore } from './stores/useHintStore';
 import { ImperialLighting, imperialPalette } from './three';
-import { PUZZLE_1_ID } from './scenes/detentionCellPuzzle';
-import { PUZZLE_2_ID } from './scenes/controlRoomPuzzle';
-import { PUZZLE_3_ID } from './scenes/corridorPuzzle';
-import { PUZZLE_4_ID } from './scenes/hangarBayPuzzle';
+import { getLevel } from './levels';
 import { resetAmbientMusic, stopAmbientMusic } from './audio/ambientMusic';
 import { AmbientMusicToggle } from './ui/AmbientMusicToggle';
 import { RoomHintTriggers } from './components/RoomHintTriggers';
@@ -45,10 +42,8 @@ export default function App() {
   const resetInventory = useInventoryStore((s) => s.reset);
   const resetHints = useHintStore((s) => s.reset);
   const inventory = useInventoryStore((s) => s.items);
-  const puzzle1HintLevel = useHintStore((s) => s.hintLevels[PUZZLE_1_ID] ?? 0);
-  const puzzle2HintLevel = useHintStore((s) => s.hintLevels[PUZZLE_2_ID] ?? 0);
-  const puzzle3HintLevel = useHintStore((s) => s.hintLevels[PUZZLE_3_ID] ?? 0);
-  const puzzle4HintLevel = useHintStore((s) => s.hintLevels[PUZZLE_4_ID] ?? 0);
+  const level = getLevel(currentRoom);
+  const puzzleHintLevel = useHintStore((s) => s.hintLevels[level.puzzleId] ?? 0);
   const controlRoomTerminalActive = useControlRoomTerminalStore((s) => s.active);
   const controlRoomInputBuffer = useControlRoomTerminalStore((s) => s.inputBuffer);
   const controlRoomInputFeedback = useControlRoomTerminalStore((s) => s.inputFeedback);
@@ -94,14 +89,15 @@ export default function App() {
   }, [resetGame, resetInventory, resetHints, resetControlRoomTerminal]);
 
   let hintText: string | undefined;
-  if (currentRoom === 'detention-cell' && puzzle1HintLevel > 0) {
-    hintText = t(`puzzle1.hint.${puzzle1HintLevel}`);
-  } else if (currentRoom === 'control-room' && puzzle2HintLevel > 0) {
-    hintText = t(`puzzle2.hint.${puzzle2HintLevel}`);
-  } else if (currentRoom === 'corridor' && puzzle3HintLevel > 0) {
-    hintText = t(`puzzle3.hint.${puzzle3HintLevel}`);
-  } else if (currentRoom === 'hangar-bay' && puzzle4HintLevel > 0) {
-    hintText = t(`puzzle4.hint.${puzzle4HintLevel}`);
+  if (phase === 'playing' && puzzleHintLevel > 0) {
+    const hintKeys: Record<string, string> = {
+      'detention-cell': 'puzzle1',
+      'control-room': 'puzzle2',
+      corridor: 'puzzle3',
+      'hangar-bay': 'puzzle4',
+    };
+    const prefix = hintKeys[currentRoom];
+    if (prefix) hintText = t(`${prefix}.hint.${puzzleHintLevel}`);
   }
 
   const showHudHint = !dialogue && !(currentRoom === 'control-room' && controlRoomTerminalActive);

@@ -12,12 +12,8 @@ import {
   TerminalConsole,
   imperialPalette,
 } from '../three';
-import {
-  validateSequence,
-  canExitControlRoom,
-  PUZZLE_2_ID,
-  SEQUENCE_HIGHLIGHT_MS,
-} from './controlRoomPuzzle';
+import { useRoomExit, usePuzzleSolved } from '../levels';
+import { validateSequence, PUZZLE_2_ID, SEQUENCE_HIGHLIGHT_MS } from './controlRoomPuzzle';
 
 // World coordinates for interactive objects in this scene
 export const SCENE2_WORLD = {
@@ -104,10 +100,9 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
 
   const addItem = useInventoryStore((s) => s.addItem);
   const solvePuzzle = useGameStore((s) => s.solvePuzzle);
-  const moveToRoom = useGameStore((s) => s.moveToRoom);
-  const solvedPuzzles = useGameStore((s) => s.solvedPuzzles);
-  const puzzleSolved = solvedPuzzles.includes(PUZZLE_2_ID);
+  const puzzleSolved = usePuzzleSolved('control-room');
   const hintLevel = useHintStore((s) => s.hintLevels[PUZZLE_2_ID] ?? 0);
+  const handleDoorClick = useRoomExit('control-room', onDialogue);
   const [highlightPulse, setHighlightPulse] = useState(true);
   const sequenceHighlight = terminalActive && highlightPulse;
 
@@ -123,14 +118,6 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
     setHighlightPulse(true);
     openTerminal();
   }, [puzzleSolved, terminalActive, openTerminal]);
-
-  const handleDoorClick = useCallback(() => {
-    if (canExitControlRoom(puzzleSolved)) {
-      moveToRoom('corridor');
-    } else {
-      onDialogue?.(t('puzzle2.door.locked'));
-    }
-  }, [puzzleSolved, moveToRoom, t, onDialogue]);
 
   const submitInput = useCallback(
     (buffer: string[]) => {

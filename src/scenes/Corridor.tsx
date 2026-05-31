@@ -7,9 +7,9 @@ import { useGameStore } from '../stores/useGameStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import { useHintStore } from '../stores/useHintStore';
 import { InteractiveObject } from '../components/InteractiveObject';
+import { useRoomExit, usePuzzleSolved } from '../levels';
 import {
   areAllSlotsCorrect,
-  canExitCorridor,
   cycleOrientation,
   isCellPlacementCorrect,
   shouldExtractFromSlot,
@@ -91,10 +91,9 @@ export function Corridor({ onDialogue }: CorridorProps) {
 
   const addItem = useInventoryStore((s) => s.addItem);
   const solvePuzzle = useGameStore((s) => s.solvePuzzle);
-  const moveToRoom = useGameStore((s) => s.moveToRoom);
-  const solvedPuzzles = useGameStore((s) => s.solvedPuzzles);
-  const puzzleSolved = solvedPuzzles.includes(PUZZLE_3_ID);
+  const puzzleSolved = usePuzzleSolved('corridor');
   const hintLevel = useHintStore((s) => s.hintLevels[PUZZLE_3_ID] ?? 0);
+  const handleDoorClick = useRoomExit('corridor', onDialogue);
 
   // Build slot placements array for validation
   const slotPlacements = CELL_SOLUTIONS.map((_, slotIndex) => {
@@ -176,14 +175,6 @@ export function Corridor({ onDialogue }: CorridorProps) {
     },
     [cells, selectedCellId, puzzleSolved, addItem, solvePuzzle, t, onDialogue],
   );
-
-  const handleDoorClick = useCallback(() => {
-    if (canExitCorridor(puzzleSolved)) {
-      moveToRoom('hangar-bay');
-    } else {
-      onDialogue?.(t('puzzle3.door.locked'));
-    }
-  }, [puzzleSolved, moveToRoom, t, onDialogue]);
 
   // Close schematic modal on Escape key
   useEffect(() => {

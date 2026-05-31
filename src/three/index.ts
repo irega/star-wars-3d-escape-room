@@ -10,3 +10,11 @@ export { TerminalConsole } from './TerminalConsole';
 export type { TerminalConsoleProps } from './TerminalConsole';
 export { HologramScreen } from './HologramScreen';
 export type { HologramScreenProps } from './HologramScreen';
+export { PropBox, ScenePointLight, CeilingPanelLight, CotFrame, FloorGrid } from './primitives';
+export type {
+  PropBoxProps,
+  ScenePointLightProps,
+  CeilingPanelLightProps,
+  CotFrameProps,
+  FloorGridProps,
+} from './primitives';
