@@ -11,6 +11,7 @@ Follow the `irega` skill for all commits, code, and design decisions — full sp
 - **Code:** simple first, no premature abstraction, small functions, TDD
 - **TDD:** Use `/tdd` skill for all implementation tasks (red-green-refactor, vertical slices). See `.claude/skills/tdd/`
 - **Security:** Run `/security-audit` before shipping (Phase 6). See `.claude/skills/security-audit/`
+- **Design review:** Run `/staff-review` on plans or major architecture changes before implementation. See `.claude/skills/staff-review/`
 
 ## Skills
 
@@ -20,6 +21,7 @@ All skills are bundled in `.claude/skills/` — no external dependencies require
 |---|---|---|
 | `irega` | `/irega` | Always active — apply to all commits and code |
 | `tdd` | `/tdd` | Every implementation task |
+| `staff-review` | `/staff-review` | Design docs, plans, major trade-offs before building |
 | `security-audit` | `/security-audit` | Before shipping (Phase 6) |
 
 ## Project

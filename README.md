@@ -43,7 +43,7 @@ Architecture and stack are frozen in [`docs/tech-design.md`](docs/tech-design.md
 
 ## How I used AI
 
-**Tools:** Claude Code (local + GitHub App on approved issues/PRs), Cursor, and bundled skills (`irega`, `tdd`, `security-audit`).
+**Tools:** Claude Code (local + GitHub App on approved issues/PRs), Cursor, and bundled skills (`irega`, `tdd`, `staff-review`, `security-audit`).
 
 - **Delegated:** planning/docs drafts, CI and boilerplate, vertical slices via agent PRs when the spec was clear, repetitive tests and wiring.
 - **Kept:** puzzle design, scope/architecture ([`tech-design.md`](docs/tech-design.md)), every PR review, and 3D/UX polish by playtesting.
@@ -79,7 +79,7 @@ Take-home pace was **focused sessions over several days**, not one continuous sp
 | [`docs/WORKLOG.md`](docs/WORKLOG.md) | **Planning phase only** (pre-code): prompts and decisions that led to plan v2 and tech design. Not the implementation log. |
 | [`docs/plans/plan-v1.md`](docs/plans/plan-v1.md) | First architecture exploration (historical). |
 | [`docs/plans/plan-v2.md`](docs/plans/plan-v2.md) | Consolidated implementation plan (phases, CI, agents, puzzle order). **Historical context** — delivery order followed Issues/PRs, not phases literally. |
-| [`docs/plans/staff-review.md`](docs/plans/staff-review.md) | Staff-style review of plan v2 before coding (verdict, risks, growth areas). |
+| [`docs/plans/staff-review.md`](docs/plans/staff-review.md) | Output of `/staff-review` on plan v2 before coding (verdict, risks, growth areas). Skill: [`.claude/skills/staff-review/`](.claude/skills/staff-review/). |
 
 Repo root companions:
 
@@ -96,4 +96,5 @@ Copied from [github.com/irega/skills](https://github.com/irega/skills) into `.cl
 |-------|---------|
 | `irega` | Coding philosophy, commits, style — always on |
 | `tdd` | Red-green-refactor for implementation |
+| `staff-review` | Staff-level design review (plans, architecture, trade-offs) |
 | `security-audit` | Pre-ship security review |
