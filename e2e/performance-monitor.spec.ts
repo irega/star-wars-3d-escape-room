@@ -1,4 +1,4 @@
-import { test, expect, type Page, type BrowserContext } from '@playwright/test';
+import { test, expect, type BrowserContext } from '@playwright/test';
 
 /**
  * E2E tests for PerformanceMonitor quality tier switching.

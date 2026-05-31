@@ -9,12 +9,9 @@ type Renderer = Awaited<ReturnType<typeof ReactThreeTestRenderer.create>>;
 type TestInstance = ReactThreeTest.ReactThreeTestInstance;
 
 /** Headless R3F render for unit tests — avoids jsdom "incorrect casing" warnings. */
-export async function renderThree(element: ReactElement) {
+export async function renderScene(element: ReactElement) {
   return ReactThreeTestRenderer.create(element, { frameloop: 'never' });
 }
-
-/** Alias for scene integration tests. */
-export const renderScene = renderThree;
 
 export async function fireClick(renderer: Renderer, instance: TestInstance) {
   await renderer.fireEvent(instance, 'click');

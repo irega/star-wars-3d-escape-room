@@ -14,7 +14,7 @@ import {
   SLOT_POSITIONS,
 } from './corridorLayout';
 
-export { CELL_POSITIONS, DROID_GROUP_POSITION, SCENE3_WORLD } from './corridorLayout';
+export { SCENE3_WORLD, CELL_POSITIONS, DROID_GROUP_POSITION } from './corridorLayout';
 
 export interface CorridorProps {
   onDialogue?: (text: string | null) => void;
