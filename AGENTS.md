@@ -37,6 +37,7 @@ Comment or review on the PR with **`@claude`** (see `.github/workflows/dev-agent
 
 1. Read `docs/tech-design.md` and `docs/challenge-spec.md` before coding.
 2. TDD: `.claude/skills/tdd/` — red-green-refactor, vertical slices.
-3. Conventional commits: `type(scope): description` (see `CLAUDE.md` / irega skill).
-4. **Never merge** — human PR review + green CI required.
-5. Keep PRs small; max ~2 agent branches in parallel (Pro limits).
+3. Major design changes: `.claude/skills/staff-review/` — validate trade-offs before large PRs.
+4. Conventional commits: `type(scope): description` (see `CLAUDE.md` / irega skill).
+5. **Never merge** — human PR review + green CI required.
+6. Keep PRs small; max ~2 agent branches in parallel (Pro limits).
