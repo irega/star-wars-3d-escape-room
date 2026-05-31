@@ -20,24 +20,20 @@ test.describe('worldToCanvas', () => {
     expect(Number.isFinite(result.y)).toBe(true);
   });
 
-  test('produces valid canvas coordinates within bounds', () => {
+  test.each([
+    { pos: [2.82, 1.5, -3.0] as [number, number, number], label: 'Scene 1 panel position' },
+    { pos: [0, 1.4, 3.92] as [number, number, number], label: 'Scene 1 door position' },
+    { pos: [1, 2, -4] as [number, number, number], label: 'Arbitrary position' },
+    { pos: [-1, 1, -5] as [number, number, number], label: 'Different position' },
+  ])('produces valid canvas coordinates within bounds ($label)', ({ pos }) => {
     // Any valid world position should project to a valid canvas coordinate
-    const testCases = [
-      [2.82, 1.5, -3.0],  // Scene 1 panel position
-      [0, 1.4, 3.92],      // Scene 1 door position
-      [1, 2, -4],          // Arbitrary position
-      [-1, 1, -5],         // Different position
-    ];
-
-    testCases.forEach((pos) => {
-      const result = worldToCanvas(pos as [number, number, number], CAMERA, VIEWPORT);
-      expect(Number.isFinite(result.x)).toBe(true);
-      expect(Number.isFinite(result.y)).toBe(true);
-      expect(result.x).toBeGreaterThanOrEqual(0);
-      expect(result.x).toBeLessThanOrEqual(VIEWPORT.width);
-      expect(result.y).toBeGreaterThanOrEqual(0);
-      expect(result.y).toBeLessThanOrEqual(VIEWPORT.height);
-    });
+    const result = worldToCanvas(pos, CAMERA, VIEWPORT);
+    expect(Number.isFinite(result.x)).toBe(true);
+    expect(Number.isFinite(result.y)).toBe(true);
+    expect(result.x).toBeGreaterThanOrEqual(0);
+    expect(result.x).toBeLessThanOrEqual(VIEWPORT.width);
+    expect(result.y).toBeGreaterThanOrEqual(0);
+    expect(result.y).toBeLessThanOrEqual(VIEWPORT.height);
   });
 
   test('projects mirrored positions symmetrically', () => {
