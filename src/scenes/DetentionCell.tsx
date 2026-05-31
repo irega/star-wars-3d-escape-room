@@ -13,6 +13,8 @@ import { canExitDetentionCell, PUZZLE_1_ID } from './detentionCellPuzzle';
 export const SCENE1_WORLD = {
   panel: [2.82, 1.5, -3.0] as [number, number, number],
   door: [0.26, 1.4, 3.94] as [number, number, number],
+  /** Center of a door bar (group origin sits in gaps between bars). */
+  doorClick: [0.52, 1.4, 3.96] as [number, number, number],
 };
 
 interface FlickerLightProps {
