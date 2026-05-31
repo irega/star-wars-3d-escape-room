@@ -2,12 +2,12 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTranslation } from 'react-i18next';
-import { useGameStore } from '../stores/useGameStore';
-import { useInventoryStore } from '../stores/useInventoryStore';
-import { useHintStore } from '../stores/useHintStore';
-import { InteractiveObject } from '../components/InteractiveObject';
-import { BarredCellDoor, ImperialRoomShell, CeilingPanelLight, CotFrame } from '../three';
-import { useRoomExit } from '../levels';
+import { useGameStore } from '../../stores/useGameStore';
+import { useInventoryStore } from '../../stores/useInventoryStore';
+import { useHintStore } from '../../stores/useHintStore';
+import { InteractiveObject } from '../../components/InteractiveObject';
+import { BarredCellDoor, ImperialRoomShell, CeilingPanelLight, CotFrame } from '../../three';
+import { useRoomExit } from '../../levels';
 import { PUZZLE_1_ID } from './detentionCellPuzzle';
 
 export const SCENE1_WORLD = {

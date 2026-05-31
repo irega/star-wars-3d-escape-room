@@ -11,8 +11,8 @@ import {
   type CellOrientation,
 } from './corridorPuzzle';
 import { LAUNCH_FREQUENCY } from './launchFrequency';
-import { useInventoryStore } from '../stores/useInventoryStore';
-import { useGameStore } from '../stores/useGameStore';
+import { useInventoryStore } from '../../stores/useInventoryStore';
+import { useGameStore } from '../../stores/useGameStore';
 
 beforeEach(() => {
   useInventoryStore.getState().reset();

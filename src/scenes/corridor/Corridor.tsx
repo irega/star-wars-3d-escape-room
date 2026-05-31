@@ -3,11 +3,11 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { useTranslation } from 'react-i18next';
-import { useGameStore } from '../stores/useGameStore';
-import { useInventoryStore } from '../stores/useInventoryStore';
-import { useHintStore } from '../stores/useHintStore';
-import { InteractiveObject } from '../components/InteractiveObject';
-import { useRoomExit, usePuzzleSolved } from '../levels';
+import { useGameStore } from '../../stores/useGameStore';
+import { useInventoryStore } from '../../stores/useInventoryStore';
+import { useHintStore } from '../../stores/useHintStore';
+import { InteractiveObject } from '../../components/InteractiveObject';
+import { useRoomExit, usePuzzleSolved } from '../../levels';
 import {
   areAllSlotsCorrect,
   cycleOrientation,
@@ -18,7 +18,7 @@ import {
   type CellOrientation,
 } from './corridorPuzzle';
 import { LAUNCH_FREQUENCY } from './launchFrequency';
-import { BlastDoor, ImperialRoomShell } from '../three';
+import { BlastDoor, ImperialRoomShell } from '../../three';
 import { DamagedAstromechDroid } from './DamagedAstromechDroid';
 
 export const DROID_GROUP_POSITION: [number, number, number] = [1.5, 0, 1.2];

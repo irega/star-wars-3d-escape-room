@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { DamagedAstromechDroid } from './DamagedAstromechDroid';
-import { renderThree } from '../test/renderThree';
+import { renderThree } from '../../test/renderThree';
 
 describe('DamagedAstromechDroid', () => {
   it('renders without crashing', async () => {

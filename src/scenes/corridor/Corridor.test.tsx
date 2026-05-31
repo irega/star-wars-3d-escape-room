@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Corridor, CELL_POSITIONS, DROID_GROUP_POSITION } from './Corridor';
-import { renderThree } from '../test/renderThree';
-import '../i18n';
+import { renderThree } from '../../test/renderThree';
+import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,

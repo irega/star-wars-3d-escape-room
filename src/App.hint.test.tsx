@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import App from './App';
 import { useGameStore } from './stores/useGameStore';
 import { useHintStore } from './stores/useHintStore';
-import { PUZZLE_1_HINT_DELAYS } from './scenes/detentionCellPuzzle';
+import { PUZZLE_1_HINT_DELAYS } from './scenes/detentionCell/detentionCellPuzzle';
 import './i18n';
 
 vi.mock('@react-three/fiber', () => ({

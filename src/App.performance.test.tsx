@@ -19,10 +19,10 @@ vi.mock('@react-three/fiber', () => ({
 vi.mock('./three/ImperialLighting', () => ({
   ImperialLighting: () => null,
 }));
-vi.mock('./scenes/DetentionCell', () => ({ DetentionCell: () => null }));
-vi.mock('./scenes/ControlRoom', () => ({ ControlRoom: () => null }));
-vi.mock('./scenes/Corridor', () => ({ Corridor: () => null }));
-vi.mock('./scenes/HangarBay', () => ({ HangarBay: () => null }));
+vi.mock('./scenes/detentionCell/DetentionCell', () => ({ DetentionCell: () => null }));
+vi.mock('./scenes/controlRoom/ControlRoom', () => ({ ControlRoom: () => null }));
+vi.mock('./scenes/corridor/Corridor', () => ({ Corridor: () => null }));
+vi.mock('./scenes/hangarBay/HangarBay', () => ({ HangarBay: () => null }));
 
 vi.mock('@react-three/drei', () => ({
   PerformanceMonitor: ({

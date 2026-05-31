@@ -1,18 +1,18 @@
 import type { Room } from '../stores/useGameStore';
-import { PUZZLE_1_ID, PUZZLE_1_HINT_DELAYS } from '../scenes/detentionCellPuzzle';
-import { PUZZLE_2_ID, PUZZLE_2_HINT_DELAYS } from '../scenes/controlRoomPuzzle';
-import { PUZZLE_3_ID, PUZZLE_3_HINT_DELAYS } from '../scenes/corridorPuzzle';
+import { PUZZLE_1_ID, PUZZLE_1_HINT_DELAYS } from '../scenes/detentionCell/detentionCellPuzzle';
+import { PUZZLE_2_ID, PUZZLE_2_HINT_DELAYS } from '../scenes/controlRoom/controlRoomPuzzle';
+import { PUZZLE_3_ID, PUZZLE_3_HINT_DELAYS } from '../scenes/corridor/corridorPuzzle';
 import {
   PUZZLE_4_ID,
   PUZZLE_4_HINT_DELAYS,
   validateLaunchClearance,
-} from '../scenes/hangarBayPuzzle';
+} from '../scenes/hangarBay/hangarBayPuzzle';
 import type { LevelDefinition } from './types';
 import { isPuzzleSolved } from './types';
 
 /**
  * Central registry for all rooms. To add a new level:
- * 1. Add puzzle logic in scenes/<room>Puzzle.ts
+ * 1. Add puzzle logic in scenes/<room>/
  * 2. Register it here (puzzleId, hints, canExit, nextRoom)
  * 3. Create scene folder with named prop components
  * 4. Wire the scene in App.tsx
