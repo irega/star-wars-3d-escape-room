@@ -3,7 +3,6 @@ import { SCENE1_WORLD } from '../src/scenes/DetentionCell';
 import { SCENE2_WORLD } from '../src/scenes/ControlRoom';
 import { SCENE3_WORLD } from '../src/scenes/Corridor';
 import { SCENE4_WORLD } from '../src/scenes/HangarBay';
-import { CAMERA } from '../src/App';
 import { worldToCanvas } from '../src/utils/canvasCoords';
 
 /** Dismiss dialogue or schematic overlays so canvas clicks are not blocked. */
@@ -41,6 +40,11 @@ async function completeIntro(page: Page, playerName = 'Playwright') {
 
 // Playwright Desktop Chrome default viewport
 const VIEWPORT = { width: 1280, height: 720 };
+
+const CAMERA = {
+  position: [0, 1.6, 5] as [number, number, number],
+  fov: 75,
+};
 
 // Scene 1 — Detention Cell canvas coordinates
 const SCENE1 = {
