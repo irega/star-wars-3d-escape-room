@@ -1,11 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
 import { Corridor, CELL_POSITIONS, DROID_GROUP_POSITION } from './Corridor';
+import { renderThree } from '../test/renderThree';
 import '../i18n';
-
-vi.mock('@react-three/fiber', () => ({
-  useFrame: vi.fn(),
-}));
 
 vi.mock('@react-three/drei', () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -14,13 +10,17 @@ vi.mock('@react-three/drei', () => ({
 }));
 
 describe('Corridor', () => {
-  it('renders without crashing', () => {
-    expect(() => render(<Corridor />)).not.toThrow();
+  it('renders without crashing', async () => {
+    const renderer = await renderThree(<Corridor />);
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 
-  it('accepts an onDialogue callback prop', () => {
+  it('accepts an onDialogue callback prop', async () => {
     const onDialogue = vi.fn();
-    expect(() => render(<Corridor onDialogue={onDialogue} />)).not.toThrow();
+    const renderer = await renderThree(<Corridor onDialogue={onDialogue} />);
+    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    await renderer.unmount();
   });
 
   it('power cell positions do not overlap droid wreckage footprint', () => {

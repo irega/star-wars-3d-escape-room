@@ -5,9 +5,7 @@ import { useGameStore } from './stores/useGameStore';
 import './i18n';
 
 vi.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="canvas-mock">{children}</div>
-  ),
+  Canvas: () => <div data-testid="canvas-mock" />,
   useFrame: () => {},
 }));
 

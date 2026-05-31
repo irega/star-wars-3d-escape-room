@@ -7,9 +7,7 @@ import { PUZZLE_2_ID } from './scenes/controlRoomPuzzle';
 import './i18n';
 
 vi.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="canvas-mock">{children}</div>
-  ),
+  Canvas: () => <div data-testid="canvas-mock" />,
   useFrame: () => {},
 }));
 
@@ -20,6 +18,9 @@ vi.mock('@react-three/drei', () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+vi.mock('./three/ImperialLighting', () => ({
+  ImperialLighting: () => null,
+}));
 vi.mock('./scenes/DetentionCell', () => ({ DetentionCell: () => null }));
 vi.mock('./scenes/ControlRoom', () => ({ ControlRoom: () => null }));
 vi.mock('./scenes/Corridor', () => ({ Corridor: () => null }));

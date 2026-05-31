@@ -14,6 +14,10 @@ vi.mock('@react-three/fiber', () => ({
   useFrame: () => {},
 }));
 
+vi.mock('./three/ImperialLighting', () => ({
+  ImperialLighting: () => null,
+}));
+
 vi.mock('@react-three/drei', () => ({
   PerformanceMonitor: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   Environment: () => null,

@@ -1,8 +1,12 @@
 import { test, expect } from 'vitest';
 import { worldToCanvas } from './canvasCoords';
-import { CAMERA } from '../App';
 
 const VIEWPORT = { width: 1280, height: 720 };
+
+const CAMERA = {
+  position: [0, 1.6, 5] as [number, number, number],
+  fov: 75,
+};
 
 test.describe('worldToCanvas', () => {
   test('projects a point on the camera look axis to the canvas center', () => {

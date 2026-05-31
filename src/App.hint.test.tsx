@@ -7,9 +7,7 @@ import { PUZZLE_1_HINT_DELAYS } from './scenes/detentionCellPuzzle';
 import './i18n';
 
 vi.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="canvas-mock">{children}</div>
-  ),
+  Canvas: () => <div data-testid="canvas-mock" />,
   useFrame: () => {},
 }));
 
