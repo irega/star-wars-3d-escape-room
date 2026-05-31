@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Html } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import { InteractiveObject } from '../../components/InteractiveObject';
-import { TerminalConsole, imperialPalette } from '../../three';
-import { PropBox } from '../../three/primitives';
-import { LAUNCH_FREQUENCY } from '../corridor/launchFrequency';
+import { InteractiveObject } from '../../../components/InteractiveObject';
+import { TerminalConsole, imperialPalette } from '../../../three';
+import { PropBox } from '../../../three/primitives';
+import { LAUNCH_FREQUENCY } from '../../corridor/launchFrequency';
 
 export interface LaunchConsoleProps {
   position: [number, number, number];

@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { validateLaunchClearance, PUZZLE_4_ID, PUZZLE_4_HINT_DELAYS } from './hangarBayPuzzle';
-import { LAUNCH_FREQUENCY } from '../corridor/launchFrequency';
-import { useInventoryStore } from '../../stores/useInventoryStore';
-import { useGameStore } from '../../stores/useGameStore';
+import { LAUNCH_FREQUENCY } from '../../corridor/launchFrequency';
+import { useInventoryStore } from '../../../stores/useInventoryStore';
+import { useGameStore } from '../../../stores/useGameStore';
 
 beforeEach(() => {
   useInventoryStore.getState().reset();

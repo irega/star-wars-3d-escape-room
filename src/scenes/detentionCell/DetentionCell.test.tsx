@@ -3,7 +3,7 @@ import { DetentionCell } from './DetentionCell';
 import { renderScene, fireClick, findByTestId, resetAllStores } from '../../test/renderThree';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { useGameStore } from '../../stores/useGameStore';
-import { PUZZLE_1_ID } from './detentionCellPuzzle';
+import { PUZZLE_1_ID } from './puzzle/detentionCellPuzzle';
 import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({

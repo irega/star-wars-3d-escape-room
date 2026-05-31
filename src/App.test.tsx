@@ -5,9 +5,9 @@ import App from './App';
 import { useGameStore } from './stores/useGameStore';
 import { useHintStore } from './stores/useHintStore';
 import { useControlRoomTerminalStore } from './stores/useControlRoomTerminalStore';
-import { PUZZLE_1_HINT_DELAYS } from './scenes/detentionCell/detentionCellPuzzle';
-import { PUZZLE_2_ID } from './scenes/controlRoom/controlRoomPuzzle';
-import { PUZZLE_1_ID } from './scenes/detentionCell/detentionCellPuzzle';
+import { PUZZLE_1_HINT_DELAYS } from './scenes/detentionCell/puzzle/detentionCellPuzzle';
+import { PUZZLE_2_ID } from './scenes/controlRoom/puzzle/controlRoomPuzzle';
+import { PUZZLE_1_ID } from './scenes/detentionCell/puzzle/detentionCellPuzzle';
 import './i18n';
 
 const performanceCallbacks = vi.hoisted(() => ({
@@ -45,14 +45,14 @@ vi.mock('@react-three/drei', () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('./scenes/detentionCell/DetentionCell', () => ({
+vi.mock('./scenes/detentionCell', () => ({
   DetentionCell: ({ onDialogue }: { onDialogue: (msg: string) => void }) => (
     <button onClick={() => onDialogue('Test message')}>Trigger Dialogue</button>
   ),
 }));
-vi.mock('./scenes/controlRoom/ControlRoom', () => ({ ControlRoom: () => null }));
-vi.mock('./scenes/corridor/Corridor', () => ({ Corridor: () => null }));
-vi.mock('./scenes/hangarBay/HangarBay', () => ({ HangarBay: () => null }));
+vi.mock('./scenes/controlRoom', () => ({ ControlRoom: () => null }));
+vi.mock('./scenes/corridor', () => ({ Corridor: () => null }));
+vi.mock('./scenes/hangarBay', () => ({ HangarBay: () => null }));
 
 describe('App — wiring', () => {
   beforeEach(() => {

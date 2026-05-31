@@ -1,4 +1,4 @@
-export const IMPERIAL_MARCH_SRC = '/audio/imperial-march.mp3';
+const IMPERIAL_MARCH_SRC = '/audio/imperial-march.mp3';
 
 const DEFAULT_VOLUME = 0.35;
 

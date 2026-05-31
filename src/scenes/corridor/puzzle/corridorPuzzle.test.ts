@@ -3,22 +3,29 @@ import {
   isCellPlacementCorrect,
   cycleOrientation,
   areAllSlotsCorrect,
-  canExitCorridor,
+  CORRIDOR_PUZZLE,
   shouldExtractFromSlot,
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
   PUZZLE_3_HINT_DELAYS,
   type CellOrientation,
 } from './corridorPuzzle';
-import { CELL_POSITIONS, DROID_GROUP_POSITION } from './Corridor';
-import { LAUNCH_FREQUENCY } from './launchFrequency';
-import { useInventoryStore } from '../../stores/useInventoryStore';
-import { useGameStore } from '../../stores/useGameStore';
+import { CELL_POSITIONS, DROID_GROUP_POSITION } from '../corridorLayout';
+import { LAUNCH_FREQUENCY } from '../launchFrequency';
+import { useInventoryStore } from '../../../stores/useInventoryStore';
+import { useGameStore } from '../../../stores/useGameStore';
 
 beforeEach(() => {
   useInventoryStore.getState().reset();
   useGameStore.getState().reset();
 });
+
+function makeCtx() {
+  return {
+    solvedPuzzles: useGameStore.getState().solvedPuzzles,
+    hasItem: useInventoryStore.getState().hasItem,
+  };
+}
 
 describe('isCellPlacementCorrect', () => {
   it('returns true for each cell in its correct slot at correct orientation', () => {
@@ -78,7 +85,7 @@ describe('areAllSlotsCorrect', () => {
 
   it('returns false when a cell is in the wrong slot', () => {
     const placements = [
-      { cellId: 1, orientation: 0 as CellOrientation }, // wrong cell in slot 0
+      { cellId: 1, orientation: 0 as CellOrientation },
       { cellId: 0, orientation: 90 as CellOrientation },
       { cellId: 2, orientation: 180 as CellOrientation },
     ];
@@ -87,7 +94,7 @@ describe('areAllSlotsCorrect', () => {
 
   it('returns false when a cell is at the wrong orientation', () => {
     const placements = [
-      { cellId: 0, orientation: 90 as CellOrientation }, // wrong orientation for slot 0
+      { cellId: 0, orientation: 90 as CellOrientation },
       { cellId: 1, orientation: 90 as CellOrientation },
       { cellId: 2, orientation: 180 as CellOrientation },
     ];
@@ -104,26 +111,25 @@ describe('areAllSlotsCorrect', () => {
   });
 });
 
-describe('canExitCorridor', () => {
+describe('CORRIDOR_PUZZLE.canExit', () => {
   it('returns false when puzzle 3 is not solved', () => {
-    expect(canExitCorridor(false)).toBe(false);
+    expect(CORRIDOR_PUZZLE.canExit(makeCtx())).toBe(false);
   });
 
   it('returns true when puzzle 3 is solved', () => {
-    expect(canExitCorridor(true)).toBe(true);
+    useGameStore.getState().solvePuzzle(PUZZLE_3_ID);
+    expect(CORRIDOR_PUZZLE.canExit(makeCtx())).toBe(true);
   });
 });
 
 describe('power conduit gate sequence', () => {
   it('door is locked before puzzle is solved', () => {
-    const solved = useGameStore.getState().solvedPuzzles.includes(PUZZLE_3_ID);
-    expect(canExitCorridor(solved)).toBe(false);
+    expect(CORRIDOR_PUZZLE.canExit(makeCtx())).toBe(false);
   });
 
   it('door unlocks after puzzle is solved', () => {
     useGameStore.getState().solvePuzzle(PUZZLE_3_ID);
-    const solved = useGameStore.getState().solvedPuzzles.includes(PUZZLE_3_ID);
-    expect(canExitCorridor(solved)).toBe(true);
+    expect(CORRIDOR_PUZZLE.canExit(makeCtx())).toBe(true);
   });
 
   it('adds frequency to inventory on solve', () => {
@@ -146,8 +152,7 @@ describe('power conduit gate sequence', () => {
     useInventoryStore.getState().addItem('frequency');
     useGameStore.getState().solvePuzzle(PUZZLE_3_ID);
 
-    const solved = useGameStore.getState().solvedPuzzles.includes(PUZZLE_3_ID);
-    expect(canExitCorridor(solved)).toBe(true);
+    expect(CORRIDOR_PUZZLE.canExit(makeCtx())).toBe(true);
     expect(useInventoryStore.getState().hasItem('frequency')).toBe(true);
 
     useGameStore.getState().moveToRoom('hangar-bay');

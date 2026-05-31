@@ -9,20 +9,15 @@ export interface LevelContext {
 
 export type ExitCondition = (ctx: LevelContext) => boolean;
 
-export interface LevelDefinition {
-  puzzleId: number;
+export interface PuzzleDefinition {
+  id: number;
   hintDelays: number[];
   /** i18n key shown when the exit door is locked. */
   lockedDialogueKey: string;
-  /** Room to move to when exit condition passes. Omit for final/win rooms. */
-  nextRoom?: Room;
   canExit: ExitCondition;
 }
 
-export function evaluateExitCondition(condition: ExitCondition, ctx: LevelContext): boolean {
-  return condition(ctx);
-}
-
-export function isPuzzleSolved(ctx: LevelContext, puzzleId: number): boolean {
-  return ctx.solvedPuzzles.includes(puzzleId);
+export interface LevelDefinition extends PuzzleDefinition {
+  /** Room to move to when exit condition passes. Omit for final/win rooms. */
+  nextRoom?: Room;
 }

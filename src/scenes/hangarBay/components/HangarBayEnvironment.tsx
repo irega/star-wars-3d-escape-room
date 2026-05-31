@@ -1,5 +1,5 @@
-import { ImperialRoomShell, imperialPalette } from '../../three';
-import { FloorGrid, PropBox, ScenePointLight } from '../../three/primitives';
+import { ImperialRoomShell, imperialPalette } from '../../../three';
+import { FloorGrid, PropBox, ScenePointLight } from '../../../three/primitives';
 
 /** Hangar shell, deck grid, ambient lights, and space viewport. */
 export function HangarBayEnvironment() {

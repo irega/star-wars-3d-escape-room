@@ -5,7 +5,6 @@ export interface InteractiveObjectProps {
   children: React.ReactNode;
   onClick?: () => void;
   isDisabled?: boolean;
-  /** Sets Three.js Object3D.name for scene integration tests (renderThree findByTestId). */
   testId?: string;
 }
 

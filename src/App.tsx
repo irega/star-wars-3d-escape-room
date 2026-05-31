@@ -43,7 +43,7 @@ export default function App() {
   const resetHints = useHintStore((s) => s.reset);
   const inventory = useInventoryStore((s) => s.items);
   const level = getLevel(currentRoom);
-  const puzzleHintLevel = useHintStore((s) => s.hintLevels[level.puzzleId] ?? 0);
+  const puzzleHintLevel = useHintStore((s) => s.hintLevels[level.id] ?? 0);
   const controlRoomTerminalActive = useControlRoomTerminalStore((s) => s.active);
   const controlRoomInputBuffer = useControlRoomTerminalStore((s) => s.inputBuffer);
   const controlRoomInputFeedback = useControlRoomTerminalStore((s) => s.inputFeedback);

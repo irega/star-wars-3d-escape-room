@@ -4,7 +4,7 @@ import { renderScene, fireClick, findByTestId, resetAllStores } from '../../test
 import { InteractiveObject } from '../../components/InteractiveObject';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { useGameStore } from '../../stores/useGameStore';
-import { PUZZLE_4_ID } from './hangarBayPuzzle';
+import { PUZZLE_4_ID } from './puzzle/hangarBayPuzzle';
 import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({
@@ -13,7 +13,7 @@ vi.mock('@react-three/drei', () => ({
   ContactShadows: () => null,
 }));
 
-vi.mock('./LaunchConsole', () => ({
+vi.mock('./components/LaunchConsole', () => ({
   LaunchConsole: ({
     onOpen,
     onLaunch,

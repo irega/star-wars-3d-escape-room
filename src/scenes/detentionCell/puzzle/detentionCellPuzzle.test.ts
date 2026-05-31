@@ -1,33 +1,39 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { canExitDetentionCell, PUZZLE_1_ID, PUZZLE_1_HINT_DELAYS } from './detentionCellPuzzle';
-import { useInventoryStore } from '../../stores/useInventoryStore';
-import { useGameStore } from '../../stores/useGameStore';
+import { DETENTION_CELL_PUZZLE, PUZZLE_1_ID, PUZZLE_1_HINT_DELAYS } from './detentionCellPuzzle';
+import { useInventoryStore } from '../../../stores/useInventoryStore';
+import { useGameStore } from '../../../stores/useGameStore';
 
 beforeEach(() => {
   useInventoryStore.getState().reset();
   useGameStore.getState().reset();
 });
 
-describe('canExitDetentionCell', () => {
+function makeCtx() {
+  return {
+    solvedPuzzles: useGameStore.getState().solvedPuzzles,
+    hasItem: useInventoryStore.getState().hasItem,
+  };
+}
+
+describe('DETENTION_CELL_PUZZLE.canExit', () => {
   it('returns false without keycard', () => {
-    expect(canExitDetentionCell(false)).toBe(false);
+    expect(DETENTION_CELL_PUZZLE.canExit(makeCtx())).toBe(false);
   });
 
   it('returns true with keycard', () => {
-    expect(canExitDetentionCell(true)).toBe(true);
+    useInventoryStore.getState().addItem('keycard');
+    expect(DETENTION_CELL_PUZZLE.canExit(makeCtx())).toBe(true);
   });
 });
 
 describe('keycard gate sequence', () => {
   it('door is locked before keycard is collected', () => {
-    const hasKeycard = useInventoryStore.getState().hasItem('keycard');
-    expect(canExitDetentionCell(hasKeycard)).toBe(false);
+    expect(DETENTION_CELL_PUZZLE.canExit(makeCtx())).toBe(false);
   });
 
   it('door unlocks after keycard is added to inventory', () => {
     useInventoryStore.getState().addItem('keycard');
-    const hasKeycard = useInventoryStore.getState().hasItem('keycard');
-    expect(canExitDetentionCell(hasKeycard)).toBe(true);
+    expect(DETENTION_CELL_PUZZLE.canExit(makeCtx())).toBe(true);
   });
 
   it('marks puzzle 1 as solved in game store', () => {
@@ -44,8 +50,7 @@ describe('keycard gate sequence', () => {
     useInventoryStore.getState().addItem('keycard');
     useGameStore.getState().solvePuzzle(PUZZLE_1_ID);
 
-    const canExit = canExitDetentionCell(useInventoryStore.getState().hasItem('keycard'));
-    expect(canExit).toBe(true);
+    expect(DETENTION_CELL_PUZZLE.canExit(makeCtx())).toBe(true);
 
     useGameStore.getState().moveToRoom('control-room');
     expect(useGameStore.getState().currentRoom).toBe('control-room');

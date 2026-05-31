@@ -5,7 +5,7 @@ import { renderScene, fireClick, findByTestId, resetAllStores } from '../../test
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { useGameStore } from '../../stores/useGameStore';
 import { useControlRoomTerminalStore } from '../../stores/useControlRoomTerminalStore';
-import { PUZZLE_2_ID, CORRECT_SEQUENCE } from './controlRoomPuzzle';
+import { PUZZLE_2_ID, CORRECT_SEQUENCE } from './puzzle/controlRoomPuzzle';
 import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({

@@ -4,7 +4,7 @@ import { Corridor } from './Corridor';
 import { renderScene, fireClick, findByTestId, resetAllStores } from '../../test/renderThree';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { useGameStore } from '../../stores/useGameStore';
-import { PUZZLE_3_ID, CELL_SOLUTIONS } from './corridorPuzzle';
+import { PUZZLE_3_ID, CELL_SOLUTIONS } from './puzzle/corridorPuzzle';
 import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({
