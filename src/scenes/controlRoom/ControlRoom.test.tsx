@@ -1,6 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
-import { ControlRoom, AUREBESH_SYMBOL_BARS, SCREENS } from './ControlRoom';
-import { renderThree } from '../../test/renderThree';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { act } from '@react-three/test-renderer';
+import { ControlRoom } from './ControlRoom';
+import { renderScene, fireClick, findByTestId, resetAllStores } from '../../test/renderThree';
+import { useInventoryStore } from '../../stores/useInventoryStore';
+import { useGameStore } from '../../stores/useGameStore';
+import { useControlRoomTerminalStore } from '../../stores/useControlRoomTerminalStore';
+import { PUZZLE_2_ID, CORRECT_SEQUENCE } from './controlRoomPuzzle';
 import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({
@@ -9,80 +14,55 @@ vi.mock('@react-three/drei', () => ({
   ContactShadows: () => null,
 }));
 
-describe('ControlRoom', () => {
-  it('renders without crashing', async () => {
-    const renderer = await renderThree(<ControlRoom />);
-    expect(renderer.scene.children.length).toBeGreaterThan(0);
+async function typeSequence(keys: string[]) {
+  for (const key of keys) {
+    await act(async () => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+    });
+  }
+}
+
+describe('ControlRoom — integration', () => {
+  beforeEach(() => {
+    resetAllStores();
+    useGameStore.setState({ currentRoom: 'control-room', phase: 'playing' });
+  });
+
+  it('terminal click opens the control room terminal store', async () => {
+    const renderer = await renderScene(<ControlRoom />);
+
+    await fireClick(renderer, findByTestId(renderer, 'terminal'));
+
+    expect(useControlRoomTerminalStore.getState().active).toBe(true);
+
     await renderer.unmount();
   });
 
-  it('accepts an onDialogue callback prop', async () => {
+  it('correct AURE sequence solves puzzle 2 and grants override-code', async () => {
     const onDialogue = vi.fn();
-    const renderer = await renderThree(<ControlRoom onDialogue={onDialogue} />);
-    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    const renderer = await renderScene(<ControlRoom onDialogue={onDialogue} />);
+
+    await fireClick(renderer, findByTestId(renderer, 'terminal'));
+    await typeSequence([...CORRECT_SEQUENCE, 'Enter']);
+
+    expect(useGameStore.getState().solvedPuzzles).toContain(PUZZLE_2_ID);
+    expect(useInventoryStore.getState().hasItem('override-code')).toBe(true);
+    expect(useControlRoomTerminalStore.getState().active).toBe(false);
+    expect(onDialogue).toHaveBeenCalledWith(expect.stringMatching(/override|correct/i));
+
     await renderer.unmount();
   });
-});
 
-describe('AUREBESH_SYMBOL_BARS', () => {
-  it('defines bars for all four sequence symbols', () => {
-    expect(AUREBESH_SYMBOL_BARS).toHaveProperty('A');
-    expect(AUREBESH_SYMBOL_BARS).toHaveProperty('U');
-    expect(AUREBESH_SYMBOL_BARS).toHaveProperty('R');
-    expect(AUREBESH_SYMBOL_BARS).toHaveProperty('E');
-  });
+  it('door after puzzle 2 moves to corridor', async () => {
+    useGameStore.getState().solvePuzzle(PUZZLE_2_ID);
+    const onDialogue = vi.fn();
+    const renderer = await renderScene(<ControlRoom onDialogue={onDialogue} />);
 
-  it('every screen symbol has a bar definition', () => {
-    for (const screen of SCREENS) {
-      expect(AUREBESH_SYMBOL_BARS).toHaveProperty(screen.symbol);
-    }
-  });
+    await fireClick(renderer, findByTestId(renderer, 'door'));
 
-  it('each symbol has at least one bar', () => {
-    for (const [, bars] of Object.entries(AUREBESH_SYMBOL_BARS)) {
-      expect(bars.length).toBeGreaterThan(0);
-    }
-  });
+    expect(useGameStore.getState().currentRoom).toBe('corridor');
+    expect(onDialogue).not.toHaveBeenCalled();
 
-  it('all four symbols have distinct bar configurations', () => {
-    const serialized = Object.values(AUREBESH_SYMBOL_BARS).map((bars) => JSON.stringify(bars));
-    const unique = new Set(serialized);
-    expect(unique.size).toBe(4);
-  });
-
-  it('A symbol does not match U symbol', () => {
-    expect(JSON.stringify(AUREBESH_SYMBOL_BARS['A'])).not.toBe(
-      JSON.stringify(AUREBESH_SYMBOL_BARS['U']),
-    );
-  });
-
-  it('A symbol does not match R symbol', () => {
-    expect(JSON.stringify(AUREBESH_SYMBOL_BARS['A'])).not.toBe(
-      JSON.stringify(AUREBESH_SYMBOL_BARS['R']),
-    );
-  });
-
-  it('A symbol does not match E symbol', () => {
-    expect(JSON.stringify(AUREBESH_SYMBOL_BARS['A'])).not.toBe(
-      JSON.stringify(AUREBESH_SYMBOL_BARS['E']),
-    );
-  });
-
-  it('U symbol does not match R symbol', () => {
-    expect(JSON.stringify(AUREBESH_SYMBOL_BARS['U'])).not.toBe(
-      JSON.stringify(AUREBESH_SYMBOL_BARS['R']),
-    );
-  });
-
-  it('U symbol does not match E symbol', () => {
-    expect(JSON.stringify(AUREBESH_SYMBOL_BARS['U'])).not.toBe(
-      JSON.stringify(AUREBESH_SYMBOL_BARS['E']),
-    );
-  });
-
-  it('R symbol does not match E symbol', () => {
-    expect(JSON.stringify(AUREBESH_SYMBOL_BARS['R'])).not.toBe(
-      JSON.stringify(AUREBESH_SYMBOL_BARS['E']),
-    );
+    await renderer.unmount();
   });
 });

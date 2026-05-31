@@ -237,7 +237,11 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
           );
         })}
 
-      <InteractiveObject onClick={handleTerminalClick} isDisabled={puzzleSolved || terminalActive}>
+      <InteractiveObject
+        testId="terminal"
+        onClick={handleTerminalClick}
+        isDisabled={puzzleSolved || terminalActive}
+      >
         <group position={SCENE2_WORLD.terminal} rotation={[0, Math.PI / 2, 0]}>
           <TerminalConsole
             screenColor={terminalScreenColor}
@@ -248,7 +252,7 @@ export function ControlRoom({ onDialogue }: ControlRoomProps) {
         </group>
       </InteractiveObject>
 
-      <InteractiveObject onClick={handleDoorClick}>
+      <InteractiveObject testId="door" onClick={handleDoorClick}>
         <group position={SCENE2_WORLD.door}>
           <BlastDoor unlocked={puzzleSolved} />
         </group>

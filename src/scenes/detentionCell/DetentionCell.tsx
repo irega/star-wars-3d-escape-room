@@ -93,7 +93,7 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
       <FlickerLight hintLevel={hintLevel} position={[2.4, 2.2, -3.0]} active={!panelFound} />
       <CotFrame />
 
-      <InteractiveObject onClick={handlePanelClick} isDisabled={panelFound}>
+      <InteractiveObject testId="panel" onClick={handlePanelClick} isDisabled={panelFound}>
         <group position={SCENE1_WORLD.panel}>
           <mesh rotation={[0, Math.PI / 2, 0]}>
             <boxGeometry args={[0.7, 0.9, 0.06]} />
@@ -112,7 +112,7 @@ export function DetentionCell({ onDialogue }: DetentionCellProps) {
         </group>
       </InteractiveObject>
 
-      <InteractiveObject onClick={handleDoorClick}>
+      <InteractiveObject testId="door" onClick={handleDoorClick}>
         <group position={SCENE1_WORLD.door}>
           <BarredCellDoor unlocked={hasKeycard} />
         </group>

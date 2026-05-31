@@ -220,23 +220,15 @@ WebGL canvas is opaque to screen readers — full WCAG AA for the 3D experience 
 
 ## Testing Strategy
 
-**Unit tests (Vitest)** — carry the weight:
-- Zustand stores: state machine transitions, inventory add/remove/has, hint progression, terminal store
-- Extracted puzzle logic: sequence validation (puzzle 2), cell placement and orientation (puzzle 3), launch clearance (puzzle 4)
-- Audio module: start/stop/mute/reset behavior
-- Performance monitor: quality tier switching, attribute exposure
-- Pure functions, zero 3D dependency
+**Scene integration (`@react-three/test-renderer`):** one test file per scene; `renderThree` + `fireEvent` on `InteractiveObject` testIds; assert stores and `onDialogue`. Headless R3F — no WebGL, but real scene graph. No smoke-only mount tests.
 
-**Integration tests (RTL)** — HTML overlays only:
-- HUD, Dialogue, Victory, Loading, ControlRoomTerminal — standard React components
-- No RTL for 3D scenes — WebGL doesn't render in jsdom
-- No `@react-three/test-renderer` — too immature to justify the cost
+**App integration (RTL):** wiring HUD, hints, dialogue, terminal, phases. Canvas mocked; scenes stubbed.
 
-**E2E (Playwright)** — happy path:
-- One test: "the game is winnable from start to finish"
-- Edge cases: wrong terminal input, invalid sequences
-- Performance monitor: verifies quality-tier degradation (high/low) and frame rate impact
-- Playwright clicks canvas coordinates for 3D interactions — brittle by nature; mitigated with `data-testid` on DOM overlays
+**UI component tests (RTL):** gaps only (a11y, keyboard).
+
+**Unit tests (Vitest):** `*Puzzle.ts`, stores, pure utils — primary logic coverage.
+
+**E2E (Playwright):** full happy path in real browser.
 
 ---
 

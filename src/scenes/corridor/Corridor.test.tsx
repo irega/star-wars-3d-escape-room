@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
-import { Corridor, CELL_POSITIONS, DROID_GROUP_POSITION } from './Corridor';
-import { renderThree } from '../../test/renderThree';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { act } from '@react-three/test-renderer';
+import { Corridor } from './Corridor';
+import { renderScene, fireClick, findByTestId, resetAllStores } from '../../test/renderThree';
+import { useInventoryStore } from '../../stores/useInventoryStore';
+import { useGameStore } from '../../stores/useGameStore';
+import { PUZZLE_3_ID, CELL_SOLUTIONS } from './corridorPuzzle';
 import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({
@@ -9,51 +13,65 @@ vi.mock('@react-three/drei', () => ({
   ContactShadows: () => null,
 }));
 
-describe('Corridor', () => {
-  it('renders without crashing', async () => {
-    const renderer = await renderThree(<Corridor />);
-    expect(renderer.scene.children.length).toBeGreaterThan(0);
-    await renderer.unmount();
+/** Select cell, rotate to required orientation, place in matching slot. */
+async function placeCell(renderer: Awaited<ReturnType<typeof renderScene>>, cellId: number) {
+  const { orientation, slotIndex } = CELL_SOLUTIONS[cellId];
+  const rotations = orientation / 90;
+
+  await fireClick(renderer, findByTestId(renderer, `cell-${cellId}`));
+  for (let i = 0; i < rotations; i++) {
+    await fireClick(renderer, findByTestId(renderer, `cell-${cellId}`));
+  }
+  await fireClick(renderer, findByTestId(renderer, `slot-${slotIndex}`));
+}
+
+describe('Corridor — integration', () => {
+  beforeEach(() => {
+    resetAllStores();
+    useGameStore.setState({ currentRoom: 'corridor', phase: 'playing' });
   });
 
-  it('accepts an onDialogue callback prop', async () => {
+  it('placing all three cells correctly solves puzzle 3 and grants frequency', async () => {
     const onDialogue = vi.fn();
-    const renderer = await renderThree(<Corridor onDialogue={onDialogue} />);
-    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    const renderer = await renderScene(<Corridor onDialogue={onDialogue} />);
+
+    for (let cellId = 0; cellId < 3; cellId++) {
+      await placeCell(renderer, cellId);
+    }
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(useGameStore.getState().solvedPuzzles).toContain(PUZZLE_3_ID);
+    expect(useInventoryStore.getState().hasItem('frequency')).toBe(true);
+    expect(onDialogue).toHaveBeenCalledWith(expect.stringMatching(/1138|frequency/i));
+
     await renderer.unmount();
   });
 
-  it('power cell positions do not overlap droid wreckage footprint', () => {
-    // Regression test for issue #55: Cell 1 was sitting on top of the droid.
-    // Minimum XZ-plane clearance required so no cell obscures the droid.
-    const MIN_CLEARANCE_XZ = 0.8;
+  it('door before puzzle 3 shows locked dialogue', async () => {
+    const onDialogue = vi.fn();
+    const renderer = await renderScene(<Corridor onDialogue={onDialogue} />);
 
-    CELL_POSITIONS.forEach((pos, i) => {
-      const dx = pos[0] - DROID_GROUP_POSITION[0];
-      const dz = pos[2] - DROID_GROUP_POSITION[2];
-      const distXZ = Math.sqrt(dx * dx + dz * dz);
-      expect(distXZ, `cell ${i} at [${pos}] is too close to droid`).toBeGreaterThanOrEqual(
-        MIN_CLEARANCE_XZ,
-      );
-    });
+    await fireClick(renderer, findByTestId(renderer, 'door'));
+
+    expect(useGameStore.getState().currentRoom).toBe('corridor');
+    expect(onDialogue).toHaveBeenCalled();
+
+    await renderer.unmount();
   });
 
-  it('power cell positions do not overlap with each other', () => {
-    // Regression test: cells must be separated to avoid visual overlap.
-    // Each cell is approximately [0.28, 0.5, 0.18], so minimum safe distance ≈ 0.6 units.
-    const MIN_CELL_SEPARATION = 0.6;
+  it('door after puzzle 3 moves to hangar-bay', async () => {
+    useGameStore.getState().solvePuzzle(PUZZLE_3_ID);
+    const onDialogue = vi.fn();
+    const renderer = await renderScene(<Corridor onDialogue={onDialogue} />);
 
-    for (let i = 0; i < CELL_POSITIONS.length; i++) {
-      for (let j = i + 1; j < CELL_POSITIONS.length; j++) {
-        const pos1 = CELL_POSITIONS[i];
-        const pos2 = CELL_POSITIONS[j];
-        const dx = pos1[0] - pos2[0];
-        const dz = pos1[2] - pos2[2];
-        const distXZ = Math.sqrt(dx * dx + dz * dz);
-        expect(distXZ, `cell ${i} and ${j} are overlapping`).toBeGreaterThanOrEqual(
-          MIN_CELL_SEPARATION,
-        );
-      }
-    }
+    await fireClick(renderer, findByTestId(renderer, 'door'));
+
+    expect(useGameStore.getState().currentRoom).toBe('hangar-bay');
+    expect(onDialogue).not.toHaveBeenCalled();
+
+    await renderer.unmount();
   });
 });

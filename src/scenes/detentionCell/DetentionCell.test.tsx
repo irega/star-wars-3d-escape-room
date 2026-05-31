@@ -1,6 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DetentionCell } from './DetentionCell';
-import { renderThree } from '../../test/renderThree';
+import { renderScene, fireClick, findByTestId, resetAllStores } from '../../test/renderThree';
+import { useInventoryStore } from '../../stores/useInventoryStore';
+import { useGameStore } from '../../stores/useGameStore';
+import { PUZZLE_1_ID } from './detentionCellPuzzle';
 import '../../i18n';
 
 vi.mock('@react-three/drei', () => ({
@@ -9,17 +12,47 @@ vi.mock('@react-three/drei', () => ({
   ContactShadows: () => null,
 }));
 
-describe('DetentionCell', () => {
-  it('renders without crashing', async () => {
-    const renderer = await renderThree(<DetentionCell />);
-    expect(renderer.scene.children.length).toBeGreaterThan(0);
+describe('DetentionCell — integration', () => {
+  beforeEach(() => {
+    resetAllStores();
+    useGameStore.setState({ currentRoom: 'detention-cell', phase: 'playing' });
+  });
+
+  it('panel click grants keycard, solves puzzle 1, and shows dialogue', async () => {
+    const onDialogue = vi.fn();
+    const renderer = await renderScene(<DetentionCell onDialogue={onDialogue} />);
+
+    await fireClick(renderer, findByTestId(renderer, 'panel'));
+
+    expect(useInventoryStore.getState().hasItem('keycard')).toBe(true);
+    expect(useGameStore.getState().solvedPuzzles).toContain(PUZZLE_1_ID);
+    expect(onDialogue).toHaveBeenCalledWith(expect.stringMatching(/keycard/i));
+
     await renderer.unmount();
   });
 
-  it('accepts an onDialogue callback prop', async () => {
+  it('door without keycard shows locked dialogue', async () => {
     const onDialogue = vi.fn();
-    const renderer = await renderThree(<DetentionCell onDialogue={onDialogue} />);
-    expect(renderer.scene.children.length).toBeGreaterThan(0);
+    const renderer = await renderScene(<DetentionCell onDialogue={onDialogue} />);
+
+    await fireClick(renderer, findByTestId(renderer, 'door'));
+
+    expect(useGameStore.getState().currentRoom).toBe('detention-cell');
+    expect(onDialogue).toHaveBeenCalledWith(expect.stringMatching(/sealed|keycard/i));
+
+    await renderer.unmount();
+  });
+
+  it('door with keycard moves to control-room', async () => {
+    useInventoryStore.getState().addItem('keycard');
+    const onDialogue = vi.fn();
+    const renderer = await renderScene(<DetentionCell onDialogue={onDialogue} />);
+
+    await fireClick(renderer, findByTestId(renderer, 'door'));
+
+    expect(useGameStore.getState().currentRoom).toBe('control-room');
+    expect(onDialogue).not.toHaveBeenCalled();
+
     await renderer.unmount();
   });
 });

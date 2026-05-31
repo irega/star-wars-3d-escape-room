@@ -16,6 +16,7 @@ export interface LaunchConsoleProps {
   onOpen: () => void;
   onClose: () => void;
   onLaunch: () => void;
+  testId?: string;
 }
 
 /** Launch clearance terminal — 3D console + fullscreen modal UI. */
@@ -29,6 +30,7 @@ export function LaunchConsole({
   onOpen,
   onClose,
   onLaunch,
+  testId = 'console',
 }: LaunchConsoleProps) {
   const { t } = useTranslation();
   const [hasKeycard, hasOverrideCode, hasFrequency] = slotsFilled;
@@ -37,10 +39,11 @@ export function LaunchConsole({
     if (!active) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
+      if (e.key === 'Enter' && canLaunch) onLaunch();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [active, onClose]);
+  }, [active, onClose, canLaunch, onLaunch]);
 
   const indicatorColor = puzzleSolved
     ? imperialPalette.indicatorOpen
@@ -61,7 +64,7 @@ export function LaunchConsole({
 
   return (
     <>
-      <InteractiveObject onClick={onOpen} isDisabled={disabled}>
+      <InteractiveObject testId={testId} onClick={onOpen} isDisabled={disabled}>
         <group position={position}>
           <TerminalConsole
             bodyWidth={1.6}
