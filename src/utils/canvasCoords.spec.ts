@@ -1,12 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { worldToCanvas, VIEWPORT } from './canvasCoords';
+import { test, expect } from 'vitest';
+import { worldToCanvas } from './canvasCoords';
 import { CAMERA } from '../App';
+
+const VIEWPORT = { width: 1280, height: 720 };
 
 test.describe('worldToCanvas', () => {
   test('projects a point on the camera look axis to the canvas center', () => {
-    // The optical axis (camera's line of sight) should project to the center of the canvas
-    // This is a mathematical invariant of perspective projection
-    const result = worldToCanvas([0, 1.6, 0], CAMERA, VIEWPORT);
+    // lookAt target [0,0,0] lies on the optical axis → canvas center
+    const result = worldToCanvas([0, 0, 0], CAMERA, VIEWPORT);
     expect(result.x).toBe(VIEWPORT.width / 2);
     expect(result.y).toBe(VIEWPORT.height / 2);
   });

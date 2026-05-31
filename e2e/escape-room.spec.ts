@@ -51,7 +51,7 @@ async function completeIntro(page: Page, playerName = 'Playwright') {
 //   Launch console world [0, 0.5, -0.5] → (640, 307)
 
 // Playwright Desktop Chrome default viewport
-export const VIEWPORT = { width: 1280, height: 720 };
+const VIEWPORT = { width: 1280, height: 720 };
 
 // Scene 1 — Detention Cell canvas coordinates
  const SCENE1 = {
