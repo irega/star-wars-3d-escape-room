@@ -1,6 +1,11 @@
-export const PUZZLE_1_ID = 1;
-export const PUZZLE_1_HINT_DELAYS: number[] = [30_000, 60_000];
+import type { PuzzleDefinition } from '../../levels/types';
 
-export function canExitDetentionCell(hasKeycard: boolean): boolean {
-  return hasKeycard;
-}
+export const DETENTION_CELL_PUZZLE = {
+  id: 1,
+  hintDelays: [30_000, 60_000],
+  lockedDialogueKey: 'puzzle1.door.locked',
+  canExit: (ctx) => ctx.hasItem('keycard'),
+} satisfies PuzzleDefinition;
+
+export const PUZZLE_1_ID = DETENTION_CELL_PUZZLE.id;
+export const PUZZLE_1_HINT_DELAYS = DETENTION_CELL_PUZZLE.hintDelays;

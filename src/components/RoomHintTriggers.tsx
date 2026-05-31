@@ -10,5 +10,5 @@ export function RoomHintTriggers() {
   if (phase !== 'playing') return null;
 
   const level = getLevel(currentRoom);
-  return <HintTrigger puzzleId={level.puzzleId} delays={level.hintDelays} />;
+  return <HintTrigger puzzleId={level.id} delays={level.hintDelays} />;
 }

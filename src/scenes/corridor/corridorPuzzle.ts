@@ -1,5 +1,14 @@
-export const PUZZLE_3_ID = 3;
-export const PUZZLE_3_HINT_DELAYS: number[] = [30_000, 60_000];
+import type { PuzzleDefinition } from '../../levels/types';
+
+export const CORRIDOR_PUZZLE = {
+  id: 3,
+  hintDelays: [30_000, 60_000],
+  lockedDialogueKey: 'puzzle3.door.locked',
+  canExit: (ctx) => ctx.solvedPuzzles.includes(3),
+} satisfies PuzzleDefinition;
+
+export const PUZZLE_3_ID = CORRIDOR_PUZZLE.id;
+export const PUZZLE_3_HINT_DELAYS = CORRIDOR_PUZZLE.hintDelays;
 
 export type CellOrientation = 0 | 90 | 180 | 270;
 
@@ -34,10 +43,6 @@ export function areAllSlotsCorrect(
     if (!placement) return false;
     return isCellPlacementCorrect(placement.cellId, slotIndex, placement.orientation);
   });
-}
-
-export function canExitCorridor(hasSolvedPuzzle3: boolean): boolean {
-  return hasSolvedPuzzle3;
 }
 
 export function shouldExtractFromSlot(

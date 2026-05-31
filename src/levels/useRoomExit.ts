@@ -4,7 +4,6 @@ import { useGameStore } from '../stores/useGameStore';
 import { useInventoryStore } from '../stores/useInventoryStore';
 import type { Room } from '../stores/useGameStore';
 import { getLevel } from './registry';
-import { evaluateExitCondition } from './types';
 
 /** Standard door-click handler — checks level exit condition, moves or shows locked dialogue. */
 export function useRoomExit(room: Room, onDialogue?: (text: string | null) => void) {
@@ -17,7 +16,7 @@ export function useRoomExit(room: Room, onDialogue?: (text: string | null) => vo
 
   return useCallback(() => {
     const ctx = { solvedPuzzles, hasItem };
-    if (evaluateExitCondition(level.canExit, ctx)) {
+    if (level.canExit(ctx)) {
       if (level.nextRoom) {
         moveToRoom(level.nextRoom);
       }
@@ -31,5 +30,5 @@ export function useRoomExit(room: Room, onDialogue?: (text: string | null) => vo
 export function usePuzzleSolved(room: Room): boolean {
   const level = getLevel(room);
   const solvedPuzzles = useGameStore((s) => s.solvedPuzzles);
-  return solvedPuzzles.includes(level.puzzleId);
+  return solvedPuzzles.includes(level.id);
 }

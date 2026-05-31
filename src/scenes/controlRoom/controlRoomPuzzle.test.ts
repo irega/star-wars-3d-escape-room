@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   validateSequence,
-  canExitControlRoom,
+  CONTROL_ROOM_PUZZLE,
   PUZZLE_2_ID,
   PUZZLE_2_HINT_DELAYS,
   SEQUENCE_HIGHLIGHT_MS,
   CORRECT_SEQUENCE,
 } from './controlRoomPuzzle';
-import { AUREBESH_SYMBOL_BARS, SCREENS } from './ControlRoom';
+import { AUREBESH_SYMBOL_BARS, SCREENS } from './aurebeshScreens';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { useGameStore } from '../../stores/useGameStore';
 
@@ -15,6 +15,13 @@ beforeEach(() => {
   useInventoryStore.getState().reset();
   useGameStore.getState().reset();
 });
+
+function makeCtx() {
+  return {
+    solvedPuzzles: useGameStore.getState().solvedPuzzles,
+    hasItem: useInventoryStore.getState().hasItem,
+  };
+}
 
 describe('validateSequence', () => {
   it('returns true for the correct sequence', () => {
@@ -48,26 +55,25 @@ describe('validateSequence', () => {
   });
 });
 
-describe('canExitControlRoom', () => {
+describe('CONTROL_ROOM_PUZZLE.canExit', () => {
   it('returns false when puzzle 2 is not solved', () => {
-    expect(canExitControlRoom(false)).toBe(false);
+    expect(CONTROL_ROOM_PUZZLE.canExit(makeCtx())).toBe(false);
   });
 
   it('returns true when puzzle 2 is solved', () => {
-    expect(canExitControlRoom(true)).toBe(true);
+    useGameStore.getState().solvePuzzle(PUZZLE_2_ID);
+    expect(CONTROL_ROOM_PUZZLE.canExit(makeCtx())).toBe(true);
   });
 });
 
 describe('override code gate sequence', () => {
   it('door is locked before puzzle is solved', () => {
-    const solved = useGameStore.getState().solvedPuzzles.includes(PUZZLE_2_ID);
-    expect(canExitControlRoom(solved)).toBe(false);
+    expect(CONTROL_ROOM_PUZZLE.canExit(makeCtx())).toBe(false);
   });
 
   it('door unlocks after puzzle is solved', () => {
     useGameStore.getState().solvePuzzle(PUZZLE_2_ID);
-    const solved = useGameStore.getState().solvedPuzzles.includes(PUZZLE_2_ID);
-    expect(canExitControlRoom(solved)).toBe(true);
+    expect(CONTROL_ROOM_PUZZLE.canExit(makeCtx())).toBe(true);
   });
 
   it('adds override-code to inventory on solve', () => {
@@ -86,8 +92,7 @@ describe('override code gate sequence', () => {
     useInventoryStore.getState().addItem('override-code');
     useGameStore.getState().solvePuzzle(PUZZLE_2_ID);
 
-    const solved = useGameStore.getState().solvedPuzzles.includes(PUZZLE_2_ID);
-    expect(canExitControlRoom(solved)).toBe(true);
+    expect(CONTROL_ROOM_PUZZLE.canExit(makeCtx())).toBe(true);
     expect(useInventoryStore.getState().hasItem('override-code')).toBe(true);
 
     useGameStore.getState().moveToRoom('corridor');
