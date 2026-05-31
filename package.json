@@ -26,7 +26,8 @@
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "vitest related --run"
     ]
   },
   "dependencies": {
