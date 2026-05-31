@@ -1,10 +1,10 @@
 export { Corridor, SCENE3_WORLD, CELL_POSITIONS, DROID_GROUP_POSITION } from './Corridor';
 export type { CorridorProps } from './Corridor';
-export { DamagedAstromechDroid } from './DamagedAstromechDroid';
-export type { DamagedAstromechDroidProps } from './DamagedAstromechDroid';
+export { DamagedAstromechDroid } from './components/DamagedAstromechDroid';
+export type { DamagedAstromechDroidProps } from './components/DamagedAstromechDroid';
 export { LAUNCH_FREQUENCY } from './launchFrequency';
-export { useCorridorPuzzle } from './useCorridorPuzzle';
-export type { UseCorridorPuzzleOptions } from './useCorridorPuzzle';
+export { useCorridorPuzzle } from './hooks/useCorridorPuzzle';
+export type { UseCorridorPuzzleOptions } from './hooks/useCorridorPuzzle';
 export {
   CORRIDOR_PUZZLE,
   PUZZLE_3_ID,

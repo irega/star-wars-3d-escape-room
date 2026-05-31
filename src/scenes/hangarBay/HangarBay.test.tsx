@@ -13,7 +13,7 @@ vi.mock('@react-three/drei', () => ({
   ContactShadows: () => null,
 }));
 
-vi.mock('./LaunchConsole', () => ({
+vi.mock('./components/LaunchConsole', () => ({
   LaunchConsole: ({
     onOpen,
     onLaunch,

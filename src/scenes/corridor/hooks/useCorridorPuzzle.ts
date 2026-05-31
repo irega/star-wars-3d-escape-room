@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useGameStore } from '../../stores/useGameStore';
-import { useInventoryStore } from '../../stores/useInventoryStore';
-import { useHintStore } from '../../stores/useHintStore';
-import { usePuzzleSolved } from '../../levels';
+import { useGameStore } from '../../../stores/useGameStore';
+import { useInventoryStore } from '../../../stores/useInventoryStore';
+import { useHintStore } from '../../../stores/useHintStore';
+import { usePuzzleSolved } from '../../../levels';
 import {
   areAllSlotsCorrect,
   cycleOrientation,
@@ -11,8 +11,8 @@ import {
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
   type CellOrientation,
-} from './puzzle/corridorPuzzle';
-import { LAUNCH_FREQUENCY } from './launchFrequency';
+} from '../puzzle/corridorPuzzle';
+import { LAUNCH_FREQUENCY } from '../launchFrequency';
 
 interface CellState {
   orientation: CellOrientation;

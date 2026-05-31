@@ -1,5 +1,5 @@
-import { HologramScreen } from '../../three';
-import { AUREBESH_SYMBOL_BARS, SCREENS, SYMBOL_COLOR } from './aurebeshScreens';
+import { HologramScreen } from '../../../three';
+import { AUREBESH_SYMBOL_BARS, SCREENS, SYMBOL_COLOR } from '../aurebeshScreens';
 
 interface AurebeshHologramScreensProps {
   hintLevel: number;

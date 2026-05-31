@@ -1,9 +1,9 @@
 export { ControlRoom, SCENE2_WORLD } from './ControlRoom';
 export type { ControlRoomProps } from './ControlRoom';
 export { SCREENS, AUREBESH_SYMBOL_BARS } from './aurebeshScreens';
-export { AurebeshHologramScreens } from './AurebeshHologramScreens';
-export { useControlRoomTerminal } from './useControlRoomTerminal';
-export type { UseControlRoomTerminalOptions } from './useControlRoomTerminal';
+export { AurebeshHologramScreens } from './components/AurebeshHologramScreens';
+export { useControlRoomTerminal } from './hooks/useControlRoomTerminal';
+export type { UseControlRoomTerminalOptions } from './hooks/useControlRoomTerminal';
 export {
   CONTROL_ROOM_PUZZLE,
   PUZZLE_2_ID,

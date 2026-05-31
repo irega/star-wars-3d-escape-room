@@ -1,4 +1,4 @@
-import { InteractiveObject } from '../../components/InteractiveObject';
+import { InteractiveObject } from '../../../components/InteractiveObject';
 
 interface HiddenMaintenancePanelProps {
   position: [number, number, number];

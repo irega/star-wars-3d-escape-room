@@ -5,10 +5,10 @@ import { useGameStore } from '../../stores/useGameStore';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { usePuzzleSolved, useRoomExit } from '../../levels';
 import { validateLaunchClearance, PUZZLE_4_ID } from './puzzle/hangarBayPuzzle';
-import { ForceFieldBarrier } from './ForceFieldBarrier';
-import { HangarBayEnvironment } from './HangarBayEnvironment';
-import { ImperialShuttle } from './ImperialShuttle';
-import { LaunchConsole } from './LaunchConsole';
+import { ForceFieldBarrier } from './components/ForceFieldBarrier';
+import { HangarBayEnvironment } from './components/HangarBayEnvironment';
+import { ImperialShuttle } from './components/ImperialShuttle';
+import { LaunchConsole } from './components/LaunchConsole';
 
 export const SCENE4_WORLD = {
   console: [0, 0.5, -0.5] as [number, number, number],

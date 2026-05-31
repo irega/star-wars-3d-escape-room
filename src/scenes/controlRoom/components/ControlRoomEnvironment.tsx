@@ -1,4 +1,4 @@
-import { ImperialRoomShell } from '../../three';
+import { ImperialRoomShell } from '../../../three';
 
 export function ControlRoomEnvironment() {
   return (

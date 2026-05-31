@@ -1,6 +1,6 @@
-import { ImperialRoomShell } from '../../three';
+import { ImperialRoomShell } from '../../../three';
 import { PulsingLight } from './PulsingLight';
-import { CELL_COLORS, SLOT_POSITIONS } from './corridorLayout';
+import { CELL_COLORS, SLOT_POSITIONS } from '../corridorLayout';
 
 interface CorridorEnvironmentProps {
   hintLevel: number;

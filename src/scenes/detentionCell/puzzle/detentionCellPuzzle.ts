@@ -1,4 +1,4 @@
-import type { PuzzleDefinition } from '../../levels/types';
+import type { PuzzleDefinition } from '../../../levels/types';
 
 export const DETENTION_CELL_PUZZLE = {
   id: 1,

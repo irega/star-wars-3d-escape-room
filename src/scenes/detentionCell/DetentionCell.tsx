@@ -10,7 +10,7 @@ import { BarredCellDoor, ImperialRoomShell, CeilingPanelLight, CotFrame } from '
 import { useRoomExit } from '../../levels';
 import { playTone } from '../../audio/playTone';
 import { PUZZLE_1_ID } from './puzzle/detentionCellPuzzle';
-import { HiddenMaintenancePanel } from './HiddenMaintenancePanel';
+import { HiddenMaintenancePanel } from './components/HiddenMaintenancePanel';
 
 export const SCENE1_WORLD = {
   panel: [2.82, 1.5, -3.0] as [number, number, number],

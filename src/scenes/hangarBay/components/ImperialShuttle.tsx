@@ -1,4 +1,4 @@
-import { PropBox } from '../../three/primitives';
+import { PropBox } from '../../../three/primitives';
 
 export interface ImperialShuttleProps {
   cleared: boolean;

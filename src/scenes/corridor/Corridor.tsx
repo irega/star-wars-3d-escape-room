@@ -1,12 +1,12 @@
 import { InteractiveObject } from '../../components/InteractiveObject';
 import { BlastDoor } from '../../three';
 import { useRoomExit } from '../../levels';
-import { DamagedAstromechDroid } from './DamagedAstromechDroid';
-import { CorridorEnvironment } from './CorridorEnvironment';
-import { ConduitSlot } from './ConduitSlot';
-import { PowerCell } from './PowerCell';
-import { DroidSchematicModal } from './DroidSchematicModal';
-import { useCorridorPuzzle } from './useCorridorPuzzle';
+import { DamagedAstromechDroid } from './components/DamagedAstromechDroid';
+import { CorridorEnvironment } from './components/CorridorEnvironment';
+import { ConduitSlot } from './components/ConduitSlot';
+import { PowerCell } from './components/PowerCell';
+import { DroidSchematicModal } from './components/DroidSchematicModal';
+import { useCorridorPuzzle } from './hooks/useCorridorPuzzle';
 import {
   CELL_POSITIONS,
   DROID_GROUP_POSITION,

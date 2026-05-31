@@ -3,9 +3,9 @@ import { InteractiveObject } from '../../components/InteractiveObject';
 import { BlastDoor, TerminalConsole, imperialPalette } from '../../three';
 import { useRoomExit } from '../../levels';
 import { PUZZLE_2_ID } from './puzzle/controlRoomPuzzle';
-import { AurebeshHologramScreens } from './AurebeshHologramScreens';
-import { ControlRoomEnvironment } from './ControlRoomEnvironment';
-import { useControlRoomTerminal } from './useControlRoomTerminal';
+import { AurebeshHologramScreens } from './components/AurebeshHologramScreens';
+import { ControlRoomEnvironment } from './components/ControlRoomEnvironment';
+import { useControlRoomTerminal } from './hooks/useControlRoomTerminal';
 
 export const SCENE2_WORLD = {
   terminal: [-2.75, 1.4, -0.8] as [number, number, number],

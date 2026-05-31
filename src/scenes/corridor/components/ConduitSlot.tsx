@@ -1,7 +1,7 @@
-import { InteractiveObject } from '../../components/InteractiveObject';
-import { isCellPlacementCorrect, CELL_SOLUTIONS } from './puzzle/corridorPuzzle';
-import { CELL_COLORS } from './corridorLayout';
-import type { CellOrientation } from './puzzle/corridorPuzzle';
+import { InteractiveObject } from '../../../components/InteractiveObject';
+import { isCellPlacementCorrect, CELL_SOLUTIONS } from '../puzzle/corridorPuzzle';
+import { CELL_COLORS } from '../corridorLayout';
+import type { CellOrientation } from '../puzzle/corridorPuzzle';
 
 interface CellState {
   orientation: CellOrientation;
