@@ -1,9 +1,10 @@
 import type { Room } from '../stores/useGameStore';
+import type { InventoryItem } from '../stores/useInventoryStore';
 
 /** Snapshot of game state needed to evaluate puzzle exit / win conditions. */
 export interface LevelContext {
   solvedPuzzles: number[];
-  hasItem: (itemId: string) => boolean;
+  hasItem: (item: InventoryItem) => boolean;
 }
 
 export type ExitCondition = (ctx: LevelContext) => boolean;
