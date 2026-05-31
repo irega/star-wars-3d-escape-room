@@ -1,8 +1,4 @@
-// Camera config — must match App.tsx <Canvas camera={{ position, fov }}>
-export const CAMERA = {
-  position: [0, 1.6, 5] as [number, number, number],
-  fov: 75,
-};
+import { CAMERA } from '../src/App';
 
 // Playwright Desktop Chrome default viewport
 export const VIEWPORT = { width: 1280, height: 720 };

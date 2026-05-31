@@ -26,6 +26,11 @@ import { resetAmbientMusic, stopAmbientMusic } from './audio/ambientMusic';
 import { AmbientMusicToggle } from './ui/AmbientMusicToggle';
 import { RoomHintTriggers } from './components/RoomHintTriggers';
 
+export const CAMERA = {
+  position: [0, 1.6, 5] as const,
+  fov: 75,
+};
+
 export default function App() {
   const { t } = useTranslation();
   const [dialogueEntry, setDialogueEntry] = useState<{ text: string; room: Room } | null>(null);
@@ -125,7 +130,7 @@ export default function App() {
         <Canvas
           dpr={qualityTier === 'high' ? Math.min(window.devicePixelRatio, 2) : 0.75}
           gl={{ antialias: true }}
-          camera={{ position: [0, 1.6, 5], fov: 75 }}
+          camera={CAMERA}
           onCreated={({ scene, gl }) => {
             scene.background = new Color(imperialPalette.background);
             gl.toneMapping = ACESFilmicToneMapping;
