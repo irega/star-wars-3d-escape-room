@@ -1,8 +1,8 @@
 import type { Room } from '../stores/useGameStore';
-import { DETENTION_CELL_PUZZLE } from '../scenes/detentionCell/detentionCellPuzzle';
-import { CONTROL_ROOM_PUZZLE } from '../scenes/controlRoom/controlRoomPuzzle';
-import { CORRIDOR_PUZZLE } from '../scenes/corridor/corridorPuzzle';
-import { HANGAR_BAY_PUZZLE } from '../scenes/hangarBay/hangarBayPuzzle';
+import { DETENTION_CELL_PUZZLE } from '../scenes/detentionCell/puzzle/detentionCellPuzzle';
+import { CONTROL_ROOM_PUZZLE } from '../scenes/controlRoom/puzzle/controlRoomPuzzle';
+import { CORRIDOR_PUZZLE } from '../scenes/corridor/puzzle/corridorPuzzle';
+import { HANGAR_BAY_PUZZLE } from '../scenes/hangarBay/puzzle/hangarBayPuzzle';
 import type { LevelDefinition } from './types';
 
 /**

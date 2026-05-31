@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useCorridorPuzzle } from './useCorridorPuzzle';
-import { CELL_SOLUTIONS, PUZZLE_3_ID } from './corridorPuzzle';
+import { CELL_SOLUTIONS, PUZZLE_3_ID } from './puzzle/corridorPuzzle';
 import { useGameStore } from '../../stores/useGameStore';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import '../../i18n';

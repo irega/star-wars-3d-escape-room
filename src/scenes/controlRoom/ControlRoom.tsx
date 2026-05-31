@@ -2,7 +2,7 @@ import { useHintStore } from '../../stores/useHintStore';
 import { InteractiveObject } from '../../components/InteractiveObject';
 import { BlastDoor, TerminalConsole, imperialPalette } from '../../three';
 import { useRoomExit } from '../../levels';
-import { PUZZLE_2_ID } from './controlRoomPuzzle';
+import { PUZZLE_2_ID } from './puzzle/controlRoomPuzzle';
 import { AurebeshHologramScreens } from './AurebeshHologramScreens';
 import { ControlRoomEnvironment } from './ControlRoomEnvironment';
 import { useControlRoomTerminal } from './useControlRoomTerminal';

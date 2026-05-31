@@ -1,4 +1,4 @@
-import type { PuzzleDefinition } from '../../levels/types';
+import type { PuzzleDefinition } from '../../../levels/types';
 
 export const HANGAR_BAY_PUZZLE = {
   id: 4,

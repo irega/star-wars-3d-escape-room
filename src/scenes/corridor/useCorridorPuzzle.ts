@@ -11,7 +11,7 @@ import {
   CELL_SOLUTIONS,
   PUZZLE_3_ID,
   type CellOrientation,
-} from './corridorPuzzle';
+} from './puzzle/corridorPuzzle';
 import { LAUNCH_FREQUENCY } from './launchFrequency';
 
 interface CellState {

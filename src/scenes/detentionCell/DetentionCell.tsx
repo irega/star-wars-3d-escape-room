@@ -9,7 +9,7 @@ import { InteractiveObject } from '../../components/InteractiveObject';
 import { BarredCellDoor, ImperialRoomShell, CeilingPanelLight, CotFrame } from '../../three';
 import { useRoomExit } from '../../levels';
 import { playTone } from '../../audio/playTone';
-import { PUZZLE_1_ID } from './detentionCellPuzzle';
+import { PUZZLE_1_ID } from './puzzle/detentionCellPuzzle';
 import { HiddenMaintenancePanel } from './HiddenMaintenancePanel';
 
 export const SCENE1_WORLD = {

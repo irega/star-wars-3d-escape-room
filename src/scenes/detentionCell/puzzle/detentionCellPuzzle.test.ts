@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { DETENTION_CELL_PUZZLE, PUZZLE_1_ID, PUZZLE_1_HINT_DELAYS } from './detentionCellPuzzle';
-import { useInventoryStore } from '../../stores/useInventoryStore';
-import { useGameStore } from '../../stores/useGameStore';
+import { useInventoryStore } from '../../../stores/useInventoryStore';
+import { useGameStore } from '../../../stores/useGameStore';
 
 beforeEach(() => {
   useInventoryStore.getState().reset();

@@ -4,7 +4,7 @@ import { useGameStore } from '../../stores/useGameStore';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { useControlRoomTerminalStore } from '../../stores/useControlRoomTerminalStore';
 import { usePuzzleSolved } from '../../levels';
-import { validateSequence, PUZZLE_2_ID, SEQUENCE_HIGHLIGHT_MS } from './controlRoomPuzzle';
+import { validateSequence, PUZZLE_2_ID, SEQUENCE_HIGHLIGHT_MS } from './puzzle/controlRoomPuzzle';
 import { playTone } from '../../audio/playTone';
 
 export interface UseControlRoomTerminalOptions {

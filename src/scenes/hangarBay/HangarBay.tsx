@@ -4,7 +4,7 @@ import { InteractiveObject } from '../../components/InteractiveObject';
 import { useGameStore } from '../../stores/useGameStore';
 import { useInventoryStore } from '../../stores/useInventoryStore';
 import { usePuzzleSolved, useRoomExit } from '../../levels';
-import { validateLaunchClearance, PUZZLE_4_ID } from './hangarBayPuzzle';
+import { validateLaunchClearance, PUZZLE_4_ID } from './puzzle/hangarBayPuzzle';
 import { ForceFieldBarrier } from './ForceFieldBarrier';
 import { HangarBayEnvironment } from './HangarBayEnvironment';
 import { ImperialShuttle } from './ImperialShuttle';

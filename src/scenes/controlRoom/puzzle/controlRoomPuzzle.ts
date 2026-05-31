@@ -1,4 +1,4 @@
-import type { PuzzleDefinition } from '../../levels/types';
+import type { PuzzleDefinition } from '../../../levels/types';
 
 export const CONTROL_ROOM_PUZZLE = {
   id: 2,

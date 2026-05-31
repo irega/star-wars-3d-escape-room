@@ -14,5 +14,5 @@ export {
   cycleOrientation,
   isCellPlacementCorrect,
   shouldExtractFromSlot,
-} from './corridorPuzzle';
-export type { CellOrientation } from './corridorPuzzle';
+} from './puzzle/corridorPuzzle';
+export type { CellOrientation } from './puzzle/corridorPuzzle';

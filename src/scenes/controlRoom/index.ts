@@ -10,4 +10,4 @@ export {
   PUZZLE_2_HINT_DELAYS,
   SEQUENCE_HIGHLIGHT_MS,
   validateSequence,
-} from './controlRoomPuzzle';
+} from './puzzle/controlRoomPuzzle';

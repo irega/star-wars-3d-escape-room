@@ -10,10 +10,10 @@ import {
   PUZZLE_3_HINT_DELAYS,
   type CellOrientation,
 } from './corridorPuzzle';
-import { CELL_POSITIONS, DROID_GROUP_POSITION } from './corridorLayout';
-import { LAUNCH_FREQUENCY } from './launchFrequency';
-import { useInventoryStore } from '../../stores/useInventoryStore';
-import { useGameStore } from '../../stores/useGameStore';
+import { CELL_POSITIONS, DROID_GROUP_POSITION } from '../corridorLayout';
+import { LAUNCH_FREQUENCY } from '../launchFrequency';
+import { useInventoryStore } from '../../../stores/useInventoryStore';
+import { useGameStore } from '../../../stores/useGameStore';
 
 beforeEach(() => {
   useInventoryStore.getState().reset();

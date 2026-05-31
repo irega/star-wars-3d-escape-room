@@ -5,9 +5,9 @@ import App from './App';
 import { useGameStore } from './stores/useGameStore';
 import { useHintStore } from './stores/useHintStore';
 import { useControlRoomTerminalStore } from './stores/useControlRoomTerminalStore';
-import { PUZZLE_1_HINT_DELAYS } from './scenes/detentionCell/detentionCellPuzzle';
-import { PUZZLE_2_ID } from './scenes/controlRoom/controlRoomPuzzle';
-import { PUZZLE_1_ID } from './scenes/detentionCell/detentionCellPuzzle';
+import { PUZZLE_1_HINT_DELAYS } from './scenes/detentionCell/puzzle/detentionCellPuzzle';
+import { PUZZLE_2_ID } from './scenes/controlRoom/puzzle/controlRoomPuzzle';
+import { PUZZLE_1_ID } from './scenes/detentionCell/puzzle/detentionCellPuzzle';
 import './i18n';
 
 const performanceCallbacks = vi.hoisted(() => ({

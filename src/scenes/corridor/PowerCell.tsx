@@ -1,6 +1,6 @@
 import { InteractiveObject } from '../../components/InteractiveObject';
 import { CELL_COLORS, CELL_LABEL_HEIGHTS } from './corridorLayout';
-import type { CellOrientation } from './corridorPuzzle';
+import type { CellOrientation } from './puzzle/corridorPuzzle';
 
 interface PowerCellProps {
   cellId: number;

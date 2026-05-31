@@ -5,4 +5,4 @@ export {
   PUZZLE_4_ID,
   PUZZLE_4_HINT_DELAYS,
   validateLaunchClearance,
-} from './hangarBayPuzzle';
+} from './puzzle/hangarBayPuzzle';
